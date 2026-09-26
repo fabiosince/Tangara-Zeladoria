@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#173b2b">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg">
-<title>Tangará Zeladoria V5.1</title>
+<title>Tangará Zeladoria V6</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
@@ -24,7 +24,7 @@ label{font-size:13px;font-weight:700;display:block;margin:10px 0 6px}input,selec
 .bottom{position:fixed;bottom:0;left:0;right:0;max-width:760px;margin:auto;background:white;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);z-index:6}.nav{border:0;background:white;padding:10px 4px;color:var(--muted);font-size:11px}.nav.active{color:var(--green);font-weight:800}.nav span{display:block;font-size:20px;margin-bottom:2px}
 .check{display:flex;gap:10px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}.check input{width:22px;height:22px;accent-color:var(--green)}
 .timeline{border-left:3px solid #d8e1db;padding-left:14px}.event{position:relative;margin:0 0 16px}.event:before{content:"";position:absolute;left:-22px;top:4px;width:10px;height:10px;background:var(--green);border-radius:50%}
-.empty{text-align:center;padding:28px;color:var(--muted)}.toast{position:fixed;left:50%;bottom:78px;transform:translateX(-50%);background:#17201b;color:white;padding:11px 16px;border-radius:99px;display:none;z-index:20;font-size:13px}
+.empty{text-align:center;padding:28px;color:var(--muted)}.progress{height:9px;background:#e8ede9;border-radius:99px;overflow:hidden}.progress i{display:block;height:100%;background:var(--green2);border-radius:99px}.status-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:6px}.status-btn{border:1px solid var(--line);background:#f7f9f7;color:var(--text);border-radius:10px;padding:8px 4px;font-size:11px;font-weight:800}.status-btn.sel-ok{background:#e2f3e9;color:var(--ok);border-color:#b8dfc6}.status-btn.sel-att{background:#fff1d7;color:var(--warn);border-color:#efd39a}.status-btn.sel-bad{background:#f8e1df;color:var(--danger);border-color:#e9b7b3}.toast{position:fixed;left:50%;bottom:78px;transform:translateX(-50%);background:#17201b;color:white;padding:11px 16px;border-radius:99px;display:none;z-index:20;font-size:13px}
 table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;padding:9px 6px;border-bottom:1px solid var(--line)}th{color:var(--muted)}
 .login{min-height:100vh;display:flex;align-items:center;padding:22px;background:linear-gradient(145deg,#173b2b,#2c6049)}.loginbox{width:100%;max-width:430px;margin:auto;background:white;border-radius:24px;padding:24px}.loginbox img{width:70px;height:70px;display:block;margin:0 auto 10px}.loginbox h2{text-align:center;margin:0}.loginbox p{text-align:center;color:var(--muted)}
 @media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}main{padding:20px}.bottom{position:sticky;bottom:0;border:1px solid var(--line);border-radius:16px;margin-bottom:12px}}
@@ -46,11 +46,12 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 <section id="home" class="screen active">
   <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div></div>
   <div class="grid">
-    <div class="metric"><b id="mOk">0</b><span>Conformes</span></div>
-    <div class="metric"><b id="mPending">0</b><span>Pendências</span></div>
+    <div class="metric"><b id="mOk">0</b><span>Áreas conformes</span></div>
+    <div class="metric"><b id="mPending">0</b><span>Itens pendentes</span></div>
     <div class="metric"><b id="mOcc">0</b><span>Ocorrências abertas</span></div>
     <div class="metric"><b id="mPct">0%</b><span>Áreas concluídas</span></div>
   </div>
+  <div class="card"><div class="row between"><div><h3 style="margin:0">Progresso das áreas</h3><div class="muted">Última inspeção registrada por área.</div></div><b id="todayLabel" class="muted"></b></div><div id="areaProgress"></div></div>
   <div class="card"><div class="row between"><h3 style="margin:0">Áreas</h3><button class="btn secondary" onclick="show('check')">Ver checklist</button></div><div id="areaSummary"></div></div>
   <div class="card"><h3 style="margin-top:0">Ações rápidas</h3><div class="row wrap">
     <button class="btn" onclick="show('check')">📋 Checklist</button>
@@ -60,7 +61,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 </section>
 
 <section id="check" class="screen">
-  <div class="card"><div class="row between"><div><h2 style="margin:0">Checklist</h2><div class="muted">Registre a situação de cada área.</div></div><select id="areaSelect" style="max-width:180px" onchange="renderChecklist()"></select></div><div id="checks"></div><label>Observação da área</label><textarea id="checkObs" placeholder="Ex.: piso limpo, lâmpada queimada..."></textarea><button class="btn full" onclick="saveChecklist()">Salvar inspeção</button></div>
+  <div class="card"><div class="row between"><div><h2 style="margin:0">Checklist V6</h2><div class="muted">Avalie cada item após verificar a área.</div></div><select id="areaSelect" style="max-width:180px" onchange="renderChecklist()"></select></div><div id="checkMeta" class="muted" style="margin-top:10px"></div><div id="checks"></div><label>Observação da área</label><textarea id="checkObs" placeholder="Ex.: piso limpo; lâmpada queimada; material a repor..."></textarea><button class="btn full" onclick="saveChecklist()">Salvar inspeção</button></div>
 </section>
 
 <section id="occ" class="screen">
@@ -98,7 +99,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 
 <section id="profile" class="screen">
   <div class="card"><h2 style="margin-top:0">Perfil</h2><p><b id="profileName"></b><br><span class="muted" id="profileRole"></span></p><button class="btn danger full" onclick="logout(event)">Sair do aplicativo</button></div>
-  <div class="card"><h3 style="margin-top:0">Sobre a V5.1</h3><p class="muted">Saída de sessão corrigida. O botão encerra a sessão e volta diretamente para a tela de acesso. Os registros ficam armazenados no aparelho.</p></div>
+  <div class="card"><h3 style="margin-top:0">Sobre a V6</h3><p class="muted">Checklist por item com três estados, progresso por área e painel de indicadores. Os registros continuam armazenados no aparelho.</p></div>
 </section>
 </main>
 <nav class="bottom">
@@ -122,10 +123,10 @@ const ITEMS={
 "Garagem":["Piso e circulação em ordem","Iluminação funcionando","Sinalização preservada","Lixeiras/área organizada"],
 "Áreas externas":["Calçadas e acessos limpos","Jardins e áreas verdes em ordem","Lixeiras higienizadas","Iluminação externa funcionando"]
 };
-let db=JSON.parse(localStorage.getItem("tangaraV5")||localStorage.getItem("tangaraV4")||'{"inspections":[],"occurrences":[]}');
-if(!localStorage.getItem("tangaraV5")){localStorage.setItem("tangaraV5",JSON.stringify(db));}
+let db=JSON.parse(localStorage.getItem("tangaraV6")||localStorage.getItem("tangaraV5")||localStorage.getItem("tangaraV4")||'{"inspections":[],"occurrences":[]}');
+if(!localStorage.getItem("tangaraV6")){localStorage.setItem("tangaraV6",JSON.stringify(db));}
 let user=JSON.parse(localStorage.getItem("tangaraUser")||"null");
-function persist(){localStorage.setItem("tangaraV5",JSON.stringify(db))}
+function persist(){localStorage.setItem("tangaraV6",JSON.stringify(db))}
 function toast(t){let e=document.getElementById("toast");e.textContent=t;e.style.display="block";setTimeout(()=>e.style.display="none",2200)}
 function doLogin(){
   try{
@@ -173,32 +174,45 @@ function renderChecklist(){
   const area=document.getElementById("areaSelect").value;
   const checksEl=document.getElementById("checks");
   const obsEl=document.getElementById("checkObs");
-  checksEl.innerHTML=ITEMS[area].map((x,i)=>`<div class="check"><input type="checkbox" id="c${i}"><div><b>${x}</b><div class="muted">Marque somente após verificar.</div></div></div>`).join("");
-  obsEl.value="";
+  const latest=db.inspections.find(x=>x.area===area);
+  const latestItems=latest?.items||[];
+  document.getElementById("checkMeta").textContent=latest?`Última inspeção: ${fmt(latest.date)} • ${latest.user}`:"Ainda não há inspeção registrada para esta área.";
+  checksEl.innerHTML=ITEMS[area].map((x,i)=>{
+    const old=latestItems.find(z=>z.item===x);
+    const status=old?.status || (old?.ok===true?"Conforme":"Pendente");
+    return `<div class="check"><div style="flex:1"><b>${x}</b><div class="status-grid">
+      <button type="button" class="status-btn ${status==='Conforme'?'sel-ok':''}" onclick="setItemStatus(${i},'Conforme')">✓ Conforme</button>
+      <button type="button" class="status-btn ${status==='Atenção'?'sel-att':''}" onclick="setItemStatus(${i},'Atenção')">⚠ Atenção</button>
+      <button type="button" class="status-btn ${status==='Não conforme'?'sel-bad':''}" onclick="setItemStatus(${i},'Não conforme')">✕ Não conforme</button>
+      <input type="hidden" id="status${i}" value="${status}">
+    </div></div></div>`;
+  }).join("");
+  obsEl.value=latest?.obs||"";
 }
-function saveChecklist(){const area=document.getElementById("areaSelect").value;const obs=document.getElementById("checkObs").value.trim();let values=ITEMS[area].map((x,i)=>({item:x,ok:document.getElementById("c"+i).checked}));let ok=values.filter(x=>x.ok).length;db.inspections.unshift({id:Date.now(),type:"check",date:new Date().toISOString(),user:user.name,area,ok,total:values.length,obs:obs,items:values});persist();toast("Inspeção salva");renderHome()}
+function setItemStatus(i,status){document.getElementById("status"+i).value=status;renderChecklistButtonsOnly();}
+function renderChecklistButtonsOnly(){document.querySelectorAll('.status-btn').forEach(b=>{const txt=b.textContent;const idx=b.closest('.check').querySelector('input[type=hidden]').id.replace('status','');const st=document.getElementById('status'+idx).value;b.classList.remove('sel-ok','sel-att','sel-bad');if((st==='Conforme'&&txt.includes('Conforme'))||(st==='Atenção'&&txt.includes('Atenção'))||(st==='Não conforme'&&txt.includes('Não conforme')))b.classList.add(st==='Conforme'?'sel-ok':st==='Atenção'?'sel-att':'sel-bad')})}
+function saveChecklist(){
+  const area=document.getElementById("areaSelect").value,obs=document.getElementById("checkObs").value.trim();
+  const statuses=ITEMS[area].map((x,i)=>({item:x,status:document.getElementById("status"+i)?.value||"Pendente"}));
+  const ok=statuses.filter(x=>x.status==="Conforme").length, attention=statuses.filter(x=>x.status==="Atenção").length, bad=statuses.filter(x=>x.status==="Não conforme").length;
+  db.inspections.unshift({id:Date.now(),type:"check",date:new Date().toISOString(),user:user.name,area,ok,total:statuses.length,attention,bad,obs,items:statuses});persist();toast("Inspeção salva");renderHome();renderReports();renderChecklist();
+}
 function saveOccurrence(){let title=occTitle.value.trim();if(!title)return toast("Informe o título");let file=occPhoto.files[0];let finish=(photo)=>{db.occurrences.unshift({id:Date.now(),type:"occ",date:new Date().toISOString(),user:user.name,area:occArea.value,title,priority:occPriority.value,desc:occDesc.value.trim(),photo:photo||"",status:"Aberta"});persist();occTitle.value="";occDesc.value="";occPhoto.value="";toast("Ocorrência registrada");renderHome();show("history")};if(file){let r=new FileReader();r.onload=()=>finish(r.result);r.readAsDataURL(file)}else finish("")}
-function renderHome(){const mOkEl=document.getElementById("mOk"),mPendingEl=document.getElementById("mPending"),mOccEl=document.getElementById("mOcc"),mPctEl=document.getElementById("mPct"),areaSummaryEl=document.getElementById("areaSummary");let last=db.inspections;let ok=last.filter(x=>x.ok===x.total).length;let pend=last.filter(x=>x.ok<x.total).length;let open=db.occurrences.filter(x=>x.status!=="Resolvida").length;mOkEl.textContent=ok;mPendingEl.textContent=pend;mOccEl.textContent=open;mPctEl.textContent=(AREAS.length?Math.round(new Set(last.map(x=>x.area)).size/AREAS.length*100):0)+"%";areaSummaryEl.innerHTML=AREAS.map(a=>{let x=last.find(i=>i.area===a);return `<div class="area"><b>${a}</b><span class="pill ${!x?'pending':x.ok===x.total?'ok':'bad'}">${!x?'Pendente':x.ok===x.total?'Conforme':'Atenção'}</span></div>`}).join("")}
-function renderHistory(){const histFilterEl=document.getElementById("histFilter"),historyListEl=document.getElementById("historyList");let f=histFilterEl.value;let all=[...db.inspections,...db.occurrences].filter(x=>f==="all"||x.type===f).sort((a,b)=>b.id-a.id);historyListEl.innerHTML=all.length?all.map(x=>x.type==="check"?`<div class="card"><div class="row between"><b>📋 ${x.area}</b><span class="pill ${x.ok===x.total?'ok':'bad'}">${x.ok}/${x.total}</span></div><div class="muted">${fmt(x.date)} • ${x.user}</div>${x.obs?`<p>${esc(x.obs)}</p>`:""}</div>`:`<div class="card"><div class="row between"><b>🔧 ${esc(x.title)}</b><span class="pill ${x.status==="Resolvida"?'ok':'pending'}">${x.status}</span></div><div class="muted">${x.area} • ${x.priority} • ${fmt(x.date)} • ${x.user}</div><p>${esc(x.desc||"")}</p>${x.photo?`<img src="${x.photo}" style="width:100%;max-height:220px;object-fit:cover;border-radius:12px">`:""}<button class="btn secondary full" style="margin-top:8px" onclick="toggleOcc(${x.id})">${x.status==="Resolvida"?"Reabrir":"Marcar como resolvida"}</button></div>`).join(""):"<div class='empty'>Nenhum registro encontrado.</div>"}
-function toggleOcc(id){let x=db.occurrences.find(o=>o.id===id);if(x){x.status=x.status==="Resolvida"?"Aberta":"Resolvida";persist();renderHistory();renderHome();toast("Status atualizado")}}
-function renderReports(){const rInspectionsEl=document.getElementById("rInspections"),rOccEl=document.getElementById("rOcc"),rOpenEl=document.getElementById("rOpen"),rResolvedEl=document.getElementById("rResolved"),areaReportEl=document.getElementById("areaReport");let ins=db.inspections, occ=db.occurrences;rInspectionsEl.textContent=ins.length;rOccEl.textContent=occ.length;rOpenEl.textContent=occ.filter(x=>x.status!=="Resolvida").length;rResolvedEl.textContent=occ.filter(x=>x.status==="Resolvida").length;areaReportEl.innerHTML=AREAS.map(a=>{let n=occ.filter(x=>x.area===a).length;return `<div class="area"><b>${a}</b><span>${n} ocorrência(s)</span></div>`}).join("")}
-function fmt(d){return new Date(d).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}
-function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
-function exportCSV(){let rows=[["Tipo","Data","Usuário","Área","Status/Conforme","Detalhes"],...db.inspections.map(x=>["Inspeção",fmt(x.date),x.user,x.area,`${x.ok}/${x.total}`,x.obs||""]),...db.occurrences.map(x=>["Ocorrência",fmt(x.date),x.user,x.area,x.status,`${x.title} - ${x.desc||""}`])];let csv=rows.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(";")).join("\\n");let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));a.download="tangara-zeladoria-relatorio.csv";a.click()}
-function logout(ev){
-  if(ev){ev.preventDefault();ev.stopPropagation();}
-  localStorage.removeItem("tangaraUser");
-  user=null;
-  document.getElementById("app").style.display="none";
-  document.getElementById("loginScreen").style.display="flex";
-  document.getElementById("loginName").value="";
-  document.getElementById("loginRole").value="Colaborador";
-  document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
-  document.getElementById("home").classList.add("active");
+function renderHome(){
+  const latestByArea=Object.fromEntries(AREAS.map(a=>[a,db.inspections.find(i=>i.area===a)]));
+  const latest=Object.values(latestByArea).filter(Boolean);
+  const conformes=latest.filter(x=>x.ok===x.total).length;
+  const pendingItems=latest.reduce((n,x)=>n+(x.total-x.ok),0);
+  const open=db.occurrences.filter(x=>x.status!=="Resolvida").length;
+  const completed=AREAS.filter(a=>latestByArea[a]&&latestByArea[a].ok===latestByArea[a].total).length;
+  document.getElementById("mOk").textContent=conformes;document.getElementById("mPending").textContent=pendingItems;document.getElementById("mOcc").textContent=open;document.getElementById("mPct").textContent=Math.round(completed/AREAS.length*100)+"%";
+  document.getElementById("todayLabel").textContent=new Date().toLocaleDateString("pt-BR");
+  document.getElementById("areaSummary").innerHTML=AREAS.map(a=>{let x=latestByArea[a];let status=!x?"Pendente":x.ok===x.total?"Conforme":(x.bad||0)>0?"Não conforme":"Atenção";let cls=status==='Conforme'?'ok':status==='Não conforme'?'bad':'pending';return `<div class="area"><b>${a}</b><span class="pill ${cls}">${status}</span></div>`}).join("");
+  document.getElementById("areaProgress").innerHTML=AREAS.map(a=>{let x=latestByArea[a],pct=x?Math.round(x.ok/x.total*100):0;return `<div style="padding:9px 0"><div class="row between"><span style="font-size:13px;font-weight:700">${a}</span><span class="muted">${pct}%</span></div><div class="progress"><i style="width:${pct}%"></i></div></div>`}).join("");
 }
 function refresh(){renderHome();renderReports();renderHistory()}
 if(user)start();
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=51",{updateViaCache:"none"}).catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=60",{updateViaCache:"none"}).catch(()=>{});
 </script>
 </body>
 </html>
