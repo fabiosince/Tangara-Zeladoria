@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#173b2b">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="logo-tangara.png">
-<title>Tangará Zeladoria V20</title>
+<title>Tangará Zeladoria V22</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
@@ -67,7 +67,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 </section>
 
 <section id="check" class="screen">
-  <div class="card"><div class="row between"><div><h2 style="margin:0">Checklist V21</h2><div class="muted">Avalie cada item após verificar a área.</div></div><select id="areaSelect" style="max-width:180px" onchange="renderChecklist()"></select></div><div id="checkMeta" class="muted" style="margin-top:10px"></div><div id="checkRule" class="card" style="margin:10px 0;background:#f7f9f7"></div><div id="checks"></div><div id="checkScore" class="muted" style="margin:10px 0"></div><label>Observação da área</label><textarea id="checkObs" placeholder="Ex.: piso limpo; lâmpada queimada; material a repor..."></textarea><button class="btn full" onclick="saveChecklist()">Salvar inspeção</button></div>
+  <div class="card"><div class="row between"><div><h2 style="margin:0">Checklist V22</h2><div class="muted">Avalie cada item após verificar a área.</div></div><select id="areaSelect" style="max-width:180px" onchange="renderChecklist()"></select></div><div id="checkMeta" class="muted" style="margin-top:10px"></div><div id="checkRule" class="card" style="margin:10px 0;background:#f7f9f7"></div><div id="checks"></div><div id="checkScore" class="muted" style="margin:10px 0"></div><label>Observação da área</label><textarea id="checkObs" placeholder="Ex.: piso limpo; lâmpada queimada; material a repor..."></textarea><button class="btn full" onclick="saveChecklist()">Salvar inspeção</button></div>
 </section>
 
 <section id="occ" class="screen">
@@ -126,16 +126,16 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 </section>
 
 <section id="materials" class="screen">
-  <div class="card"><div class="row between"><div><h2 style="margin:0">Banco de materiais</h2><div class="muted">Materiais registrados nas ocorrências, com quantidade e unidade.</div></div><div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn secondary" onclick="exportMaterialsCSV()">Exportar detalhado</button><button class="btn secondary" onclick="exportConsolidatedCSV()">Exportar compras</button></div></div>
-    <div class="grid" style="margin-top:10px"><div class="metric"><b id="matRecordCount">0</b><span>Itens registrados</span></div><div class="metric"><b id="matOccCount">0</b><span>Ocorrências com materiais</span></div><div class="metric"><b id="matCatalogCount">0</b><span>Materiais no catálogo</span></div><div class="metric"><b id="matQtyCount">0</b><span>Quantidade total</span></div></div>
+  <div class="card"><div class="row between"><div><h2 style="margin:0">Banco de materiais</h2><div class="muted">Materiais registrados nas ocorrências, com quantidade, compra e observação.</div></div><div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn secondary" onclick="exportMaterialsCSV()">Exportar detalhado</button><button class="btn secondary" onclick="exportConsolidatedCSV()">Exportar compras</button></div></div>
+    <div class="grid" style="margin-top:10px"><div class="metric"><b id="matRecordCount">0</b><span>Itens registrados</span></div><div class="metric"><b id="matOccCount">0</b><span>Ocorrências com materiais</span></div><div class="metric"><b id="matCatalogCount">0</b><span>Materiais no catálogo</span></div><div class="metric"><b id="matQtyCount">0</b><span>Quantidade total</span></div><div class="metric"><b id="matPendingCount">0</b><span>Compras pendentes</span></div><div class="metric"><b id="matBoughtCount">0</b><span>Compras concluídas</span></div></div>
   </div>
-  <div class="card"><div class="row between"><h3 style="margin:0">Lista consolidada</h3><div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn secondary small-btn" onclick="downloadMaterialsJSON()">Exportar banco (.json)</button><button class="btn secondary small-btn" onclick="downloadConsolidatedJSON()">Exportar consolidado</button></div></div><div id="materialsTable" style="margin-top:8px"></div></div>
+  <div class="card"><div class="row between"><div><h3 style="margin:0">Lista consolidada de compras</h3><div class="muted">Marque cada material como Pendente ou Comprado. A data e a observação ficam salvas no aparelho.</div></div><div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn secondary small-btn" onclick="downloadMaterialsJSON()">Exportar banco (.json)</button><button class="btn secondary small-btn" onclick="downloadConsolidatedJSON()">Exportar consolidado</button></div></div><div id="materialsTable" style="margin-top:8px;overflow-x:auto"></div></div>
   <div class="card"><h3 style="margin-top:0">Catálogo de sugestões</h3><div class="muted">O aplicativo usa este catálogo para sugerir materiais quando uma ocorrência é aberta.</div><div id="materialCatalog" style="margin-top:8px"></div></div>
 </section>
 
 <section id="profile" class="screen">
   <div class="card"><h2 style="margin-top:0">Perfil</h2><p><b id="profileName"></b><br><span class="muted" id="profileRole"></span></p><button class="btn danger full" onclick="logout(event)">Sair do aplicativo</button></div>
-  <div class="card"><h3 style="margin-top:0">Sobre a V21</h3><p class="muted">Fluxo de ocorrências com apenas os status Aberta e Resolvida, materiais de reposição sugeridos automaticamente, edição por ocorrência, consolidação para compras e exportação detalhada e consolidada em CSV e JSON, detalhes de inspeções, fotos, filtros e indicadores gerenciais. Os registros continuam armazenados no aparelho.</p></div>
+  <div class="card"><h3 style="margin-top:0">Sobre a V22</h3><p class="muted">Fluxo de ocorrências com apenas os status Aberta e Resolvida, materiais de reposição sugeridos automaticamente, edição por ocorrência, consolidação para compras, acompanhamento Pendente/Comprado com data e observação, exportação detalhada e consolidada em CSV e JSON, detalhes de inspeções, fotos, filtros e indicadores gerenciais. Os registros continuam armazenados no aparelho.</p></div>
 </section>
 </main>
 <nav class="bottom">
@@ -203,6 +203,7 @@ const MATERIAL_CATALOG=[
 ];
 let occurrenceMaterials=[];
 const V20_KEY="tangaraV20";
+const V22_PURCHASE_KEY="tangaraV22Purchases";
 const V16_KEY="tangaraV16";
 const V15_KEY="tangaraV15";
 const V14_KEY="tangaraV14";
@@ -229,6 +230,26 @@ db.occurrences.forEach(x=>(x.materials||[]).forEach(m=>{if(materialKey(m.name)==
 localStorage.setItem(V20_KEY,JSON.stringify(db));
 let user=JSON.parse(localStorage.getItem("tangaraUser")||"null");
 function persist(){localStorage.setItem(V20_KEY,JSON.stringify(db))}
+function loadPurchaseData(){
+  try{return JSON.parse(localStorage.getItem(V22_PURCHASE_KEY)||"{}")||{}}catch(e){return {}}
+}
+let purchaseData=loadPurchaseData();
+function persistPurchases(){localStorage.setItem(V22_PURCHASE_KEY,JSON.stringify(purchaseData))}
+function purchaseKey(material,unit){return `${materialKey(material)}|${String(unit||"un").trim().toLowerCase()}`}
+function getPurchaseMeta(material,unit){const k=purchaseKey(material,unit);if(!purchaseData[k])purchaseData[k]={status:"Pendente",purchasedAt:"",note:""};return purchaseData[k]}
+function todayISO(){return new Date().toISOString().slice(0,10)}
+function updatePurchaseField(material,unit,field,value){
+  const m=getPurchaseMeta(material,unit);
+  m[field]=value;
+  if(field==="status" && value==="Comprado" && !m.purchasedAt)m.purchasedAt=todayISO();
+  if(field==="status" && value==="Pendente")m.purchasedAt="";
+  persistPurchases(); renderMaterials();
+}
+function purchaseStats(){
+  const arr=consolidatedMaterials(); let pending=0,bought=0;
+  arr.forEach(r=>{const m=getPurchaseMeta(r.material,r.unit); if(m.status==="Comprado")bought++;else pending++;});
+  return {pending,bought};
+}
 function toast(t){let e=document.getElementById("toast");e.textContent=t;e.style.display="block";setTimeout(()=>e.style.display="none",2200)}
 function doLogin(){
   try{
@@ -401,14 +422,18 @@ function materialRecords(){
 }
 function renderMaterials(){
   const rows=materialRecords();
-  const unique=new Set(rows.map(r=>materialKey(r.material)).filter(Boolean));
   document.getElementById("matRecordCount").textContent=rows.length;
   document.getElementById("matOccCount").textContent=new Set(rows.map(r=>r.occurrenceId)).size;
   document.getElementById("matCatalogCount").textContent=MATERIAL_CATALOG.length;
   document.getElementById("matQtyCount").textContent=rows.reduce((n,r)=>n+r.quantity,0);
-  const totals={}; rows.forEach(r=>{const k=materialKey(r.material);if(!k)return; if(!totals[k])totals[k]={name:r.material,unit:r.unit,qty:0,count:0};totals[k].qty+=r.quantity;totals[k].count++;});
-  const arr=Object.values(totals).sort((a,b)=>b.qty-a.qty);
-  document.getElementById("materialsTable").innerHTML=arr.length?`<table><thead><tr><th>Material</th><th>Qtd. total</th><th>Un.</th><th>Ocorr.</th></tr></thead><tbody>${arr.map(r=>`<tr><td><b>${escapeHtml(r.name)}</b></td><td>${r.qty}</td><td>${escapeHtml(r.unit)}</td><td>${r.count}</td></tr>`).join("")}</tbody></table>`:'<div class="empty">Nenhum material registrado ainda.</div>';
+  const totals={};
+  rows.forEach(r=>{const k=materialKey(r.material);if(!k)return; if(!totals[k])totals[k]={name:r.material,unit:r.unit,qty:0,count:0};totals[k].qty+=r.quantity;totals[k].count++;});
+  const arr=Object.values(totals).sort((a,b)=>a.name.localeCompare(b.name,"pt-BR"));
+  const stats={pending:0,bought:0};
+  arr.forEach(r=>{const m=getPurchaseMeta(r.name,r.unit); if(m.status==="Comprado")stats.bought++;else stats.pending++;});
+  document.getElementById("matPendingCount").textContent=stats.pending;
+  document.getElementById("matBoughtCount").textContent=stats.bought;
+  document.getElementById("materialsTable").innerHTML=arr.length?`<table><thead><tr><th>Material</th><th>Qtd.</th><th>Un.</th><th>Ocorr.</th><th>Status</th><th>Compra</th><th>Observação</th></tr></thead><tbody>${arr.map(r=>{const m=getPurchaseMeta(r.name,r.unit);return `<tr><td><b>${escapeHtml(r.name)}</b></td><td>${r.qty}</td><td>${escapeHtml(r.unit)}</td><td>${r.count}</td><td><select onchange="updatePurchaseField('${escapeHtml(r.name).replaceAll("'","&#39;")}','${escapeHtml(r.unit).replaceAll("'","&#39;")}','status',this.value)" style="min-width:110px"><option ${m.status==='Pendente'?'selected':''}>Pendente</option><option ${m.status==='Comprado'?'selected':''}>Comprado</option></select></td><td><input type="date" value="${m.purchasedAt||''}" onchange="updatePurchaseField('${escapeHtml(r.name).replaceAll("'","&#39;")}','${escapeHtml(r.unit).replaceAll("'","&#39;")}','purchasedAt',this.value)" style="min-width:135px"></td><td><input value="${escapeHtml(m.note||'')}" placeholder="Ex.: comprar 2 unidades" onchange="updatePurchaseField('${escapeHtml(r.name).replaceAll("'","&#39;")}','${escapeHtml(r.unit).replaceAll("'","&#39;")}','note',this.value)" style="min-width:180px"></td></tr>`}).join("")}</tbody></table>`:'<div class="empty">Nenhum material registrado ainda.</div>';
   document.getElementById("materialCatalog").innerHTML=MATERIAL_CATALOG.map(m=>`<span class="material-chip">${escapeHtml(m.name)} <small>(${m.unit})</small></span>`).join("");
 }
 function showOccurrenceMaterials(id){
@@ -444,8 +469,8 @@ function saveOccurrenceMaterials(id){
 }
 function closeMaterialsModal(){document.getElementById('materialsModal').classList.remove('open')}
 function exportMaterialsCSV(){
-  const rows=[["ID ocorrência","Data","Usuário","Área","Ocorrência","Status","Prioridade","Material","Quantidade","Unidade"]];
-  materialRecords().forEach(r=>rows.push([r.occurrenceId,fmt(r.date),r.user,r.area,r.title,r.status,r.priority,r.material,r.quantity,r.unit]));
+  const rows=[["ID ocorrência","Data","Usuário","Área","Ocorrência","Status","Prioridade","Material","Quantidade","Unidade","Compra","Data da compra","Observação"]];
+  materialRecords().forEach(r=>{const m=getPurchaseMeta(r.material,r.unit);rows.push([r.occurrenceId,fmt(r.date),r.user,r.area,r.title,r.status,r.priority,r.material,r.quantity,r.unit,m.status,m.purchasedAt,m.note])});
   const csv=rows.map(r=>r.map(v=>'"'+String(v??'').replaceAll('"','""')+'"').join(';')).join('\n');
   const blob=new Blob(["\ufeff"+csv],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='tangara-banco-materiais.csv';a.click();URL.revokeObjectURL(a.href);toast('Banco de materiais exportado');
 }
@@ -460,17 +485,17 @@ function consolidatedMaterials(){
   return Object.values(totals).sort((a,b)=>a.material.localeCompare(b.material,"pt-BR"));
 }
 function exportConsolidatedCSV(){
-  const rows=[["Material","Quantidade total","Unidade","Ocorrências"]];
-  consolidatedMaterials().forEach(r=>rows.push([r.material,r.quantity,r.unit,r.occurrences]));
+  const rows=[["Material","Quantidade total","Unidade","Ocorrências","Compra","Data da compra","Observação"]];
+  consolidatedMaterials().forEach(r=>{const m=getPurchaseMeta(r.material,r.unit);rows.push([r.material,r.quantity,r.unit,r.occurrences,m.status,m.purchasedAt,m.note])});
   const csv=rows.map(r=>r.map(v=>'"'+String(v??'').replaceAll('"','""')+'"').join(';')).join("\n");
   const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="tangara-lista-de-compras.csv"; a.click(); URL.revokeObjectURL(a.href); toast("Lista consolidada exportada");
 }
 function downloadConsolidatedJSON(){
-  const payload={exportedAt:new Date().toISOString(),version:"V21",summary:consolidatedMaterials()};
+  const payload={exportedAt:new Date().toISOString(),version:"V22",summary:consolidatedMaterials().map(r=>({...r,purchase:getPurchaseMeta(r.material,r.unit)}))};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json;charset=utf-8"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="tangara-lista-de-compras.json"; a.click(); URL.revokeObjectURL(a.href); toast("Lista consolidada exportada");
 }
 function downloadMaterialsJSON(){
-  const payload={exportedAt:new Date().toISOString(),version:"V21",materials:materialRecords(),consolidated:consolidatedMaterials()};
+  const payload={exportedAt:new Date().toISOString(),version:"V22",materials:materialRecords().map(r=>({...r,purchase:getPurchaseMeta(r.material,r.unit)})),consolidated:consolidatedMaterials().map(r=>({...r,purchase:getPurchaseMeta(r.material,r.unit)}))};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='tangara-banco-materiais.json';a.click();URL.revokeObjectURL(a.href);toast('Banco de materiais exportado');
 }
 function createOccurrenceFromPending(area,item,status){
