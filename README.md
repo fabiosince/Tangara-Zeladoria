@@ -1,12 +1,17 @@
-# Tangará Zeladoria V29
+# Tangará Zeladoria V30
 
-V29 troca o perfil **Administradora** por **Morador**.
+## Perfil Morador — acesso restrito
+- Morador pode **registrar pendência** com descrição e foto.
+- Morador pode **consultar o painel geral de pendências em modo somente leitura**.
+- Morador não pode editar inspeções/pendências de áreas.
+- Morador não pode criar, resolver ou reabrir ocorrências existentes.
+- Morador não tem acesso ao Banco de Materiais, edição de materiais, compras, relatórios ou histórico operacional.
+- Materiais e registros de área continuam disponíveis para os perfis operacionais/gerenciais.
+- O envio de foto de pendência usa o mesmo processamento de foto do aplicativo.
 
-### Acessos do Morador
-- ✓ Verificação de itens pelo Checklist.
-- 📷 Registro simplificado de pendências com foto.
-- Tipos rápidos: luz queimada, vazamento, limpeza, porta/fechadura, dano em equipamento e outro.
-- A pendência é registrada como ocorrência aberta e enviada para acompanhamento da zeladoria.
-- Atalhos específicos para Verificar itens e Enviar foto.
-
-Preserva as funcionalidades validadas das versões anteriores e o ícone PWA da V28.
+## Mantido
+- Perfis Colaborador e Síndico.
+- Ocorrências Aberta/Resolvida.
+- Banco de materiais e compras.
+- Painel de pendências.
+- Ícone PWA Tangará da V28.

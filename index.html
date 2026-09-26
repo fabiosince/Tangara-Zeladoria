@@ -59,7 +59,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 <header class="top"><div class="brand"><img class="logo" src="logo-tangara.png"><div><h1>Tangará Zeladoria</h1><small id="userLabel"></small></div></div></header>
 <main>
 <section id="home" class="screen active">
-  <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div><div class="muted" style="font-size:11px;margin-top:6px;opacity:.7">Painel V29</div></div>
+  <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div><div class="muted" style="font-size:11px;margin-top:6px;opacity:.7">Painel V30</div></div>
   <div class="card" id="focusPanel"></div>
   <div class="card priority-hero" id="priorityPanel"></div>
   <div class="grid">
@@ -71,10 +71,10 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
   <div class="card">
     <div class="row between"><div><h3 style="margin:0">Atalhos rápidos</h3><div class="muted">As ações mais usadas ficam aqui.</div></div></div>
     <div class="quick-grid" style="margin-top:10px">
-      <button class="quick-card" onclick="show('occ')"><b>🔧 Ocorrências</b><span>Registrar ou acompanhar problemas</span></button>
-      <button class="quick-card" onclick="show(&quot;check&quot;)"><b>✓ Checklist</b><span>Fazer inspeção das áreas</span></button>
-      <button class="quick-card" onclick="show('materials')"><b>🧰 Materiais</b><span>Consultar compras e estoque</span></button>
-      <button class="quick-card" onclick="show('history')"><b>📋 Histórico</b><span>Ver atividades registradas</span></button>
+      <button class="quick-card" id="quickOcc" onclick="show('occ')"><b>🔧 Ocorrências</b><span>Registrar ou acompanhar problemas</span></button>
+      <button class="quick-card" id="quickCheck" onclick="show(&quot;check&quot;)"><b>✓ Checklist</b><span>Fazer inspeção das áreas</span></button>
+      <button class="quick-card" id="quickMaterials" onclick="show('materials')"><b>🧰 Materiais</b><span>Consultar compras e estoque</span></button>
+      <button class="quick-card" id="quickHistory" onclick="show('history')"><b>📋 Histórico</b><span>Ver atividades registradas</span></button>
       <button class="quick-card" id="residentQuick" style="display:none" onclick="show(&quot;residentIssue&quot;)"><b>📷 Registrar pendência</b><span>Foto de luz, vazamento ou outro problema</span></button>
     </div>
   </div>
@@ -83,15 +83,15 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
   <div id="rolePanel"></div>
   <div class="card"><div class="row between"><h3 style="margin:0">Áreas</h3><button class="btn secondary" onclick="show(&quot;check&quot;)">Ver checklist</button></div><div id="areaSummary"></div></div>
   <div class="card"><h3 style="margin-top:0">Mais ações</h3><div class="row wrap">
-    <button class="btn" onclick="show(&quot;check&quot;)">📋 Checklist</button>
-    <button class="btn gold" onclick="show('occ')">🔧 Nova ocorrência</button>
-    <button class="btn secondary" onclick="show('history')">🕘 Histórico</button>
+    <button id="homeMoreCheck" class="btn" onclick="show(&quot;check&quot;)">📋 Checklist</button>
+    <button id="homeMoreOcc" class="btn gold" onclick="show('occ')">🔧 Nova ocorrência</button>
+    <button id="homeMoreHistory" class="btn secondary" onclick="show('history')">🕘 Histórico</button>
     <button class="btn secondary" onclick="show('pending')">⚠️ Pendências</button>
   </div></div>
 </section>
 
 <section id="check" class="screen">
-  <div class="card"><div class="row between"><div><h2 style="margin:0">Checklist V23</h2><div class="muted">Avalie cada item após verificar a área.</div></div><select id="areaSelect" style="max-width:180px" onchange="renderChecklist()"></select></div><div id="checkMeta" class="muted" style="margin-top:10px"></div><div id="checkRule" class="card" style="margin:10px 0;background:#f7f9f7"></div><div id="checks"></div><div id="checkScore" class="muted" style="margin:10px 0"></div><label>Observação da área</label><textarea id="checkObs" placeholder="Ex.: piso limpo; lâmpada queimada; material a repor..."></textarea><button class="btn full" onclick="saveChecklist()">Salvar inspeção</button></div>
+  <div class="card"><div class="row between"><div><h2 style="margin:0">Checklist V30</h2><div class="muted">Avalie cada item após verificar a área.</div></div><select id="areaSelect" style="max-width:180px" onchange="renderChecklist()"></select></div><div id="checkMeta" class="muted" style="margin-top:10px"></div><div id="checkRule" class="card" style="margin:10px 0;background:#f7f9f7"></div><div id="checks"></div><div id="checkScore" class="muted" style="margin:10px 0"></div><label>Observação da área</label><textarea id="checkObs" placeholder="Ex.: piso limpo; lâmpada queimada; material a repor..."></textarea><button class="btn full" onclick="saveChecklist()">Salvar inspeção</button></div>
 </section>
 
 <section id="occ" class="screen">
@@ -121,11 +121,10 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
     <div id="residentPhotoPreview" class="muted" style="margin-top:8px"></div>
     <button class="btn gold full" style="margin-top:12px" onclick="saveResidentIssue()">Enviar pendência</button>
   </div>
-  <div class="card"><h3 style="margin-top:0">✓ Verificação rápida</h3><div class="muted">Quer conferir uma área? Use o Checklist para registrar itens conformes, em atenção ou não conformes.</div><button class="btn full" style="margin-top:10px" onclick="show(&quot;check&quot;)">Abrir verificação</button></div>
 </section>
 
 <section id="pending" class="screen">
-  <div class="card"><div class="row between"><div><h2 style="margin:0">Pendências</h2><div class="muted">Itens em atenção ou não conformes nas últimas inspeções.</div></div><span class="pill pending" id="pendingCount">0</span></div>
+  <div class="card"><div class="row between"><div><h2 style="margin:0">Pendências</h2><div class="muted" id="pendingIntro">Itens em atenção ou não conformes nas últimas inspeções.</div></div><span class="pill pending" id="pendingCount">0</span></div>
   <div class="filters" style="margin-top:10px"><select id="pendingArea" onchange="renderPending()"><option value="all">Todas as áreas</option></select><select id="pendingStatus" onchange="renderPending()"><option value="all">Todos os status</option><option>Atenção</option><option>Não conforme</option></select></div>
   <div id="pendingList" style="margin-top:8px"></div></div>
   <div class="card"><h3 style="margin-top:0">Ocorrências em aberto</h3><div id="pendingOccurrences"></div></div>
@@ -152,12 +151,12 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 </section>
 
 <section id="more" class="screen">
-  <div class="card"><h2 style="margin-top:0">Mais</h2><div class="muted">Acesse histórico, relatórios e seu perfil.</div></div>
+  <div class="card"><h2 style="margin-top:0">Mais</h2><div class="muted" id="moreIntro">Acesse histórico, relatórios e seu perfil.</div></div>
   <div class="card">
-    <button class="btn secondary full" onclick="show('history')" style="margin-bottom:10px">🕘 Histórico</button>
-    <button class="btn secondary full" onclick="show('reports')" style="margin-bottom:10px">📊 Relatórios</button>
-    <button class="btn secondary full" onclick="show('pending')" style="margin-bottom:10px">⚠️ Pendências</button>
-    <button class="btn secondary full" onclick="show('materials')" style="margin-bottom:10px">🧰 Banco de materiais</button>
+    <button id="moreHistory" class="btn secondary full" onclick="show('history')" style="margin-bottom:10px">🕘 Histórico</button>
+    <button id="moreReports" class="btn secondary full" onclick="show('reports')" style="margin-bottom:10px">📊 Relatórios</button>
+    <button id="morePending" class="btn secondary full" onclick="show('pending')" style="margin-bottom:10px">⚠️ Pendências</button>
+    <button id="moreMaterials" class="btn secondary full" onclick="show('materials')" style="margin-bottom:10px">🧰 Banco de materiais</button>
     <button class="btn secondary full" onclick="show('profile')">👤 Perfil e acesso</button>
   </div>
 </section>
@@ -172,7 +171,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 
 <section id="profile" class="screen">
   <div class="card"><h2 style="margin-top:0">Perfil</h2><p><b id="profileName"></b><br><span class="muted" id="profileRole"></span></p><button class="btn danger full" onclick="logout(event)">Sair do aplicativo</button></div>
-  <div class="card"><h3 style="margin-top:0">Sobre a V22</h3><p class="muted">Fluxo de ocorrências com apenas os status Aberta e Resolvida, materiais de reposição sugeridos automaticamente, edição por ocorrência, consolidação para compras, acompanhamento Pendente/Comprado com data e observação, exportação detalhada e consolidada em CSV e JSON, detalhes de inspeções, fotos, filtros e indicadores gerenciais. Os registros continuam armazenados no aparelho.</p></div>
+  <div class="card"><h3 style="margin-top:0">Sobre a V30</h3><p class="muted">Fluxo de ocorrências com apenas os status Aberta e Resolvida, materiais de reposição sugeridos automaticamente, edição por ocorrência, consolidação para compras, acompanhamento Pendente/Comprado com data e observação, exportação detalhada e consolidada em CSV e JSON, detalhes de inspeções, fotos, filtros e indicadores gerenciais. Os registros continuam armazenados no aparelho.</p></div>
 </section>
 </main>
 <nav class="bottom">
@@ -276,6 +275,7 @@ function purchaseKey(material,unit){return `${materialKey(material)}|${String(un
 function getPurchaseMeta(material,unit){const k=purchaseKey(material,unit);if(!purchaseData[k])purchaseData[k]={status:"Pendente",purchasedAt:"",note:""};return purchaseData[k]}
 function todayISO(){return new Date().toISOString().slice(0,10)}
 function updatePurchaseField(material,unit,field,value){
+  if(user?.role==="Morador"){toast("Morador não tem acesso ao controle de materiais.");return;}
   const m=getPurchaseMeta(material,unit);
   m[field]=value;
   if(field==="status" && value==="Comprado" && !m.purchasedAt)m.purchasedAt=todayISO();
@@ -331,9 +331,15 @@ function start(){
   const isResident=user.role==="Morador";
   const residentQuick=document.getElementById("residentQuick");
   if(residentQuick) residentQuick.style.display=isResident?"block":"none";
+  const ids={quickOcc:!isResident,quickCheck:!isResident,quickMaterials:!isResident,quickHistory:!isResident,homeMoreCheck:!isResident,homeMoreOcc:!isResident,homeMoreHistory:!isResident,moreHistory:!isResident,moreReports:!isResident,moreMaterials:!isResident};
+  Object.entries(ids).forEach(([id,visible])=>{const el=document.getElementById(id);if(el)el.style.display=visible?"block":"none";});
+  const moreIntro=document.getElementById("moreIntro");
+  if(moreIntro) moreIntro.textContent=isResident?"Acesso de leitura às pendências e ao seu perfil.":"Acesse histórico, relatórios e seu perfil.";
+  const navCheck=document.querySelector('.nav[data-s="check"]');
   const navCheckLabel=document.getElementById("navCheckLabel");
   const navOccLabel=document.getElementById("navOccLabel");
-  if(navCheckLabel) navCheckLabel.textContent=isResident?"Verificar":"Checklist";
+  if(navCheck) navCheck.style.display=isResident?"none":"";
+  if(navCheckLabel) navCheckLabel.textContent="Checklist";
   if(navOccLabel) navOccLabel.textContent=isResident?"Pendência":"Ocorrências";
   fillAreas();
   resetOccurrenceMaterials();
@@ -354,8 +360,15 @@ function fillAreas(){
   renderChecklist();
 }
 function show(id){
+  const isResident=user?.role==="Morador";
+  if(isResident){
+    if(id==="check"||id==="occ") id="residentIssue";
+    if(["materials","history","reports"].includes(id)) id="pending";
+  }
   document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
+  const target=document.getElementById(id);
+  if(!target)return;
+  target.classList.add("active");
   document.querySelectorAll(".nav").forEach(x=>x.classList.toggle("active",x.dataset.s===id));
   if(id==="history")renderHistory();
   if(id==="pending")renderPending();
@@ -385,7 +398,7 @@ function renderChecklist(){
   obsEl.value=latest?.obs||"";
   updateChecklistScore();
 }
-function setItemStatus(i,status){document.getElementById("status"+i).value=status;renderChecklistButtonsOnly();updateChecklistScore();}
+function setItemStatus(i,status){if(user?.role==="Morador"){toast("Morador não pode editar a verificação das áreas.");return;}document.getElementById("status"+i).value=status;renderChecklistButtonsOnly();updateChecklistScore();}
 function updateChecklistScore(){
   const area=document.getElementById("areaSelect").value;
   const statuses=ITEMS[area].map((x,i)=>document.getElementById("status"+i)?.value||"Pendente");
@@ -397,6 +410,7 @@ function updateChecklistScore(){
 
 function renderChecklistButtonsOnly(){document.querySelectorAll('.check').forEach(card=>{const input=card.querySelector('input[type=hidden]');if(!input)return;const st=input.value;card.querySelectorAll('.status-btn').forEach(b=>{const txt=b.textContent;b.classList.remove('sel-ok','sel-att','sel-bad');if((st==='Conforme'&&txt.includes('Conforme'))||(st==='Atenção'&&txt.includes('Atenção'))||(st==='Não conforme'&&txt.includes('Não conforme')))b.classList.add(st==='Conforme'?'sel-ok':st==='Atenção'?'sel-att':'sel-bad')});const statusEl=card.querySelector('.muted b');if(statusEl)statusEl.textContent=st})}
 function saveChecklist(){
+  if(user?.role==="Morador"){toast("Morador tem acesso somente de leitura às pendências.");return;}
   const btn=document.querySelector('#check .btn.full');
   if(btn?.dataset.saving==='1')return;
   const area=document.getElementById("areaSelect").value,obs=document.getElementById("checkObs").value.trim();
@@ -464,15 +478,16 @@ function addSuggestedMaterial(name,unit){
   renderOccurrenceMaterials(); refreshMaterialSuggestions();
 }
 function addMaterialRow(name="",qty=1,unit="un"){
+  if(user?.role==="Morador"){toast("Morador não tem acesso à edição de materiais.");return;}
   occurrenceMaterials.push({name,qty,unit}); renderOccurrenceMaterials();
 }
-function removeMaterialRow(i){occurrenceMaterials.splice(i,1);renderOccurrenceMaterials();}
-function updateMaterial(i,key,value){if(!occurrenceMaterials[i])return; occurrenceMaterials[i][key]=key==='qty'?Math.max(0,Number(value)||0):value;}
+function removeMaterialRow(i){if(user?.role==="Morador"){toast("Morador não tem acesso à edição de materiais.");return;}occurrenceMaterials.splice(i,1);renderOccurrenceMaterials();}
+function updateMaterial(i,key,value){if(user?.role==="Morador"){toast("Morador não tem acesso à edição de materiais.");return;}if(!occurrenceMaterials[i])return; occurrenceMaterials[i][key]=key==='qty'?Math.max(0,Number(value)||0):value;}
 function renderOccurrenceMaterials(){
   const el=document.getElementById("occMaterials"); if(!el)return;
   el.innerHTML=occurrenceMaterials.length?occurrenceMaterials.map((m,i)=>`<div class="material-row"><div><label>Material</label><input value="${escapeHtml(m.name)}" oninput="updateMaterial(${i},'name',this.value)" placeholder="Ex.: Lâmpada LED"></div><div><label>Qtd.</label><input type="number" min="0" step="0.01" value="${m.qty??1}" oninput="updateMaterial(${i},'qty',this.value)"></div><div><label>Unidade</label><input value="${escapeHtml(m.unit||'un')}" oninput="updateMaterial(${i},'unit',this.value)" placeholder="un"></div><div><label>&nbsp;</label><button type="button" class="btn danger" onclick="removeMaterialRow(${i})">✕</button></div></div>`).join(""):'<div class="empty" style="padding:12px">Nenhum material adicionado. Use “Sugerir” ou adicione manualmente.</div>';
 }
-function resetOccurrenceMaterials(){occurrenceMaterials=[];renderOccurrenceMaterials();refreshMaterialSuggestions();}
+function resetOccurrenceMaterials(){if(user?.role==="Morador"){occurrenceMaterials=[];return;}occurrenceMaterials=[];renderOccurrenceMaterials();refreshMaterialSuggestions();}
 function materialRecords(){
   const rows=[];
   db.occurrences.forEach(o=>(o.materials||[]).forEach((m,i)=>rows.push({occurrenceId:o.id,date:o.date,user:o.user,area:o.area,title:o.title,status:o.status,priority:o.priority,material:m.name,quantity:Number(m.qty)||0,unit:m.unit||"un",index:i+1})));
@@ -505,16 +520,19 @@ function showOccurrenceMaterials(id){
   document.getElementById('materialsModal').classList.add('open');
 }
 function addOccurrenceMaterial(id){
+  if(user?.role==="Morador"){toast("Morador não tem acesso à edição de materiais.");return;}
   const o=db.occurrences.find(x=>x.id===id); if(!o)return;
   if(!Array.isArray(o.materials))o.materials=[];
   o.materials.push({name:"",qty:1,unit:"un"});
   showOccurrenceMaterials(id);
 }
 function removeOccurrenceMaterial(id,i){
+  if(user?.role==="Morador"){toast("Morador não tem acesso à edição de materiais.");return;}
   const o=db.occurrences.find(x=>x.id===id); if(!o)return;
   o.materials.splice(i,1); persist(); showOccurrenceMaterials(id); renderHistory(); renderMaterials();
 }
 function saveOccurrenceMaterials(id){
+  if(user?.role==="Morador"){toast("Morador não tem acesso à edição de materiais.");return;}
   const o=db.occurrences.find(x=>x.id===id); if(!o)return;
   const out=[];
   (o.materials||[]).forEach((m,i)=>{
@@ -557,6 +575,7 @@ function downloadMaterialsJSON(){
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='tangara-banco-materiais.json';a.click();URL.revokeObjectURL(a.href);toast('Banco de materiais exportado');
 }
 function createOccurrenceFromPending(area,item,status){
+  if(user?.role==="Morador"){toast("Morador pode apenas consultar as pendências.");return;}
   const areaEl=document.getElementById("occArea"),titleEl=document.getElementById("occTitle"),priorityEl=document.getElementById("occPriority"),descEl=document.getElementById("occDesc");
   if(areaEl) areaEl.value=area;
   if(titleEl) titleEl.value=item;
@@ -575,9 +594,11 @@ function renderPending(){
   rows.sort((a,b)=>new Date(b.date)-new Date(a.date));
   const list=document.getElementById('pendingList');
   document.getElementById('pendingCount').textContent=rows.length;
-  list.innerHTML=rows.length?rows.map(x=>`<div class="critical-item"><div class="row between"><div><b>${x.item}</b><div class="muted">${x.area} • ${fmt(x.date)} • ${x.user}</div></div><span class="pill ${x.status==='Não conforme'?'bad':'pending'}">${x.status}</span></div><button class="btn gold full" style="margin-top:8px" onclick="createOccurrenceFromPending(${JSON.stringify(x.area)},${JSON.stringify(x.item)},${JSON.stringify(x.status)})">🔧 Criar ocorrência</button></div>`).join(''):'<div class="empty">Nenhuma pendência encontrada nos filtros selecionados.</div>';
+  const resident=user?.role==="Morador";
+  document.getElementById('pendingIntro').textContent=resident?"Painel geral em modo leitura. O morador não pode editar inspeções, ocorrências ou materiais.":"Itens em atenção ou não conformes nas últimas inspeções.";
+  list.innerHTML=rows.length?rows.map(x=>`<div class="critical-item"><div class="row between"><div><b>${x.item}</b><div class="muted">${x.area} • ${fmt(x.date)} • ${x.user}</div></div><span class="pill ${x.status==='Não conforme'?'bad':'pending'}">${x.status}</span></div>${resident?'<div class="muted" style="margin-top:8px">Somente leitura</div>':`<button class="btn gold full" style="margin-top:8px" onclick="createOccurrenceFromPending(${JSON.stringify(x.area)},${JSON.stringify(x.item)},${JSON.stringify(x.status)})">🔧 Criar ocorrência</button>`}</div>`).join(''):'<div class="empty">Nenhuma pendência encontrada nos filtros selecionados.</div>';
   const occ=[...db.occurrences].filter(x=>x.status!=='Resolvida'&&(area==='all'||x.area===area)).sort((a,b)=>new Date(b.date)-new Date(a.date));
-  document.getElementById('pendingOccurrences').innerHTML=occ.length?occ.map(x=>`<div class="area"><div><b>${x.title}</b><div class="muted">${x.area} • ${x.priority} • ${fmt(x.date)}</div></div><button class="btn secondary" onclick="show('history')">Ver</button></div>`).join(''):'<div class="empty">Nenhuma ocorrência em aberto.</div>';
+  document.getElementById('pendingOccurrences').innerHTML=occ.length?occ.map(x=>`<div class="area"><div><b>${x.title}</b><div class="muted">${x.area} • ${x.priority} • ${fmt(x.date)}</div>${x.photo?`<div class="photo-view"><img class="thumb" src="${x.photo}" alt="Foto da pendência"><span class="muted">Foto anexada.</span></div>`:''}</div>${resident?'':`<button class="btn secondary" onclick="show('history')">Ver</button>`}</div>`).join(''):'<div class="empty">Nenhuma ocorrência em aberto.</div>';
 }
 
 function renderHistory(){
@@ -601,9 +622,11 @@ function renderHistory(){
       return `<div class="event"><div class="row between"><b>📋 ${x.area}</b><span class="pill ${cls}">${status}</span></div><div class="muted">${fmt(x.date)} • ${x.user}</div><div style="margin-top:6px"><b>${pct}%</b> — ${x.ok}/${x.total} conformes</div><div class="muted">Atenção: ${x.attention||0} • Não conformes: ${x.bad||0}${legacy?' • Registro anterior':''}</div>${x.obs?`<div style="margin-top:6px">${x.obs}</div>`:""}<button type="button" class="btn secondary full" style="margin-top:10px" onclick="showInspectionDetail(${x.id})">🔎 Ver detalhes</button></div>`;
     }
     const cls=x.status==="Resolvida"?"ok":x.priority==="Urgente"||x.priority==="Alta"?"bad":"pending";
-    const action=x.status==="Resolvida"
-      ? `<button type="button" class="btn secondary full" style="margin-top:10px" onclick="reopenOccurrence(${x.id})">↩ Reabrir ocorrência</button>`
-      : `<button type="button" class="btn gold full" style="margin-top:10px" onclick="resolveOccurrence(${x.id})">✓ Dar baixa / marcar como resolvida</button>`;
+    const action=user?.role==="Morador"
+      ? `<div class="muted" style="margin-top:10px">Somente leitura para Morador.</div>`
+      : x.status==="Resolvida"
+        ? `<button type="button" class="btn secondary full" style="margin-top:10px" onclick="reopenOccurrence(${x.id})">↩ Reabrir ocorrência</button>`
+        : `<button type="button" class="btn gold full" style="margin-top:10px" onclick="resolveOccurrence(${x.id})">✓ Dar baixa / marcar como resolvida</button>`;
     return `<div class="event"><div class="row between"><b>🔧 ${x.title}</b><span class="pill ${cls}">${x.status}</span></div><div class="muted">${fmt(x.date)} • ${x.user} • ${x.area}</div><div style="margin-top:6px">Prioridade: <b>${x.priority}</b></div>${x.desc?`<div class="muted" style="margin-top:4px">${x.desc}</div>`:""}${x.resolvedAt?`<div class="muted" style="margin-top:6px">Resolvida em ${fmt(x.resolvedAt)} • ${x.resolvedBy||""}</div>`:""}${x.photo?`<div class="photo-view"><img class="thumb" src="${x.photo}" alt="Foto da ocorrência"><span class="muted">Foto anexada à ocorrência.</span></div>`:""}${x.materials?.length?`<div class="muted" style="margin-top:8px">🧰 ${x.materials.length} material(is) necessário(s)</div><button type="button" class="btn secondary full" style="margin-top:8px" onclick="showOccurrenceMaterials(${x.id})">🧰 Ver materiais</button>`:""}${action}</div>`;
   }).join('')+'</div>';
 }
@@ -618,6 +641,7 @@ function showInspectionDetail(id){
 }
 function closeInspection(){document.getElementById('inspectionModal').classList.remove('open')}
 function setOccurrenceStatus(id,status){
+  if(user?.role==="Morador"){toast("Morador não pode alterar o status de ocorrências.");return;}
   const x=db.occurrences.find(o=>o.id===id);
   if(!x)return;
   status=status==="Resolvida"?"Resolvida":"Aberta";
@@ -673,6 +697,7 @@ function exportCSV(){
 }
 
 async function saveOccurrence(){
+  if(user?.role==="Morador"){show("residentIssue");toast("Use Registrar pendência para enviar um problema.");return;}
   try{
     const title=document.getElementById("occTitle").value.trim();
     if(!title){toast("Informe o título");return;}
@@ -742,7 +767,7 @@ async function saveResidentIssue(){
   const file=document.getElementById("residentPhoto")?.files?.[0];
   if(!desc && !file){alert("Descreva a pendência ou adicione uma foto.");return;}
   let photo="";
-  if(file) photo=await compressImage(file);
+  if(file) photo=await compressPhoto(file);
   const titles={"Luz queimada":"Luz queimada","Vazamento":"Vazamento","Limpeza":"Pendência de limpeza","Porta/fechadura":"Problema em porta/fechadura","Dano em equipamento":"Dano em equipamento","Outro":"Pendência do morador"};
   const occurrence={id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),type:"occ",area,title:titles[type]||type,priority:"Média",description:desc||"Pendência registrada com foto.",photo,status:"Aberta",date:new Date().toISOString(),user:user?.name||"Morador",materials:[]};
   db.occurrences.unshift(occurrence);persist();
@@ -802,7 +827,7 @@ function renderHome(){
   const rolePanel=document.getElementById("rolePanel");
   if(rolePanel){
     const label=user?.role||"Colaborador";
-    const isResident=label==='Morador'; const isColab=label==='Colaborador'; const title=isResident?'Participação do morador':isColab?'Rotina de zeladoria':'Visão gerencial'; const sub=isResident?'Verifique áreas e envie fotos de pendências para a zeladoria.':isColab?'Confira as áreas pendentes e registre o que encontrar.':'Acompanhe pendências, ocorrências e inspeções recentes.'; rolePanel.innerHTML=`<div class="card" style="background:#eef4ef"><div class="row between"><div><b>${title}</b><div class="muted">${sub}</div></div><span class="pill ok">${label}</span></div>${isResident?'<div class="row wrap" style="margin-top:10px"><button class="btn" onclick="show(&quot;check&quot;)">✓ Verificar itens</button><button class="btn secondary" onclick="show(&quot;residentIssue&quot;)">📷 Enviar foto</button></div>':''}</div>`;
+    const isResident=label==='Morador'; const isColab=label==='Colaborador'; const title=isResident?'Participação do morador':isColab?'Rotina de zeladoria':'Visão gerencial'; const sub=isResident?'Registre uma pendência com foto e consulte o painel em modo leitura.':isColab?'Confira as áreas pendentes e registre o que encontrar.':'Acompanhe pendências, ocorrências e inspeções recentes.'; rolePanel.innerHTML=`<div class="card" style="background:#eef4ef"><div class="row between"><div><b>${title}</b><div class="muted">${sub}</div></div><span class="pill ok">${label}</span></div>${isResident?'<div class="row wrap" style="margin-top:10px"><button class="btn secondary" onclick="show(&quot;residentIssue&quot;)">📷 Enviar foto da pendência</button><button class="btn" onclick="show(&quot;pending&quot;)">👁 Ver pendências</button></div>':''}</div>`;
   }
   const priorityPanel=document.getElementById("priorityPanel");
   const priority=[...db.occurrences].filter(x=>x.status!=="Resolvida"&&["Alta","Urgente"].includes(x.priority)).sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,3);
@@ -824,7 +849,7 @@ function renderHome(){
 }
 function refresh(){renderHome();renderReports();renderHistory();renderPending()}
 if(user)start();
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=290",{updateViaCache:"none"}).catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=300",{updateViaCache:"none"}).catch(()=>{});
 </script>
 </body>
 </html>
