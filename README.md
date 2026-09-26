@@ -1,14 +1,16 @@
-# Tangará Zeladoria V48
+# Tangará Zeladoria V49
 
-V48 adiciona acesso individual por usuário e senha, sem seleção manual de perfil.
+V49 amplia o acesso individual da V48 com gestão local de usuários.
 
-Perfis iniciais locais:
-- sindico — Síndico
-- colaborador — Colaborador
-- morador — Morador
+## Novidades
+- Login individual por usuário e senha.
+- Troca de senha pelo próprio usuário.
+- Síndico pode criar usuários.
+- Síndico pode ativar/desativar usuários.
+- Síndico pode redefinir senha de usuários.
+- Morador continua com acesso somente às funções permitidas.
+- Colaborador mantém o fluxo operacional.
+- Painel e Service Worker atualizados para V49.
 
-Senha inicial de todos: `Tangara@2026`
-
-> Importante: esta autenticação é local no navegador (GitHub Pages/localStorage). Ela organiza os acessos no protótipo, mas não é autenticação de produção. Para segurança real, a próxima etapa deve usar backend/autenticação externa, com senhas armazenadas fora do código do aplicativo.
-
-Também mantém as regras de V47: status Aberta/Resolvida, edição de ocorrências, baixa/reabertura, materiais, filtros, fotos e exportações.
+## Observação de segurança
+A autenticação desta versão continua local no navegador/localStorage porque o projeto está em GitHub Pages. Ela é adequada para protótipo/uso controlado no dispositivo, mas não deve ser tratada como autenticação de produção. Para produção, a próxima etapa deve migrar contas, sessões e senhas para um backend de autenticação.

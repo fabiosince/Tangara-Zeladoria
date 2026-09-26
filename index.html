@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#124a35">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Tangará Zeladoria V48</title>
+<title>Tangará Zeladoria V49</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
 .priority-hero{border:2px solid var(--green2);box-shadow:0 8px 24px rgba(23,59,43,.10)} .priority-hero .critical-item{padding:12px 0;border-top:1px solid var(--line)} .priority-hero .critical-item:first-of-type{border-top:0} .priority-hero .priority-badge{font-size:12px;font-weight:700;letter-spacing:.02em}
@@ -53,7 +53,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 <header class="top"><div class="brand"><img class="logo" src="logo-tangara.png"><div><h1>Tangará Zeladoria</h1><small id="userLabel"></small><small style="display:block;font-size:10px;opacity:.65;margin-top:2px">V47</small></div></div></header>
 <main>
 <section id="home" class="screen active">
-  <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div><div class="muted" style="font-size:11px;margin-top:6px;opacity:.7">Painel V48</div></div>
+  <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div><div class="muted" style="font-size:11px;margin-top:6px;opacity:.7">Painel V49</div></div>
   <div class="card" id="focusPanel"></div>
   <div class="card priority-hero" id="priorityPanel"></div>
   <div class="grid" id="dashboardMetrics">
@@ -164,8 +164,24 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 </section>
 
 <section id="profile" class="screen">
-  <div class="card"><h2 style="margin-top:0">Perfil</h2><p><b id="profileName"></b><br><span class="muted" id="profileUsername"></span><br><span class="muted" id="profileRole"></span></p><button class="btn danger full" onclick="logout(event)">Sair do aplicativo</button></div>
-  <div class="card"><h3 style="margin-top:0">Sobre a V48</h3><p class="muted">Fluxo de ocorrências com apenas os status Aberta e Resolvida, materiais de reposição sugeridos automaticamente, edição por ocorrência, consolidação para compras, acompanhamento Pendente/Comprado com data e observação, exportação detalhada e consolidada em CSV e JSON, detalhes de inspeções, fotos, filtros e indicadores gerenciais. Os registros continuam armazenados no aparelho. A V48 adiciona acesso individual por usuário e senha; para segurança de produção, a autenticação deverá ser migrada para um serviço de backend.</p></div>
+  <div class="card"><h2 style="margin-top:0">Perfil e acesso</h2><p><b id="profileName"></b><br><span class="muted" id="profileUsername"></span><br><span class="muted" id="profileRole"></span></p>
+    <h3>Trocar minha senha</h3>
+    <label>Senha atual</label><input id="currentPassword" type="password" autocomplete="current-password">
+    <label>Nova senha</label><input id="newPassword" type="password" autocomplete="new-password">
+    <label>Confirmar nova senha</label><input id="confirmPassword" type="password" autocomplete="new-password">
+    <button class="btn gold full" onclick="changeMyPassword()">🔐 Alterar senha</button>
+    <button class="btn danger full" style="margin-top:10px" onclick="logout(event)">Sair do aplicativo</button>
+  </div>
+  <div class="card" id="userAdminCard" style="display:none"><h3 style="margin-top:0">👥 Gestão de usuários</h3><div class="muted">Somente o Síndico pode criar, desativar e redefinir usuários neste dispositivo.</div>
+    <div id="userAdminList" style="margin-top:10px"></div>
+    <h3>Novo usuário</h3>
+    <label>Usuário</label><input id="newUsername" autocomplete="off" placeholder="ex.: joao">
+    <label>Nome</label><input id="newUserName" autocomplete="off" placeholder="Nome completo">
+    <label>Perfil</label><select id="newUserRole"><option>Colaborador</option><option>Morador</option><option>Síndico</option></select>
+    <label>Senha inicial</label><input id="newUserPassword" type="password" autocomplete="new-password" placeholder="Mínimo 6 caracteres">
+    <button class="btn full" onclick="createUser()">➕ Criar usuário</button>
+  </div>
+  <div class="card"><h3 style="margin-top:0">Sobre a V49</h3><p class="muted">A V49 adiciona troca de senha e gestão local de usuários. Os dados de acesso continuam armazenados no aparelho; para segurança de produção, a autenticação deverá ser migrada para um serviço de backend.</p></div>
 </section>
 </main>
 <nav class="bottom">
@@ -255,17 +271,17 @@ function migrateDB(){
   return parsed;
 }
 let db=migrateDB();
-const AUTH_KEY="tangaraV48Users";
+const AUTH_KEY="tangaraV49Users";
 const SESSION_KEY="tangaraUser";
 const DEFAULT_USERS=[
-  {username:"sindico",name:"Síndico",role:"Síndico",password:"Tangara@2026"},
-  {username:"colaborador",name:"Colaborador",role:"Colaborador",password:"Tangara@2026"},
-  {username:"morador",name:"Morador",role:"Morador",password:"Tangara@2026"}
+  {username:"sindico",name:"Síndico",role:"Síndico",password:"Tangara@2026",active:true},
+  {username:"colaborador",name:"Colaborador",role:"Colaborador",password:"Tangara@2026",active:true},
+  {username:"morador",name:"Morador",role:"Morador",password:"Tangara@2026",active:true}
 ];
 function getAuthUsers(){
   try{
     const saved=JSON.parse(localStorage.getItem(AUTH_KEY)||"null");
-    if(Array.isArray(saved)&&saved.length)return saved;
+    if(Array.isArray(saved)&&saved.length){ saved.forEach(x=>{if(x.active===undefined)x.active=true}); localStorage.setItem(AUTH_KEY,JSON.stringify(saved)); return saved; }
   }catch(e){}
   localStorage.setItem(AUTH_KEY,JSON.stringify(DEFAULT_USERS));
   return DEFAULT_USERS.slice();
@@ -282,6 +298,7 @@ function doLogin(){
     if(!username||!password){showLoginError("Informe usuário e senha.");return}
     const account=getAuthUsers().find(x=>String(x.username).toLowerCase()===username&&x.password===password);
     if(!account){showLoginError("Usuário ou senha inválidos.");return}
+    if(account.active===false){showLoginError("Este usuário está desativado.");return}
     user={username:account.username,name:account.name,role:account.role};
     localStorage.setItem(SESSION_KEY,JSON.stringify(user));
     start();
@@ -296,6 +313,48 @@ function logout(e){
   user=null;
   location.reload();
 }
+
+function saveAuthUsers(users){ localStorage.setItem(AUTH_KEY,JSON.stringify(users)); }
+function changeMyPassword(){
+  if(!user?.username){return}
+  const current=document.getElementById("currentPassword")?.value||"", next=document.getElementById("newPassword")?.value||"", confirm=document.getElementById("confirmPassword")?.value||"";
+  const users=getAuthUsers(), idx=users.findIndex(x=>String(x.username).toLowerCase()===String(user.username).toLowerCase());
+  if(idx<0){toast("Usuário não encontrado");return}
+  if(users[idx].password!==current){toast("Senha atual incorreta");return}
+  if(next.length<6){toast("A nova senha deve ter pelo menos 6 caracteres");return}
+  if(next!==confirm){toast("As senhas novas não conferem");return}
+  users[idx].password=next; saveAuthUsers(users);
+  document.getElementById("currentPassword").value="";document.getElementById("newPassword").value="";document.getElementById("confirmPassword").value="";
+  toast("Senha alterada com sucesso");
+}
+function renderUserAdmin(){
+  const card=document.getElementById("userAdminCard"); if(!card)return;
+  const allowed=user?.role==="Síndico"; card.style.display=allowed?"block":"none"; if(!allowed)return;
+  const list=document.getElementById("userAdminList"), users=getAuthUsers();
+  list.innerHTML=users.map((x,i)=>`<div class="area" style="margin-bottom:7px"><div><b>${x.name}</b><div class="muted">@${x.username} • ${x.role} • ${x.active===false?'Desativado':'Ativo'}</div></div><div class="row" style="gap:6px"><button class="btn secondary" onclick="resetUserPassword(${i})">🔑 Resetar</button><button class="btn ${x.active===false?'gold':'danger'}" onclick="toggleUserActive(${i})">${x.active===false?'Ativar':'Desativar'}</button></div></div>`).join('');
+}
+function createUser(){
+  if(user?.role!=="Síndico"){toast("Somente o Síndico pode criar usuários");return}
+  const username=(document.getElementById("newUsername")?.value||"").trim().toLowerCase(), name=(document.getElementById("newUserName")?.value||"").trim(), role=document.getElementById("newUserRole")?.value||"Colaborador", password=document.getElementById("newUserPassword")?.value||"";
+  if(!/^[a-z0-9._-]{3,30}$/.test(username)){toast("Usuário inválido");return}
+  if(!name){toast("Informe o nome");return}
+  if(password.length<6){toast("Senha deve ter pelo menos 6 caracteres");return}
+  const users=getAuthUsers(); if(users.some(x=>String(x.username).toLowerCase()===username)){toast("Este usuário já existe");return}
+  users.push({username,name,role,password,active:true}); saveAuthUsers(users);
+  ["newUsername","newUserName","newUserPassword"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""}); renderUserAdmin(); toast("Usuário criado");
+}
+function toggleUserActive(index){
+  if(user?.role!=="Síndico")return; const users=getAuthUsers(), x=users[index]; if(!x)return;
+  if(String(x.username).toLowerCase()===String(user.username).toLowerCase() && x.active!==false){toast("O Síndico atual não pode desativar o próprio acesso");return}
+  x.active=x.active===false; saveAuthUsers(users); renderUserAdmin(); toast(x.active?"Usuário ativado":"Usuário desativado");
+}
+function resetUserPassword(index){
+  if(user?.role!=="Síndico")return; const users=getAuthUsers(), x=users[index]; if(!x)return;
+  const next=prompt(`Nova senha para @${x.username}:`,`Tangara@2026`); if(next===null)return;
+  if(next.length<6){toast("Senha deve ter pelo menos 6 caracteres");return}
+  x.password=next; saveAuthUsers(users); toast("Senha redefinida");
+}
+
 // Migração V16: ocorrências possuem somente os status Aberta e Resolvida.
 db.occurrences.forEach(x=>{if(x.status!=="Resolvida")x.status="Aberta"; if(!Array.isArray(x.materials))x.materials=[];});
 db.occurrences.forEach(x=>(x.materials||[]).forEach(m=>{if(materialKey(m.name)==="lampada")m.name="Lâmpada LED";}));
@@ -336,6 +395,7 @@ function start(){
   document.getElementById("profileName").textContent=user.name||"";
   document.getElementById("profileUsername").textContent=user.username?`@${user.username}`:"";
   document.getElementById("profileRole").textContent=user.role||"";
+  renderUserAdmin();
   const isResident=user.role==="Morador";
   const residentQuick=document.getElementById("residentQuick");
   if(residentQuick) residentQuick.style.display=isResident?"block":"none";
@@ -1050,7 +1110,7 @@ document.addEventListener("click",e=>{
   const id=btn.getAttribute("data-edit-occurrence");
   openOccurrenceEditor(id);
 });
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=480",{updateViaCache:"none"}).catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=490",{updateViaCache:"none"}).catch(()=>{});
 </script>
 </body>
 </html>
