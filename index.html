@@ -31,12 +31,12 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 </style>
 </head>
 <body>
-<div id="login" class="login">
+<div id="loginScreen" class="login">
   <div class="loginbox">
     <img src="icon.svg"><h2>Tangará Zeladoria</h2><p>Controle de limpeza, conservação e manutenção</p>
     <label>Nome</label><input id="loginName" placeholder="Digite seu nome">
     <label>Perfil</label><select id="loginRole"><option>Colaborador</option><option>Síndico</option><option>Administradora</option></select>
-    <button class="btn full" style="margin-top:14px" onclick="login()">Entrar</button>
+    <button class="btn full" style="margin-top:14px" onclick="doLogin()">Entrar</button>
   </div>
 </div>
 
@@ -117,8 +117,8 @@ let db=JSON.parse(localStorage.getItem("tangaraV4")||'{"inspections":[],"occurre
 let user=JSON.parse(localStorage.getItem("tangaraUser")||"null");
 function persist(){localStorage.setItem("tangaraV4",JSON.stringify(db))}
 function toast(t){let e=document.getElementById("toast");e.textContent=t;e.style.display="block";setTimeout(()=>e.style.display="none",2200)}
-function login(){let name=document.getElementById("loginName").value.trim();if(!name)return toast("Digite seu nome");user={name,role:document.getElementById("loginRole").value};localStorage.setItem("tangaraUser",JSON.stringify(user));start()}
-function start(){if(!user)return;login.style.display="none";app.style.display="block";userLabel.textContent=user.role;hello.textContent=user.name.split(" ")[0];profileName.textContent=user.name;profileRole.textContent=user.role;fillAreas();refresh()}
+function doLogin(){const name=document.getElementById("loginName").value.trim();if(!name){toast("Digite seu nome");return}user={name:name,role:document.getElementById("loginRole").value};localStorage.setItem("tangaraUser",JSON.stringify(user));start()}
+function start(){if(!user)return;document.getElementById("loginScreen").style.display="none";document.getElementById("app").style.display="block";document.getElementById("userLabel").textContent=user.role;document.getElementById("hello").textContent=user.name.split(" ")[0];document.getElementById("profileName").textContent=user.name;document.getElementById("profileRole").textContent=user.role;fillAreas();refresh()}
 function logout(){localStorage.removeItem("tangaraUser");location.reload()}
 function fillAreas(){let opts=AREAS.map(a=>`<option>${a}</option>`).join("");areaSelect.innerHTML=opts;occArea.innerHTML=opts;renderChecklist()}
 function show(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll(".nav").forEach(x=>x.classList.toggle("active",x.dataset.s===id));if(id==="history")renderHistory();if(id==="reports")renderReports();if(id==="check")renderChecklist();if(id==="home")renderHome()}
