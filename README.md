@@ -1,17 +1,15 @@
-# Tangará Zeladoria V9.5.1
+# Tangará Zeladoria V10
 
-Versão V9.5.1 do aplicativo Tangará Zeladoria.
+Versão V10 do aplicativo Tangará Zeladoria.
 
-- Checklist por 6 itens por área.
-- Histórico sem duplicações exatas.
-- Registros antigos preservados e identificados como anteriores.
-- Dashboard usa apenas inspeções completas da V9.5 para o progresso atual.
-- Novo logo oficial Tangará Residencial.
-- Registro de ocorrências corrigido e foto compactada para armazenamento local.
-- PWA/offline.
+- Painel adaptado ao perfil: Colaborador, Síndico ou Administradora.
+- Pendências prioritárias no início.
+- Relatórios com filtro por período e área.
+- Últimas ocorrências no painel de relatórios.
+- Foto da ocorrência exibida no histórico quando anexada.
+- Checklist por item, percentuais e histórico preservados.
+- Baixa e reabertura de ocorrências.
+- Dados mantidos no aparelho via localStorage.
+- PWA/offline com cache V10.
 
-
-V9.5: correção do fluxo de baixa/reabertura de ocorrências, com botão explícito e cache atualizado.
-
-
-V9.5: corrige o botão “Sair do aplicativo”, limpando a sessão e retornando à tela de login.
+Migração automática: a V10 reaproveita os registros da V9/V8 e versões anteriores disponíveis no aparelho.
