@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#173b2b">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="logo-tangara.png">
-<title>Tangará Zeladoria V18</title>
+<title>Tangará Zeladoria V20</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
@@ -67,7 +67,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 </section>
 
 <section id="check" class="screen">
-  <div class="card"><div class="row between"><div><h2 style="margin:0">Checklist V19</h2><div class="muted">Avalie cada item após verificar a área.</div></div><select id="areaSelect" style="max-width:180px" onchange="renderChecklist()"></select></div><div id="checkMeta" class="muted" style="margin-top:10px"></div><div id="checkRule" class="card" style="margin:10px 0;background:#f7f9f7"></div><div id="checks"></div><div id="checkScore" class="muted" style="margin:10px 0"></div><label>Observação da área</label><textarea id="checkObs" placeholder="Ex.: piso limpo; lâmpada queimada; material a repor..."></textarea><button class="btn full" onclick="saveChecklist()">Salvar inspeção</button></div>
+  <div class="card"><div class="row between"><div><h2 style="margin:0">Checklist V20</h2><div class="muted">Avalie cada item após verificar a área.</div></div><select id="areaSelect" style="max-width:180px" onchange="renderChecklist()"></select></div><div id="checkMeta" class="muted" style="margin-top:10px"></div><div id="checkRule" class="card" style="margin:10px 0;background:#f7f9f7"></div><div id="checks"></div><div id="checkScore" class="muted" style="margin:10px 0"></div><label>Observação da área</label><textarea id="checkObs" placeholder="Ex.: piso limpo; lâmpada queimada; material a repor..."></textarea><button class="btn full" onclick="saveChecklist()">Salvar inspeção</button></div>
 </section>
 
 <section id="occ" class="screen">
@@ -77,7 +77,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
     <label>Prioridade</label><select id="occPriority"><option>Baixa</option><option selected>Média</option><option>Alta</option><option>Urgente</option></select>
     <label>Descrição</label><textarea id="occDesc" placeholder="Descreva o problema e a ação necessária" oninput="refreshMaterialSuggestions()"></textarea>
     <div class="card" style="margin:12px 0;background:#f7f9f7">
-      <div class="row between"><div><h3 style="margin:0">🧰 Materiais necessários</h3><div class="muted">A lista é sugerida conforme o título e a descrição da ocorrência. Você pode editar antes de registrar.</div></div><button type="button" class="btn secondary small-btn" onclick="suggestMaterials(true)">✨ Sugerir</button></div>
+      <div class="row between"><div><h3 style="margin:0">🧰 Materiais necessários</h3><div class="muted">O sistema identifica automaticamente materiais de reposição a partir do título e da descrição. Você pode editar antes de registrar.</div></div><button type="button" class="btn secondary small-btn" onclick="suggestMaterials(true)">✨ Sugerir</button></div>
       <div id="materialSuggestions" class="suggested" style="display:none"></div>
       <div id="occMaterials" class="material-list"></div>
       <button type="button" class="btn secondary full" style="margin-top:8px" onclick="addMaterialRow()">＋ Adicionar material</button>
@@ -135,7 +135,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 
 <section id="profile" class="screen">
   <div class="card"><h2 style="margin-top:0">Perfil</h2><p><b id="profileName"></b><br><span class="muted" id="profileRole"></span></p><button class="btn danger full" onclick="logout(event)">Sair do aplicativo</button></div>
-  <div class="card"><h3 style="margin-top:0">Sobre a V19</h3><p class="muted">Fluxo de ocorrências com apenas os status Aberta e Resolvida, lista de materiais vinculada a cada ocorrência, exportação do banco de materiais, detalhes de inspeções, fotos, filtros e indicadores gerenciais. Os registros continuam armazenados no aparelho.</p></div>
+  <div class="card"><h3 style="margin-top:0">Sobre a V20</h3><p class="muted">Fluxo de ocorrências com apenas os status Aberta e Resolvida, materiais de reposição sugeridos automaticamente, edição dos materiais por ocorrência, consolidação para compras e exportação do banco em CSV e JSON, detalhes de inspeções, fotos, filtros e indicadores gerenciais. Os registros continuam armazenados no aparelho.</p></div>
 </section>
 </main>
 <nav class="bottom">
@@ -202,6 +202,7 @@ const MATERIAL_CATALOG=[
   {name:"Desinfetante",unit:"L",keywords:["limpeza","banheiro","higienização","higienizacao"]}
 ];
 let occurrenceMaterials=[];
+const V20_KEY="tangaraV20";
 const V16_KEY="tangaraV16";
 const V15_KEY="tangaraV15";
 const V14_KEY="tangaraV14";
@@ -209,7 +210,7 @@ const V12_KEY="tangaraV12";
 const V10_KEY="tangaraV10";
 const V9_KEY="tangaraV9";
 function migrateDB(){
-  let raw=localStorage.getItem(V16_KEY)||localStorage.getItem(V15_KEY)||localStorage.getItem(V14_KEY)||localStorage.getItem(V12_KEY)||localStorage.getItem(V10_KEY)||localStorage.getItem(V9_KEY)||localStorage.getItem("tangaraV8")||localStorage.getItem("tangaraV6")||localStorage.getItem("tangaraV5")||localStorage.getItem("tangaraV4");
+  let raw=localStorage.getItem(V20_KEY)||localStorage.getItem(V16_KEY)||localStorage.getItem(V15_KEY)||localStorage.getItem(V14_KEY)||localStorage.getItem(V12_KEY)||localStorage.getItem(V10_KEY)||localStorage.getItem(V9_KEY)||localStorage.getItem("tangaraV8")||localStorage.getItem("tangaraV6")||localStorage.getItem("tangaraV5")||localStorage.getItem("tangaraV4");
   let parsed={inspections:[],occurrences:[]};
   try{parsed=raw?JSON.parse(raw):parsed}catch(e){}
   parsed.inspections=Array.isArray(parsed.inspections)?parsed.inspections:[];
@@ -224,9 +225,10 @@ function migrateDB(){
 let db=migrateDB();
 // Migração V16: ocorrências possuem somente os status Aberta e Resolvida.
 db.occurrences.forEach(x=>{if(x.status!=="Resolvida")x.status="Aberta"; if(!Array.isArray(x.materials))x.materials=[];});
-localStorage.setItem(V16_KEY,JSON.stringify(db));
+db.occurrences.forEach(x=>(x.materials||[]).forEach(m=>{if(materialKey(m.name)==="lampada")m.name="Lâmpada LED";}));
+localStorage.setItem(V20_KEY,JSON.stringify(db));
 let user=JSON.parse(localStorage.getItem("tangaraUser")||"null");
-function persist(){localStorage.setItem(V16_KEY,JSON.stringify(db))}
+function persist(){localStorage.setItem(V20_KEY,JSON.stringify(db))}
 function toast(t){let e=document.getElementById("toast");e.textContent=t;e.style.display="block";setTimeout(()=>e.style.display="none",2200)}
 function doLogin(){
   try{
@@ -258,7 +260,6 @@ function start(){
   document.getElementById("profileRole").textContent=user.role||"";
   fillAreas();
   resetOccurrenceMaterials();
-  backfillOccurrenceMaterials();
   refresh();
 }
 function fillAreas(){
@@ -364,31 +365,14 @@ function getSuggestedMaterials(){
 function refreshMaterialSuggestions(){
   const box=document.getElementById("materialSuggestions"); if(!box)return;
   const matches=getSuggestedMaterials();
-  if(!matches.length){box.style.display="none";box.innerHTML="";if(!occurrenceMaterials.length)renderOccurrenceMaterials();return;}
-  // V19: a lista de materiais fica ativa automaticamente assim que a ocorrência indica uma necessidade.
-  if(!occurrenceMaterials.length){
-    occurrenceMaterials=matches.map(m=>({name:m.name,qty:1,unit:m.unit}));
+  if(matches.length && occurrenceMaterials.length===0){
+    matches.forEach(m=>occurrenceMaterials.push({name:m.name,qty:1,unit:m.unit}));
     renderOccurrenceMaterials();
   }
+  if(!matches.length){box.style.display="none";box.innerHTML="";return;}
   box.style.display="block";
-  box.innerHTML=`<b>💡 Materiais identificados automaticamente</b><div class="muted" style="margin-top:4px">Confira e ajuste antes de registrar.</div><div>${matches.map(m=>`<button type="button" class="btn secondary small-btn material-chip" onclick="addSuggestedMaterial('${escapeHtml(m.name).replace(/'/g,"\'")}','${m.unit}')">＋ ${escapeHtml(m.name)}</button>`).join("")}</div>`;
+  box.innerHTML=`<b>💡 Materiais identificados automaticamente</b><div>${matches.map(m=>`<button type="button" class="btn secondary small-btn material-chip" onclick="addSuggestedMaterial('${escapeHtml(m.name).replace(/'/g,"\'")}','${m.unit}')">＋ ${escapeHtml(m.name)}</button>`).join("")}</div>`;
 }
-function backfillOccurrenceMaterials(){
-  let changed=false;
-  db.occurrences.forEach(o=>{
-    if(!Array.isArray(o.materials))o.materials=[];
-    if(!o.materials.length){
-      const titleEl=document.getElementById("occTitle"), descEl=document.getElementById("occDesc");
-      if(titleEl && descEl){titleEl.value=o.title||"";descEl.value=o.desc||"";}
-      const matches=getSuggestedMaterials();
-      if(matches.length){o.materials=matches.map(m=>({name:m.name,qty:1,unit:m.unit}));changed=true;}
-    }
-  });
-  if(changed)persist();
-  const titleEl=document.getElementById("occTitle"), descEl=document.getElementById("occDesc");
-  if(titleEl)titleEl.value=""; if(descEl)descEl.value="";
-}
-
 function suggestMaterials(showToast=false){
   const matches=getSuggestedMaterials();
   if(!matches.length){toast("Não encontrei materiais sugeridos para esta descrição");return;}
@@ -398,7 +382,7 @@ function suggestMaterials(showToast=false){
 }
 function addSuggestedMaterial(name,unit){
   if(!occurrenceMaterials.some(m=>materialKey(m.name)===materialKey(name)))occurrenceMaterials.push({name,qty:1,unit});
-  renderOccurrenceMaterials();
+  renderOccurrenceMaterials(); refreshMaterialSuggestions();
 }
 function addMaterialRow(name="",qty=1,unit="un"){
   occurrenceMaterials.push({name,qty,unit}); renderOccurrenceMaterials();
@@ -429,9 +413,34 @@ function renderMaterials(){
 }
 function showOccurrenceMaterials(id){
   const o=db.occurrences.find(x=>x.id===id); if(!o)return;
-  const mats=o.materials||[];
-  document.getElementById("materialsModalBody").innerHTML=`<div class="muted">${escapeHtml(o.title)} • ${escapeHtml(o.area)} • ${fmt(o.date)}</div>${mats.length?`<table style="margin-top:10px"><thead><tr><th>Material</th><th>Qtd.</th><th>Un.</th></tr></thead><tbody>${mats.map(m=>`<tr><td>${escapeHtml(m.name)}</td><td>${m.qty}</td><td>${escapeHtml(m.unit||'un')}</td></tr>`).join("")}</tbody></table>`:'<div class="empty">Nenhum material associado a esta ocorrência.</div>'}`;
+  if(!Array.isArray(o.materials))o.materials=[];
+  document.getElementById("materialsModalBody").innerHTML=`<div class="muted">${escapeHtml(o.title)} • ${escapeHtml(o.area)} • ${fmt(o.date)}</div>
+    <div class="muted" style="margin-top:8px">Edite quantidade/unidade ou acrescente materiais de reposição. As alterações ficam gravadas na ocorrência.</div>
+    <div class="material-list" style="margin-top:10px">${o.materials.length?o.materials.map((m,i)=>`<div class="material-row"><div><label>Material</label><input id="om-name-${i}" value="${escapeHtml(m.name)}" placeholder="Ex.: Lâmpada LED"></div><div><label>Qtd.</label><input id="om-qty-${i}" type="number" min="0" step="0.01" value="${m.qty??1}"></div><div><label>Unidade</label><input id="om-unit-${i}" value="${escapeHtml(m.unit||'un')}" placeholder="un"></div><div><label>&nbsp;</label><button type="button" class="btn danger" onclick="removeOccurrenceMaterial(${id},${i})">✕</button></div></div>`).join(""):'<div class="empty" style="padding:12px">Nenhum material associado.</div>'}</div>
+    <button type="button" class="btn secondary full" style="margin-top:8px" onclick="addOccurrenceMaterial(${id})">＋ Adicionar material</button>
+    <button type="button" class="btn full" style="margin-top:8px" onclick="saveOccurrenceMaterials(${id})">Salvar materiais</button>`;
   document.getElementById('materialsModal').classList.add('open');
+}
+function addOccurrenceMaterial(id){
+  const o=db.occurrences.find(x=>x.id===id); if(!o)return;
+  if(!Array.isArray(o.materials))o.materials=[];
+  o.materials.push({name:"",qty:1,unit:"un"});
+  showOccurrenceMaterials(id);
+}
+function removeOccurrenceMaterial(id,i){
+  const o=db.occurrences.find(x=>x.id===id); if(!o)return;
+  o.materials.splice(i,1); persist(); showOccurrenceMaterials(id); renderHistory(); renderMaterials();
+}
+function saveOccurrenceMaterials(id){
+  const o=db.occurrences.find(x=>x.id===id); if(!o)return;
+  const out=[];
+  (o.materials||[]).forEach((m,i)=>{
+    const name=(document.getElementById(`om-name-${i}`)?.value||"").trim();
+    const qty=Math.max(0,Number(document.getElementById(`om-qty-${i}`)?.value)||0);
+    const unit=(document.getElementById(`om-unit-${i}`)?.value||"un").trim()||"un";
+    if(name)out.push({name:materialKey(name)==="lampada"?"Lâmpada LED":name,qty,unit});
+  });
+  o.materials=out; persist(); closeMaterialsModal(); renderHistory(); renderMaterials(); toast("Materiais atualizados");
 }
 function closeMaterialsModal(){document.getElementById('materialsModal').classList.remove('open')}
 function exportMaterialsCSV(){
@@ -441,7 +450,7 @@ function exportMaterialsCSV(){
   const blob=new Blob(["\ufeff"+csv],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='tangara-banco-materiais.csv';a.click();URL.revokeObjectURL(a.href);toast('Banco de materiais exportado');
 }
 function downloadMaterialsJSON(){
-  const payload={exportedAt:new Date().toISOString(),version:"V19",materials:materialRecords()};
+  const payload={exportedAt:new Date().toISOString(),version:"V20",materials:materialRecords()};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='tangara-banco-materiais.json';a.click();URL.revokeObjectURL(a.href);toast('Banco de materiais exportado');
 }
 function createOccurrenceFromPending(area,item,status){
@@ -492,7 +501,7 @@ function renderHistory(){
     const action=x.status==="Resolvida"
       ? `<button type="button" class="btn secondary full" style="margin-top:10px" onclick="reopenOccurrence(${x.id})">↩ Reabrir ocorrência</button>`
       : `<button type="button" class="btn gold full" style="margin-top:10px" onclick="resolveOccurrence(${x.id})">✓ Dar baixa / marcar como resolvida</button>`;
-    return `<div class="event"><div class="row between"><b>🔧 ${x.title}</b><span class="pill ${cls}">${x.status}</span></div><div class="muted">${fmt(x.date)} • ${x.user} • ${x.area}</div><div style="margin-top:6px">Prioridade: <b>${x.priority}</b></div>${x.desc?`<div class="muted" style="margin-top:4px">${x.desc}</div>`:""}${x.resolvedAt?`<div class="muted" style="margin-top:6px">Resolvida em ${fmt(x.resolvedAt)} • ${x.resolvedBy||""}</div>`:""}${x.photo?`<div class="photo-view"><img class="thumb" src="${x.photo}" alt="Foto da ocorrência"><span class="muted">Foto anexada à ocorrência.</span></div>`:""}<div class="muted" style="margin-top:8px">🧰 ${x.materials?.length||0} material(is) necessário(s)</div><button type="button" class="btn secondary full" style="margin-top:8px" onclick="showOccurrenceMaterials(${x.id})">🧰 Ver materiais necessários</button>${action}</div>`;
+    return `<div class="event"><div class="row between"><b>🔧 ${x.title}</b><span class="pill ${cls}">${x.status}</span></div><div class="muted">${fmt(x.date)} • ${x.user} • ${x.area}</div><div style="margin-top:6px">Prioridade: <b>${x.priority}</b></div>${x.desc?`<div class="muted" style="margin-top:4px">${x.desc}</div>`:""}${x.resolvedAt?`<div class="muted" style="margin-top:6px">Resolvida em ${fmt(x.resolvedAt)} • ${x.resolvedBy||""}</div>`:""}${x.photo?`<div class="photo-view"><img class="thumb" src="${x.photo}" alt="Foto da ocorrência"><span class="muted">Foto anexada à ocorrência.</span></div>`:""}${x.materials?.length?`<div class="muted" style="margin-top:8px">🧰 ${x.materials.length} material(is) necessário(s)</div><button type="button" class="btn secondary full" style="margin-top:8px" onclick="showOccurrenceMaterials(${x.id})">🧰 Ver materiais</button>`:""}${action}</div>`;
   }).join('')+'</div>';
 }
 function showInspectionDetail(id){
@@ -577,7 +586,7 @@ async function saveOccurrence(){
       const automatic=getSuggestedMaterials();
       automatic.forEach(m=>occurrenceMaterials.push({name:m.name,qty:1,unit:m.unit}));
     }
-    const materials=occurrenceMaterials.filter(m=>String(m.name||"").trim()).map(m=>({name:String(m.name).trim(),qty:Math.max(0,Number(m.qty)||0),unit:String(m.unit||"un").trim()||"un"}));
+    const materials=occurrenceMaterials.filter(m=>String(m.name||"").trim()).map(m=>({name:materialKey(m.name)==="lampada"?"Lâmpada LED":String(m.name).trim(),qty:Math.max(0,Number(m.qty)||0),unit:String(m.unit||"un").trim()||"un"}));
     db.occurrences.unshift({id:Date.now(),type:"occ",date:new Date().toISOString(),user:user.name,area,title,priority,desc,photo,status:"Aberta",materials});
     persist();
     occurrenceMaterials=[];
@@ -627,7 +636,7 @@ function renderDailySummary(){
     el.innerHTML=`<div class="area"><div><b>📋 ${latest.area}</b><div class="muted">Inspeção • ${fmt(latest.date)} • ${latest.user}</div><div style="margin-top:5px"><b>${Math.round((latest.ok||0)/(latest.total||1)*100)}%</b> de conformidade • ${latest.ok||0}/${latest.total||0} conformes</div></div><span class="pill ${cls}">${status}</span></div>`;
   }else{
     const cls=latest.status==='Resolvida'?'ok':['Alta','Urgente'].includes(latest.priority)?'bad':'pending';
-    el.innerHTML=`<div class="area"><div><b>🔧 ${latest.title}</b><div class="muted">Ocorrência • ${latest.area} • ${fmt(latest.date)} • ${latest.user}</div><div style="margin-top:5px">Prioridade: <b>${latest.priority}</b></div>${latest.materials?.length?`<div class="muted" style="margin-top:5px">🧰 ${latest.materials.length} material(is) necessário(s)</div>`:""}</div><span class="pill ${cls}">${latest.status}</span></div>`;
+    el.innerHTML=`<div class="area"><div><b>🔧 ${latest.title}</b><div class="muted">Ocorrência • ${latest.area} • ${fmt(latest.date)} • ${latest.user}</div><div style="margin-top:5px">Prioridade: <b>${latest.priority}</b></div></div><span class="pill ${cls}">${latest.status}</span></div>`;
   }
 }
 

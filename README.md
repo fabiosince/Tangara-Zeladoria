@@ -1,19 +1,14 @@
-# Tangará Zeladoria V18
+# Tangará Zeladoria V20
 
-V18 corrige o vínculo automático de materiais às ocorrências.
+Aplicativo web para inspeções, ocorrências e controle de materiais de reposição.
 
-## Materiais
-- Ao abrir uma ocorrência, o sistema identifica materiais prováveis pelo título e descrição.
-- Se nenhum material foi adicionado manualmente, os materiais sugeridos são vinculados automaticamente ao salvar.
-- O usuário pode editar quantidade/unidade, remover e adicionar materiais antes do registro.
-- A ocorrência mantém a lista de materiais vinculada.
-- Histórico permite consultar os materiais da ocorrência.
-- Banco de materiais consolida as quantidades e permite exportação CSV e JSON.
-
-## Fluxo de teste
-1. Abra Nova ocorrência.
-2. Título: `Lâmpada queimada`.
-3. Salve sem adicionar material manualmente.
-4. Verifique no histórico: `Materiais necessários: 1` e `Lâmpada LED — 1 un`.
-5. Abra os materiais da ocorrência para conferir o vínculo.
-6. Acesse Mais > Banco de materiais e teste CSV/JSON.
+## V20
+- Somente os status **Aberta** e **Resolvida**.
+- Materiais de reposição identificados automaticamente pela ocorrência.
+- Ocorrência "Lâmpada queimada" sugere/registra **Lâmpada LED — 1 un**.
+- Materiais podem ser editados na abertura e no histórico.
+- É possível adicionar/remover materiais por ocorrência.
+- Banco consolidado por material, quantidade e unidade.
+- Exportação do banco em CSV e JSON.
+- Migração de registros antigos: "Lâmpada" é normalizada para "Lâmpada LED".
+- Dados permanecem armazenados no aparelho via localStorage.
