@@ -255,8 +255,35 @@ function renderHistory(){
       return `<div class="event"><div class="row between"><b>📋 ${x.area}</b><span class="pill ${cls}">${status}</span></div><div class="muted">${fmt(x.date)} • ${x.user}</div><div style="margin-top:6px"><b>${pct}%</b> — ${x.ok}/${x.total} conformes</div><div class="muted">Atenção: ${x.attention||0} • Não conformes: ${x.bad||0}${legacy?' • Registro anterior':''}</div>${x.obs?`<div style="margin-top:6px">${x.obs}</div>`:""}</div>`;
     }
     const cls=x.status==="Resolvida"?"ok":x.priority==="Urgente"||x.priority==="Alta"?"bad":"pending";
-    return `<div class="event"><div class="row between"><b>🔧 ${x.title}</b><span class="pill ${cls}">${x.status}</span></div><div class="muted">${fmt(x.date)} • ${x.user} • ${x.area}</div><div style="margin-top:6px">Prioridade: <b>${x.priority}</b></div>${x.desc?`<div class="muted" style="margin-top:4px">${x.desc}</div>`:""}</div>`;
+    const action=x.status==="Resolvida"
+      ? `<button class="btn secondary" style="margin-top:10px" onclick="event.stopPropagation();reopenOccurrence(${x.id})">Reabrir ocorrência</button>`
+      : `<button class="btn gold" style="margin-top:10px" onclick="event.stopPropagation();resolveOccurrence(${x.id})">✓ Marcar como resolvida</button>`;
+    return `<div class="event"><div class="row between"><b>🔧 ${x.title}</b><span class="pill ${cls}">${x.status}</span></div><div class="muted">${fmt(x.date)} • ${x.user} • ${x.area}</div><div style="margin-top:6px">Prioridade: <b>${x.priority}</b></div>${x.desc?`<div class="muted" style="margin-top:4px">${x.desc}</div>`:""}${x.resolvedAt?`<div class="muted" style="margin-top:6px">Resolvida em ${fmt(x.resolvedAt)} • ${x.resolvedBy||""}</div>`:""}${action}</div>`;
   }).join('')+'</div>';
+}
+function resolveOccurrence(id){
+  const x=db.occurrences.find(o=>o.id===id);
+  if(!x)return;
+  x.status="Resolvida";
+  x.resolvedAt=new Date().toISOString();
+  x.resolvedBy=user?.name||"Usuário";
+  persist();
+  renderHome();
+  renderReports();
+  renderHistory();
+  toast("Ocorrência marcada como resolvida");
+}
+function reopenOccurrence(id){
+  const x=db.occurrences.find(o=>o.id===id);
+  if(!x)return;
+  x.status="Aberta";
+  x.resolvedAt="";
+  x.resolvedBy="";
+  persist();
+  renderHome();
+  renderReports();
+  renderHistory();
+  toast("Ocorrência reaberta");
 }
 function renderReports(){
   const ins=db.inspections.length, occ=db.occurrences.length, open=db.occurrences.filter(x=>x.status!=="Resolvida").length, resolved=occ-open;
