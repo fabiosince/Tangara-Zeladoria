@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#124a35">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Tangará Zeladoria V35</title>
+<title>Tangará Zeladoria V36</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
 .priority-hero{border:2px solid var(--green2);box-shadow:0 8px 24px rgba(23,59,43,.10)} .priority-hero .critical-item{padding:12px 0;border-top:1px solid var(--line)} .priority-hero .critical-item:first-of-type{border-top:0} .priority-hero .priority-badge{font-size:12px;font-weight:700;letter-spacing:.02em}
@@ -124,10 +124,10 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 </section>
 
 <section id="pending" class="screen">
-  <div class="card"><div class="row between"><div><h2 style="margin:0">Pendências</h2><div class="muted" id="pendingIntro">Itens em atenção ou não conformes nas últimas inspeções.</div></div><div class="row wrap"><span class="pill pending" id="pendingCount">0</span><button id="exportPendingBtn" class="btn secondary small-btn" onclick="exportPendingCSV()" style="display:none">Exportar lista</button></div></div>
-  <div class="filters" style="margin-top:10px"><select id="pendingArea" onchange="renderPending()"><option value="all">Todas as áreas</option></select><select id="pendingStatus" onchange="renderPending()"><option value="all">Todos os status</option><option>Atenção</option><option>Não conforme</option></select></div>
-  <div id="pendingList" style="margin-top:8px"></div></div>
-  <div class="card"><h3 style="margin-top:0">Ocorrências em aberto</h3><div id="pendingOccurrences"></div></div>
+  <div class="card"><div class="row between"><div><h2 style="margin:0">Pendências</h2><div class="muted" id="pendingIntro">Consulte as ocorrências por status e área.</div></div><div class="row wrap"><span class="pill pending" id="pendingCount">0</span><button id="exportPendingBtn" class="btn secondary small-btn" onclick="exportPendingCSV()" style="display:none">Exportar lista</button></div></div>
+  <div class="filters" style="margin-top:10px"><div><label>Status</label><select id="pendingStatus" onchange="renderPending()"><option value="all">Todos</option><option value="Aberta">Aberta</option><option value="Resolvida">Resolvida</option></select></div><div><label>Área</label><select id="pendingArea" onchange="renderPending()"><option value="all">Todas as áreas</option></select></div></div>
+  <div id="pendingOccurrences" style="margin-top:8px"></div></div>
+  <div class="card"><h3 style="margin-top:0">Itens de inspeção</h3><div class="muted">Itens em atenção ou não conformes encontrados nas últimas inspeções.</div><div id="pendingList" style="margin-top:8px"></div></div>
 </section>
 
 <section id="history" class="screen">
@@ -171,7 +171,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 
 <section id="profile" class="screen">
   <div class="card"><h2 style="margin-top:0">Perfil</h2><p><b id="profileName"></b><br><span class="muted" id="profileRole"></span></p><button class="btn danger full" onclick="logout(event)">Sair do aplicativo</button></div>
-  <div class="card"><h3 style="margin-top:0">Sobre a V34</h3><p class="muted">Fluxo de ocorrências com apenas os status Aberta e Resolvida, materiais de reposição sugeridos automaticamente, edição por ocorrência, consolidação para compras, acompanhamento Pendente/Comprado com data e observação, exportação detalhada e consolidada em CSV e JSON, detalhes de inspeções, fotos, filtros e indicadores gerenciais. Os registros continuam armazenados no aparelho.</p></div>
+  <div class="card"><h3 style="margin-top:0">Sobre a V36</h3><p class="muted">Fluxo de ocorrências com apenas os status Aberta e Resolvida, materiais de reposição sugeridos automaticamente, edição por ocorrência, consolidação para compras, acompanhamento Pendente/Comprado com data e observação, exportação detalhada e consolidada em CSV e JSON, detalhes de inspeções, fotos, filtros e indicadores gerenciais. Os registros continuam armazenados no aparelho.</p></div>
 </section>
 </main>
 <nav class="bottom">
@@ -624,20 +624,36 @@ function createOccurrenceFromPending(area,item,status){
   toast('Pendência preparada. Confira e toque em Registrar pendência.');
 }
 function renderPending(){
-  const area=document.getElementById('pendingArea')?.value||'all', statusFilter=document.getElementById('pendingStatus')?.value||'all';
+  const area=document.getElementById('pendingArea')?.value||'all';
+  const statusFilter=document.getElementById('pendingStatus')?.value||'all';
+  const resident=user?.role==='Morador';
+
+  // Itens de inspeção: filtrados apenas por área. O filtro de status da tela
+  // é reservado às ocorrências, que usam exclusivamente Aberta/Resolvida.
   const latestByArea=Object.fromEntries(AREAS.map(a=>[a,db.inspections.find(i=>i.area===a && Number(i.total)===ITEMS[a].length)]));
   const rows=[];
-  AREAS.forEach(a=>{if(area!=='all'&&a!==area)return; const ins=latestByArea[a]; (ins?.items||[]).forEach(it=>{if(it.status==='Pendente'||(statusFilter!=='all'&&it.status!==statusFilter))return; if(it.status==='Atenção'||it.status==='Não conforme') rows.push({area:a,item:it.item,status:it.status,date:ins.date,user:ins.user,inspectionId:ins.id});});});
+  AREAS.forEach(a=>{
+    if(area!=='all'&&a!==area)return;
+    const ins=latestByArea[a];
+    (ins?.items||[]).forEach(it=>{
+      if(it.status==='Atenção'||it.status==='Não conforme') rows.push({area:a,item:it.item,status:it.status,date:ins.date,user:ins.user,inspectionId:ins.id});
+    });
+  });
   rows.sort((a,b)=>new Date(b.date)-new Date(a.date));
   const list=document.getElementById('pendingList');
-  document.getElementById('pendingCount').textContent=rows.length;
-  const resident=user?.role==="Morador";
-  document.getElementById('pendingIntro').textContent=resident?"Painel geral em modo leitura. O morador não pode editar inspeções, ocorrências ou materiais.":"Itens em atenção ou não conformes nas últimas inspeções.";
-  list.innerHTML=rows.length?rows.map(x=>`<div class="critical-item"><div class="row between"><div><b>${x.item}</b><div class="muted">${x.area} • ${fmt(x.date)} • ${x.user}</div></div><span class="pill ${x.status==='Não conforme'?'bad':'pending'}">${x.status}</span></div>${resident?'<div class="muted" style="margin-top:8px">Somente leitura</div>':`<button class="btn gold full" style="margin-top:8px" onclick="createOccurrenceFromPending(${JSON.stringify(x.area)},${JSON.stringify(x.item)},${JSON.stringify(x.status)})">🔧 Criar pendência</button>`}</div>`).join(''):'<div class="empty">Nenhuma pendência encontrada nos filtros selecionados.</div>';
-  const occ=[...db.occurrences].filter(x=>x.status!=='Resolvida'&&(area==='all'||x.area===area)).sort((a,b)=>new Date(b.date)-new Date(a.date));
-  document.getElementById('pendingOccurrences').innerHTML=occ.length?occ.map(x=>`<div class="area"><div><b>${x.title}</b><div class="muted">${x.area} • ${x.priority} • ${fmt(x.date)}</div>${x.photo?`<div class="photo-view"><img class="thumb" src="${x.photo}" alt="Foto da pendência"><span class="muted">Foto anexada.</span></div>`:''}</div>${resident?'':`<button class="btn secondary" onclick="show('history')">Ver</button>`}</div>`).join(''):'<div class="empty">Nenhuma ocorrência em aberto.</div>';
-}
+  list.innerHTML=rows.length?rows.map(x=>`<div class="critical-item"><div class="row between"><div><b>${x.item}</b><div class="muted">${x.area} • ${fmt(x.date)} • ${x.user}</div></div><span class="pill ${x.status==='Não conforme'?'bad':'pending'}">${x.status}</span></div>${resident?'<div class="muted" style="margin-top:8px">Somente leitura</div>':`<button class="btn gold full" style="margin-top:8px" onclick="createOccurrenceFromPending(${JSON.stringify(x.area)},${JSON.stringify(x.item)},${JSON.stringify(x.status)})">🔧 Criar pendência</button>`}</div>`).join(''):'<div class="empty">Nenhum item de inspeção encontrado nesta área.</div>';
 
+  // Ocorrências: filtros simples por status e área.
+  const occ=[...db.occurrences]
+    .filter(x=>(statusFilter==='all'||x.status===statusFilter)&&(area==='all'||x.area===area))
+    .sort((a,b)=>new Date(b.date)-new Date(a.date));
+  document.getElementById('pendingCount').textContent=occ.length;
+  document.getElementById('pendingIntro').textContent=resident?'Consulta em modo leitura. Use os filtros para localizar uma pendência.':'Use os filtros para localizar rapidamente uma ocorrência.';
+  document.getElementById('pendingOccurrences').innerHTML=occ.length?occ.map(x=>{
+    const cls=x.status==='Resolvida'?'ok':x.priority==='Alta'||x.priority==='Urgente'?'bad':'pending';
+    return `<div class="area"><div style="flex:1"><div class="row between"><b>🔧 ${x.title}</b><span class="pill ${cls}">${x.status}</span></div><div class="muted">${x.area} • ${x.priority} • ${fmt(x.date)} • ${x.user}</div>${x.desc?`<div class="muted" style="margin-top:4px">${x.desc}</div>`:''}${x.photo?`<div class="photo-view"><img class="thumb" src="${x.photo}" alt="Foto da pendência"><span class="muted">Foto anexada.</span></div>`:''}</div>${resident?'':`<button class="btn secondary" onclick="show('history')">Ver</button>`}</div>`;
+  }).join(''):'<div class="empty">Nenhuma ocorrência encontrada nos filtros selecionados.</div>';
+}
 function renderHistory(){
   const el=document.getElementById("historyList");
   if(!el)return;
@@ -908,7 +924,7 @@ function renderHome(){
 }
 function refresh(){renderHome();renderReports();renderHistory();renderPending()}
 if(user)start();
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=350",{updateViaCache:"none"}).catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=360",{updateViaCache:"none"}).catch(()=>{});
 </script>
 </body>
 </html>

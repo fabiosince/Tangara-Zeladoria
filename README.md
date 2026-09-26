@@ -1,23 +1,11 @@
-# Tangará Zeladoria V35
+# Tangará Zeladoria V36
 
-V35 simplifica a experiência por perfil e reforça a separação de permissões.
+Versão com filtros simples na tela de Pendências.
 
-## Morador
-- Home enxuta, sem métricas operacionais, compras, histórico ou atalhos de equipe.
-- Pode registrar pendência com foto.
-- Pode consultar o painel geral de pendências em modo somente leitura.
-- Não acessa materiais, compras, relatórios ou edição de ocorrências.
-
-## Colaborador
-- Mantém Checklist, registro de pendência e acompanhamento de pendências.
-- Não exibe compras no painel de ações.
-- Materiais continuam ocultos no formulário de registro.
-
-## Síndico
-- Mantém visão gerencial completa, materiais, compras, relatórios e exportações.
-
-## Status
-Somente Aberta e Resolvida. Reabrir uma ocorrência retorna para Aberta.
-
-## Cache
-Service worker atualizado para V35 (sw.js?v=350).
+## Novidades
+- Filtro de status de ocorrências: Todos, Aberta e Resolvida.
+- Filtro de área: Todas as áreas ou uma área específica.
+- A contagem da tela acompanha as ocorrências filtradas.
+- Itens de inspeção continuam disponíveis em bloco separado e respeitam o filtro de área.
+- Mantidas as permissões por perfil e os únicos status de ocorrência: Aberta e Resolvida.
+- Cache atualizado para V36.
