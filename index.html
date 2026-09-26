@@ -6,9 +6,10 @@
 <meta name="theme-color" content="#173b2b">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="logo-tangara.png">
-<title>Tangará Zeladoria V25</title>
+<title>Tangará Zeladoria V27</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
+.priority-hero{border:2px solid var(--green2);box-shadow:0 8px 24px rgba(23,59,43,.10)} .priority-hero .critical-item{padding:12px 0;border-top:1px solid var(--line)} .priority-hero .critical-item:first-of-type{border-top:0} .priority-hero .priority-badge{font-size:12px;font-weight:700;letter-spacing:.02em}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
 button,input,select,textarea{font:inherit}button{cursor:pointer}
 .app{max-width:760px;margin:auto;min-height:100vh}.top{background:var(--green);color:white;padding:18px 18px 16px;position:sticky;top:0;z-index:5;box-shadow:0 2px 12px #0002}
@@ -54,8 +55,9 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 <header class="top"><div class="brand"><img class="logo" src="logo-tangara.png"><div><h1>Tangará Zeladoria</h1><small id="userLabel"></small></div></div></header>
 <main>
 <section id="home" class="screen active">
-  <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div></div>
+  <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div><div class="muted" style="font-size:11px;margin-top:6px;opacity:.7">Painel V27</div></div>
   <div class="card" id="focusPanel"></div>
+  <div class="card priority-hero" id="priorityPanel"></div>
   <div class="grid">
     <div class="metric action" onclick="show('check')"><b id="mOk">0</b><span>Áreas conformes · ver checklist</span></div>
     <div class="metric action" onclick="show('pending')"><b id="mPending">0</b><span>Itens em atenção · ver pendências</span></div>
@@ -75,7 +77,6 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
   <div class="card"><div class="row between"><div><h3 style="margin:0">Progresso das áreas</h3><div class="muted">Última inspeção registrada por área.</div></div><b id="todayLabel" class="muted"></b></div><div id="areaProgress"></div></div>
   <div id="rolePanel"></div>
   <div class="card"><div class="row between"><h3 style="margin:0">Áreas</h3><button class="btn secondary" onclick="show('check')">Ver checklist</button></div><div id="areaSummary"></div></div>
-  <div class="card critical" id="priorityPanel"></div>
   <div class="card"><h3 style="margin-top:0">Mais ações</h3><div class="row wrap">
     <button class="btn" onclick="show('check')">📋 Checklist</button>
     <button class="btn gold" onclick="show('occ')">🔧 Nova ocorrência</button>
@@ -723,14 +724,16 @@ function renderFocusPanel(){
   const attention=Object.values(latestByArea).reduce((n,x)=>n+(x?.attention||0)+(x?.bad||0),0);
   const open=db.occurrences.filter(x=>x.status!=="Resolvida").length;
   const priority=db.occurrences.filter(x=>x.status!=="Resolvida"&&["Alta","Urgente"].includes(x.priority)).length;
+  const purchasePending=purchaseStats().pending;
   const title=(role==="Síndico"||role==="Administradora")?"O que precisa de atenção":"Próximas ações";
   const sub=(role==="Síndico"||role==="Administradora")?"Veja primeiro o que merece acompanhamento.":"Acesse rapidamente as tarefas mais úteis.";
   const rows=[];
-  if(open) rows.push(`<div class="focus-item"><div><b>🔧 ${open} ocorrência${open===1?"":"s"} em aberto</b><span>Acompanhar problemas registrados</span></div><button class="btn" onclick="show('occ')">Ver</button></div>`);
-  if(attention) rows.push(`<div class="focus-item"><div><b>⚠️ ${attention} item${attention===1?"":"ns"} de inspeção</b><span>Itens em atenção ou não conformes</span></div><button class="btn" onclick="show('pending')">Ver</button></div>`);
   if(priority) rows.push(`<div class="focus-item"><div><b>🚨 ${priority} ocorrência${priority===1?"":"s"} prioritária${priority===1?"":"s"}</b><span>Alta ou urgente em aberto</span></div><button class="btn danger" onclick="show('occ')">Acompanhar</button></div>`);
+  if(open) rows.push(`<div class="focus-item"><div><b>🔧 ${open} ocorrência${open===1?"":"s"} em aberto</b><span>Acompanhar problemas registrados</span></div><button class="btn" onclick="show('occ')">Ver</button></div>`);
+  if(attention) rows.push(`<div class="focus-item"><div><b>⚠️ ${attention} item${attention===1?"":"s"} de inspeção</b><span>Itens em atenção ou não conformes</span></div><button class="btn" onclick="show('pending')">Ver</button></div>`);
+  if(purchasePending) rows.push(`<div class="focus-item"><div><b>🛒 ${purchasePending} compra${purchasePending===1?"":"s"} pendente${purchasePending===1?"":"s"}</b><span>Materiais aguardando compra</span></div><button class="btn" onclick="show('materials')">Ver</button></div>`);
   if(!rows.length) rows.push(`<div class="focus-item"><div><b>✅ Tudo em ordem</b><span>Nenhuma pendência exige atenção imediata.</span></div><button class="btn secondary" onclick="show('check')">Conferir</button></div>`);
-  el.innerHTML=`<div class="row between"><div><h3 class="focus-title">${title}</h3><div class="focus-sub">${sub}</div></div><span class="pill ok">${role}</span></div><div class="focus-grid">${rows.slice(0,3).join("")}</div>`;
+  el.innerHTML=`<div class="row between"><div><h3 class="focus-title">${title}</h3><div class="focus-sub">${sub}</div></div><span class="pill ok">${role}</span></div><div class="focus-grid">${rows.slice(0,4).join("")}</div>`;
 }
 
 function renderHome(){
@@ -749,13 +752,18 @@ function renderHome(){
     rolePanel.innerHTML=`<div class="card" style="background:#eef4ef"><div class="row between"><div><b>${label==='Colaborador'?'Rotina de zeladoria':'Visão gerencial'}</b><div class="muted">${label==='Colaborador'?'Confira as áreas pendentes e registre o que encontrar.':'Acompanhe pendências, ocorrências e inspeções recentes.'}</div></div><span class="pill ok">${label}</span></div></div>`;
   }
   const priorityPanel=document.getElementById("priorityPanel");
-  const priority=[...db.occurrences].filter(x=>x.status!=="Resolvida"&&['Alta','Urgente'].includes(x.priority)).sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,4);
+  const priority=[...db.occurrences].filter(x=>x.status!=="Resolvida"&&["Alta","Urgente"].includes(x.priority)).sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,3);
+  const inspectionPendencies=[];
+  AREAS.forEach(a=>{const ins=latestByArea[a]; (ins?.items||[]).forEach(it=>{if(it.status==='Atenção'||it.status==='Não conforme') inspectionPendencies.push({area:a,item:it.item,status:it.status});});});
+  const pendingPurchases=[];
+  consolidatedMaterials().forEach(r=>{const m=getPurchaseMeta(r.material,r.unit);if(m.status!=="Comprado")pendingPurchases.push({material:r.material,qty:r.quantity,unit:r.unit,note:m.note||""});});
+  const blocks=[];
+  priority.forEach(x=>blocks.push(`<div class="critical-item"><div class="row between"><b>🔧 ${escapeHtml(x.title)}</b><span class="pill bad">${x.priority}</span></div><div class="muted">${escapeHtml(x.area)} • ${fmt(x.date)}</div></div>`));
+  inspectionPendencies.slice(0,3).forEach(x=>blocks.push(`<div class="critical-item"><div class="row between"><span>⚠️ ${escapeHtml(x.area)} — ${escapeHtml(x.item)}</span><span class="pill ${x.status==='Não conforme'?'bad':'pending'}">${x.status}</span></div></div>`));
+  pendingPurchases.slice(0,3).forEach(x=>blocks.push(`<div class="critical-item"><div class="row between"><span>🛒 ${escapeHtml(x.material)} — ${x.qty} ${escapeHtml(x.unit)}</span><button class="btn secondary" onclick="show('materials')">Comprar</button></div>${x.note?`<div class="muted">${escapeHtml(x.note)}</div>`:''}</div>`));
   if(priorityPanel){
-    priorityPanel.innerHTML=`<h3 style="margin-top:0">Pendências prioritárias</h3>${priority.length?priority.map(x=>`<div class="critical-item"><div class="row between"><b>🔧 ${x.title}</b><span class="pill bad">${x.priority}</span></div><div class="muted">${x.area} • ${fmt(x.date)}</div></div>`).join(''):'<div class="muted">Nenhuma ocorrência de prioridade alta ou urgente em aberto.</div>'}`;
+    priorityPanel.innerHTML=`<div class="row between"><div><div class="priority-badge">PAINEL DE AÇÃO</div><h3 style="margin:2px 0 4px">Pendências prioritárias</h3><div class="muted">Tudo que precisa de acompanhamento aparece aqui.</div></div><span class="pill ${blocks.length?'pending':'ok'}">${blocks.length?blocks.length+" pendência"+(blocks.length===1?"":"s"):'Tudo em ordem'}</span></div>${blocks.length?blocks.slice(0,6).join(''):`<div class="empty" style="margin-top:10px">✅ Nenhuma pendência prioritária no momento.</div>`}<div class="row wrap" style="margin-top:10px"><button class="btn" onclick="show('pending')">Ver pendências</button><button class="btn secondary" onclick="show('materials')">Ver compras</button></div>`;
   }
-
-  const inspectionPendencies=[]; AREAS.forEach(a=>{const ins=latestByArea[a]; (ins?.items||[]).forEach(it=>{if(it.status==='Atenção'||it.status==='Não conforme') inspectionPendencies.push({area:a,item:it.item,status:it.status});});});
-  if(priorityPanel && inspectionPendencies.length){ priorityPanel.innerHTML += `<div style="margin-top:12px"><div class="row between"><b>Itens da inspeção que exigem atenção</b><button class="btn secondary" onclick="show('pending')">Ver todas</button></div>${inspectionPendencies.slice(0,3).map(x=>`<div class="critical-item"><div class="row between"><span>${x.area} — ${x.item}</span><span class="pill ${x.status==='Não conforme'?'bad':'pending'}">${x.status}</span></div></div>`).join('')}</div>`; }
 
   document.getElementById("todayLabel").textContent=new Date().toLocaleDateString("pt-BR");
   document.getElementById("areaSummary").innerHTML=AREAS.map(a=>{let x=latestByArea[a];let status=!x?"Pendente":x.ok===x.total?"Conforme":(x.bad||0)>0?"Não conforme":"Atenção";let cls=status==='Conforme'?'ok':status==='Não conforme'?'bad':'pending';return `<div class="area"><b>${a}</b><span class="pill ${cls}">${status}</span></div>`}).join("");
@@ -763,7 +771,7 @@ function renderHome(){
 }
 function refresh(){renderHome();renderReports();renderHistory();renderPending()}
 if(user)start();
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=130",{updateViaCache:"none"}).catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=150",{updateViaCache:"none"}).catch(()=>{});
 </script>
 </body>
 </html>
