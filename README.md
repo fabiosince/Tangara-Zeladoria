@@ -1,4 +1,4 @@
-# Tangará Zeladoria V45
+# Tangará Zeladoria V46
 
 Correção e reforço do fluxo de pendências para Colaborador e Síndico.
 
@@ -11,4 +11,7 @@ Correção e reforço do fluxo de pendências para Colaborador e Síndico.
 - Edição preserva ID, data, usuário e status; atualiza área, título, prioridade, descrição e foto.
 - Morador permanece somente leitura.
 - Materiais permanecem sob controle do Síndico.
-- Service Worker/cache V45.
+- Service Worker/cache V46.
+
+
+V46: correção do fluxo de baixa/reabertura com eventos delegados e ações também na lista de Pendências.

@@ -677,7 +677,7 @@ function renderPending(){
   const heading=statusFilter==='Aberta'?'Pendências ativas':'Ocorrências encontradas';
   listEl.innerHTML=`<div class="muted" style="margin:10px 0 6px;font-weight:800">${heading}</div>`+occ.map(x=>{
     const cls=x.status==='Resolvida'?'ok':x.priority==='Alta'||x.priority==='Urgente'?'bad':'pending';
-    const action=resident?'':`<button type="button" class="btn secondary full edit-occurrence-btn" data-edit-occurrence="${String(x.id).replaceAll("\"","&quot;")}">✏️ Ver / editar pendência</button>`;
+    const action=resident?'':`${x.status==="Resolvida"?`<button type="button" class="btn secondary full occurrence-action" data-occ-action="reopen" data-occ-id="${x.id}" style="margin-top:8px">↩ Reabrir ocorrência</button>`:`<button type="button" class="btn gold full occurrence-action" data-occ-action="resolve" data-occ-id="${x.id}" style="margin-top:8px">✓ Dar baixa / marcar como resolvida</button>`}<button type="button" class="btn secondary full edit-occurrence-btn" data-edit-occurrence="${String(x.id).replaceAll("\"","&quot;")}" style="margin-top:8px">✏️ Ver / editar pendência</button>`;
     return `<div class="area"><div style="flex:1"><div class="row between"><b>🔧 ${x.title}</b><span class="pill ${cls}">${x.status}</span></div><div class="muted">${x.area} • ${x.priority} • ${fmt(x.date)} • ${x.user}</div>${x.desc?`<div class="muted" style="margin-top:4px">${x.desc}</div>`:''}${x.photo?`<div class="photo-view"><img class="thumb" src="${x.photo}" alt="Foto da pendência"><span class="muted">Foto anexada.</span></div>`:''}</div>${action}</div>`;
   }).join('');
 }
@@ -721,6 +721,18 @@ function showInspectionDetail(id){
   document.getElementById('inspectionModal').classList.add('open');
 }
 function closeInspection(){document.getElementById('inspectionModal').classList.remove('open')}
+document.addEventListener("click",e=>{
+  const btn=e.target.closest?.("[data-occ-action]");
+  if(!btn)return;
+  e.preventDefault();
+  e.stopPropagation();
+  const id=btn.getAttribute("data-occ-id");
+  const action=btn.getAttribute("data-occ-action");
+  if(!id)return;
+  if(action==="resolve") setOccurrenceStatus(id,"Resolvida");
+  else if(action==="reopen") setOccurrenceStatus(id,"Aberta");
+});
+
 function setOccurrenceStatus(id,status){
   if(user?.role==="Morador"){toast("Morador não pode alterar o status de ocorrências.");return;}
   const x=db.occurrences.find(o=>o.id===id);
@@ -1031,7 +1043,7 @@ document.addEventListener("click",e=>{
   const id=btn.getAttribute("data-edit-occurrence");
   openOccurrenceEditor(id);
 });
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=450",{updateViaCache:"none"}).catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=460",{updateViaCache:"none"}).catch(()=>{});
 </script>
 </body>
 </html>
