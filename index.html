@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#173b2b">
 <link rel="manifest" href="manifest.json">
-<link rel="icon" href="icon.svg">
-<title>Tangará Zeladoria V8</title>
+<link rel="icon" href="logo-tangara.png">
+<title>Tangará Zeladoria V9</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
@@ -33,7 +33,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 <body>
 <div id="loginScreen" class="login">
   <div class="loginbox">
-    <img src="icon.svg"><h2>Tangará Zeladoria</h2><p>Controle de limpeza, conservação e manutenção</p>
+    <img src="logo-tangara.png"><h2>Tangará Zeladoria</h2><p>Controle de limpeza, conservação e manutenção</p>
     <label>Nome</label><input id="loginName" placeholder="Digite seu nome">
     <label>Perfil</label><select id="loginRole"><option>Colaborador</option><option>Síndico</option><option>Administradora</option></select>
     <button class="btn full" style="margin-top:14px" onclick="doLogin()">Entrar</button>
@@ -41,7 +41,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 </div>
 
 <div id="app" class="app" style="display:none">
-<header class="top"><div class="brand"><img class="logo" src="icon.svg"><div><h1>Tangará Zeladoria</h1><small id="userLabel"></small></div></div></header>
+<header class="top"><div class="brand"><img class="logo" src="logo-tangara.png"><div><h1>Tangará Zeladoria</h1><small id="userLabel"></small></div></div></header>
 <main>
 <section id="home" class="screen active">
   <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div></div>
@@ -61,7 +61,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 </section>
 
 <section id="check" class="screen">
-  <div class="card"><div class="row between"><div><h2 style="margin:0">Checklist V8</h2><div class="muted">Avalie cada item após verificar a área.</div></div><select id="areaSelect" style="max-width:180px" onchange="renderChecklist()"></select></div><div id="checkMeta" class="muted" style="margin-top:10px"></div><div id="checkRule" class="card" style="margin:10px 0;background:#f7f9f7"></div><div id="checks"></div><div id="checkScore" class="muted" style="margin:10px 0"></div><label>Observação da área</label><textarea id="checkObs" placeholder="Ex.: piso limpo; lâmpada queimada; material a repor..."></textarea><button class="btn full" onclick="saveChecklist()">Salvar inspeção</button></div>
+  <div class="card"><div class="row between"><div><h2 style="margin:0">Checklist V9</h2><div class="muted">Avalie cada item após verificar a área.</div></div><select id="areaSelect" style="max-width:180px" onchange="renderChecklist()"></select></div><div id="checkMeta" class="muted" style="margin-top:10px"></div><div id="checkRule" class="card" style="margin:10px 0;background:#f7f9f7"></div><div id="checks"></div><div id="checkScore" class="muted" style="margin:10px 0"></div><label>Observação da área</label><textarea id="checkObs" placeholder="Ex.: piso limpo; lâmpada queimada; material a repor..."></textarea><button class="btn full" onclick="saveChecklist()">Salvar inspeção</button></div>
 </section>
 
 <section id="occ" class="screen">
@@ -99,7 +99,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 
 <section id="profile" class="screen">
   <div class="card"><h2 style="margin-top:0">Perfil</h2><p><b id="profileName"></b><br><span class="muted" id="profileRole"></span></p><button class="btn danger full" onclick="logout(event)">Sair do aplicativo</button></div>
-  <div class="card"><h3 style="margin-top:0">Sobre a V8</h3><p class="muted">Checklist completo por item, percentual automático, regras específicas das áreas e painel de indicadores. Os registros continuam armazenados no aparelho.</p></div>
+  <div class="card"><h3 style="margin-top:0">Sobre a V9</h3><p class="muted">Checklist completo por item, percentual automático, regras específicas das áreas e painel de indicadores. Os registros continuam armazenados no aparelho.</p></div>
 </section>
 </main>
 <nav class="bottom">
@@ -133,10 +133,24 @@ const ITEMS={
 "Garagem":["Piso e circulação em ordem","Iluminação funcionando","Sinalização preservada","Lixeiras/área organizada","Acessos e portões em condições aparentes","Sem obstáculos nas áreas de circulação"],
 "Áreas externas":["Calçadas e acessos limpos","Jardins e áreas verdes em ordem","Lixeiras higienizadas","Iluminação externa funcionando","Mobiliário externo organizado","Sem obstáculos ou resíduos aparentes"]
 };
-let db=JSON.parse(localStorage.getItem("tangaraV8")||localStorage.getItem("tangaraV6")||localStorage.getItem("tangaraV5")||localStorage.getItem("tangaraV4")||'{"inspections":[],"occurrences":[]}');
-if(!localStorage.getItem("tangaraV8")){localStorage.setItem("tangaraV8",JSON.stringify(db));}
+const V9_KEY="tangaraV9";
+function migrateDB(){
+  let raw=localStorage.getItem(V9_KEY)||localStorage.getItem("tangaraV8")||localStorage.getItem("tangaraV6")||localStorage.getItem("tangaraV5")||localStorage.getItem("tangaraV4");
+  let parsed={inspections:[],occurrences:[]};
+  try{parsed=raw?JSON.parse(raw):parsed}catch(e){}
+  parsed.inspections=Array.isArray(parsed.inspections)?parsed.inspections:[];
+  parsed.occurrences=Array.isArray(parsed.occurrences)?parsed.occurrences:[];
+  const seen=new Set();
+  parsed.inspections=parsed.inspections.filter(x=>{
+    const sig=[x.date||"",x.user||"",x.area||"",x.ok||0,x.total||0,x.attention||0,x.bad||0,x.obs||"",JSON.stringify(x.items||[])].join("|");
+    if(seen.has(sig))return false; seen.add(sig); return true;
+  });
+  return parsed;
+}
+let db=migrateDB();
+localStorage.setItem(V9_KEY,JSON.stringify(db));
 let user=JSON.parse(localStorage.getItem("tangaraUser")||"null");
-function persist(){localStorage.setItem("tangaraV8",JSON.stringify(db))}
+function persist(){localStorage.setItem(V9_KEY,JSON.stringify(db))}
 function toast(t){let e=document.getElementById("toast");e.textContent=t;e.style.display="block";setTimeout(()=>e.style.display="none",2200)}
 function doLogin(){
   try{
@@ -184,7 +198,7 @@ function renderChecklist(){
   const area=document.getElementById("areaSelect").value;
   const checksEl=document.getElementById("checks");
   const obsEl=document.getElementById("checkObs");
-  const latest=db.inspections.find(x=>x.area===area);
+  const latest=db.inspections.find(x=>x.area===area && Number(x.total)===ITEMS[area].length);
   const latestItems=latest?.items||[];
   document.getElementById("checkMeta").textContent=latest?`Última inspeção: ${fmt(latest.date)} • ${latest.user}`:"Ainda não há inspeção registrada para esta área.";
   document.getElementById("checkRule").innerHTML=`<b>Orientação da área</b><div class="muted" style="margin-top:4px">${AREA_RULES[area]}</div>`;
@@ -225,14 +239,20 @@ function renderHistory(){
   const el=document.getElementById("historyList");
   if(!el)return;
   const filter=document.getElementById("histFilter")?.value||"all";
-  const records=[...db.inspections,...db.occurrences].filter(x=>filter==="all"||x.type===filter).sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const rawRecords=[...db.inspections,...db.occurrences].filter(x=>filter==="all"||x.type===filter);
+  const seen=new Set();
+  const records=rawRecords.filter(x=>{
+    const sig=x.type+"|"+[x.date||"",x.user||"",x.area||"",x.title||"",x.ok||0,x.total||0,x.attention||0,x.bad||0,x.obs||"",x.status||""].join("|");
+    if(seen.has(sig))return false; seen.add(sig); return true;
+  }).sort((a,b)=>new Date(b.date)-new Date(a.date));
   if(!records.length){el.innerHTML='<div class="empty">Nenhum registro encontrado.</div>';return;}
   el.innerHTML='<div class="timeline">'+records.map(x=>{
     if(x.type==="check"){
+      const legacy=Number(x.total)!==ITEMS[x.area]?.length;
       const pct=Math.round((x.ok||0)/(x.total||1)*100);
       const status=(x.bad||0)>0?"Não conforme":(x.attention||0)>0?"Atenção":"Conforme";
       const cls=status==='Conforme'?'ok':status==='Não conforme'?'bad':'pending';
-      return `<div class="event"><div class="row between"><b>📋 ${x.area}</b><span class="pill ${cls}">${status}</span></div><div class="muted">${fmt(x.date)} • ${x.user}</div><div style="margin-top:6px"><b>${pct}%</b> — ${x.ok}/${x.total} conformes</div><div class="muted">Atenção: ${x.attention||0} • Não conformes: ${x.bad||0}</div>${x.obs?`<div style="margin-top:6px">${x.obs}</div>`:""}</div>`;
+      return `<div class="event"><div class="row between"><b>📋 ${x.area}</b><span class="pill ${cls}">${status}</span></div><div class="muted">${fmt(x.date)} • ${x.user}</div><div style="margin-top:6px"><b>${pct}%</b> — ${x.ok}/${x.total} conformes</div><div class="muted">Atenção: ${x.attention||0} • Não conformes: ${x.bad||0}${legacy?' • Registro anterior':''}</div>${x.obs?`<div style="margin-top:6px">${x.obs}</div>`:""}</div>`;
     }
     const cls=x.status==="Resolvida"?"ok":x.priority==="Urgente"||x.priority==="Alta"?"bad":"pending";
     return `<div class="event"><div class="row between"><b>🔧 ${x.title}</b><span class="pill ${cls}">${x.status}</span></div><div class="muted">${fmt(x.date)} • ${x.user} • ${x.area}</div><div style="margin-top:6px">Prioridade: <b>${x.priority}</b></div>${x.desc?`<div class="muted" style="margin-top:4px">${x.desc}</div>`:""}</div>`;
@@ -254,7 +274,7 @@ function exportCSV(){
 
 function saveOccurrence(){let title=occTitle.value.trim();if(!title)return toast("Informe o título");let file=occPhoto.files[0];let finish=(photo)=>{db.occurrences.unshift({id:Date.now(),type:"occ",date:new Date().toISOString(),user:user.name,area:occArea.value,title,priority:occPriority.value,desc:occDesc.value.trim(),photo:photo||"",status:"Aberta"});persist();occTitle.value="";occDesc.value="";occPhoto.value="";toast("Ocorrência registrada");renderHome();show("history")};if(file){let r=new FileReader();r.onload=()=>finish(r.result);r.readAsDataURL(file)}else finish("")}
 function renderHome(){
-  const latestByArea=Object.fromEntries(AREAS.map(a=>[a,db.inspections.find(i=>i.area===a)]));
+  const latestByArea=Object.fromEntries(AREAS.map(a=>[a,db.inspections.find(i=>i.area===a && Number(i.total)===ITEMS[a].length)]));
   const latest=Object.values(latestByArea).filter(Boolean);
   const conformes=latest.filter(x=>x.ok===x.total).length;
   const pendingItems=latest.reduce((n,x)=>n+(x.attention||0)+(x.bad||0),0);
@@ -267,7 +287,7 @@ function renderHome(){
 }
 function refresh(){renderHome();renderReports();renderHistory()}
 if(user)start();
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=70",{updateViaCache:"none"}).catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=90",{updateViaCache:"none"}).catch(()=>{});
 </script>
 </body>
 </html>
