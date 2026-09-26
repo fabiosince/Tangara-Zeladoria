@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#124a35">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Tangará Zeladoria V40</title>
+<title>Tangará Zeladoria V41</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
 .priority-hero{border:2px solid var(--green2);box-shadow:0 8px 24px rgba(23,59,43,.10)} .priority-hero .critical-item{padding:12px 0;border-top:1px solid var(--line)} .priority-hero .critical-item:first-of-type{border-top:0} .priority-hero .priority-badge{font-size:12px;font-weight:700;letter-spacing:.02em}
@@ -171,7 +171,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 
 <section id="profile" class="screen">
   <div class="card"><h2 style="margin-top:0">Perfil</h2><p><b id="profileName"></b><br><span class="muted" id="profileRole"></span></p><button class="btn danger full" onclick="logout(event)">Sair do aplicativo</button></div>
-  <div class="card"><h3 style="margin-top:0">Sobre a V40</h3><p class="muted">Fluxo de ocorrências com apenas os status Aberta e Resolvida, materiais de reposição sugeridos automaticamente, edição por ocorrência, consolidação para compras, acompanhamento Pendente/Comprado com data e observação, exportação detalhada e consolidada em CSV e JSON, detalhes de inspeções, fotos, filtros e indicadores gerenciais. Os registros continuam armazenados no aparelho.</p></div>
+  <div class="card"><h3 style="margin-top:0">Sobre a V41</h3><p class="muted">Fluxo de ocorrências com apenas os status Aberta e Resolvida, materiais de reposição sugeridos automaticamente, edição por ocorrência, consolidação para compras, acompanhamento Pendente/Comprado com data e observação, exportação detalhada e consolidada em CSV e JSON, detalhes de inspeções, fotos, filtros e indicadores gerenciais. Os registros continuam armazenados no aparelho.</p></div>
 </section>
 </main>
 <nav class="bottom">
@@ -668,7 +668,7 @@ function renderPending(){
     const heading=statusFilter==='Aberta'?'Pendências ativas':'Ocorrências encontradas';
     document.getElementById('pendingOccurrences').innerHTML=`<div class="muted" style="margin:10px 0 6px;font-weight:800">${heading}</div>`+occ.map(x=>{
       const cls=x.status==='Resolvida'?'ok':x.priority==='Alta'||x.priority==='Urgente'?'bad':'pending';
-      return `<div class="area"><div style="flex:1"><div class="row between"><b>🔧 ${x.title}</b><span class="pill ${cls}">${x.status}</span></div><div class="muted">${x.area} • ${x.priority} • ${fmt(x.date)} • ${x.user}</div>${x.desc?`<div class="muted" style="margin-top:4px">${x.desc}</div>`:''}${x.photo?`<div class="photo-view"><img class="thumb" src="${x.photo}" alt="Foto da pendência"><span class="muted">Foto anexada.</span></div>`:''}</div>${resident?'':`<button type="button" class="btn secondary" data-edit-occurrence="${escapeHtml(String(x.id))}">✏️ Ver / editar</button>`}</div>`;
+      return `<div class="area"><div style="flex:1"><div class="row between"><b>🔧 ${x.title}</b><span class="pill ${cls}">${x.status}</span></div><div class="muted">${x.area} • ${x.priority} • ${fmt(x.date)} • ${x.user}</div>${x.desc?`<div class="muted" style="margin-top:4px">${x.desc}</div>`:''}${x.photo?`<div class="photo-view"><img class="thumb" src="${x.photo}" alt="Foto da pendência"><span class="muted">Foto anexada.</span></div>`:''}</div>${resident?'':`<button class="btn secondary" onclick="editOccurrence(${JSON.stringify(x.id)})">Ver</button>`}</div>`;
     }).join('');
   }else{
     document.getElementById('pendingOccurrences').innerHTML='<div class="empty">Nenhuma ocorrência encontrada nos filtros selecionados.</div>';
@@ -779,57 +779,40 @@ function exportCSV(){
 }
 
 function editOccurrence(id){
-  if(user?.role==="Morador"){toast("Morador não pode editar pendências.");return false;}
+  if(user?.role==="Morador"){toast("Morador não pode editar pendências.");return;}
   const x=db.occurrences.find(o=>String(o.id)===String(id));
-  if(!x){toast("Pendência não encontrada.");return false;}
-
+  if(!x){toast("Pendência não encontrada.");return;}
   editingOccurrenceId=x.id;
-  const title=document.getElementById("occScreenTitle");
-  const save=document.getElementById("saveOccurrenceBtn");
-  const area=document.getElementById("occArea");
-  const occTitle=document.getElementById("occTitle");
-  const priority=document.getElementById("occPriority");
-  const desc=document.getElementById("occDesc");
-  const photo=document.getElementById("occPhoto");
-
-  if(title) title.textContent=user?.role==="Colaborador"?"Editar pendência":"Editar ocorrência";
-  if(save){save.textContent="💾 Salvar alterações";save.disabled=false;save.removeAttribute("disabled");}
-  if(area){area.value=x.area||AREAS[0];area.disabled=false;area.removeAttribute("disabled");}
-  if(occTitle){occTitle.value=x.title||"";occTitle.disabled=false;occTitle.readOnly=false;occTitle.removeAttribute("readonly");}
-  if(priority){priority.value=x.priority||"Média";priority.disabled=false;priority.removeAttribute("disabled");}
-  if(desc){desc.value=x.desc||"";desc.disabled=false;desc.readOnly=false;desc.removeAttribute("readonly");}
-  if(photo){photo.value="";photo.disabled=false;photo.removeAttribute("disabled");}
-
+  document.getElementById("occScreenTitle").textContent=user?.role==="Colaborador"?"Editar pendência":"Editar ocorrência";
+  document.getElementById("saveOccurrenceBtn").textContent=user?.role==="Colaborador"?"Salvar alterações":"Salvar alterações";
+  document.getElementById("occArea").value=x.area||AREAS[0];
+  document.getElementById("occTitle").value=x.title||"";
+  document.getElementById("occPriority").value=x.priority||"Média";
+  document.getElementById("occDesc").value=x.desc||"";
+  document.getElementById("occPhoto").value="";
   const current=document.getElementById("occCurrentPhoto");
   if(current){
     current.style.display=x.photo?"flex":"none";
     current.innerHTML=x.photo?`<img class="thumb" src="${x.photo}" alt="Foto atual da pendência"><span class="muted">Foto atual. Selecione outra para substituir.</span>`:"";
   }
-
-  // Colaborador pode editar os dados da pendência, mas não os materiais.
   occurrenceMaterials=Array.isArray(x.materials)?x.materials.map(m=>({...m})):[];
   renderOccurrenceMaterials();
   refreshMaterialSuggestions();
-  const matCard=document.getElementById("occMaterialsCard");
-  if(matCard) matCard.style.display=user?.role==="Síndico"?"block":"none";
-
   show("occ");
-  setTimeout(()=>occTitle?.focus(),50);
-  toast("Modo de edição ativado. Altere os dados e toque em Salvar alterações.");
-  return false;
+  document.getElementById("occTitle")?.focus();
 }
 
-function handlePendingOccurrenceAction(id){
-  return editOccurrence(id);
-}
 function prepareNewOccurrence(){
   editingOccurrenceId=null;
   const title=document.getElementById("occScreenTitle");
   const save=document.getElementById("saveOccurrenceBtn");
   if(title)title.textContent=user?.role==="Colaborador"?"Nova pendência":"Nova ocorrência";
-  if(save)save.textContent=user?.role==="Colaborador"?"Registrar pendência":"Registrar ocorrência";
+  if(save){save.textContent=user?.role==="Colaborador"?"Registrar pendência":"Registrar ocorrência";save.disabled=false;save.removeAttribute("disabled");}
+  ["occArea","occTitle","occPriority","occDesc","occPhoto"].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.disabled=false;el.removeAttribute("disabled");el.readOnly=false;el.removeAttribute("readonly");});
   const current=document.getElementById("occCurrentPhoto");
   if(current){current.style.display="none";current.innerHTML="";}
+  const matCard=document.getElementById("occMaterialsCard");
+  if(matCard)matCard.style.display=user?.role==="Síndico"?"block":"none";
 }
 
 async function saveOccurrence(){
@@ -922,13 +905,6 @@ function previewResidentPhoto(){
   if(!el)return;
   el.textContent=file?`Foto selecionada: ${file.name}`:"";
 }
-document.addEventListener("click",e=>{
-  const btn=e.target.closest?.("[data-edit-occurrence]");
-  if(!btn)return;
-  e.preventDefault();
-  e.stopPropagation();
-  editOccurrence(btn.getAttribute("data-edit-occurrence"));
-});
 document.addEventListener("change",e=>{if(e.target&&e.target.id==="residentPhoto")previewResidentPhoto()});
 async function saveResidentIssue(){
   const area=document.getElementById("residentArea")?.value||AREAS[0];
