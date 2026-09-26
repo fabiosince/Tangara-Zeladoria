@@ -117,24 +117,67 @@ let db=JSON.parse(localStorage.getItem("tangaraV4")||'{"inspections":[],"occurre
 let user=JSON.parse(localStorage.getItem("tangaraUser")||"null");
 function persist(){localStorage.setItem("tangaraV4",JSON.stringify(db))}
 function toast(t){let e=document.getElementById("toast");e.textContent=t;e.style.display="block";setTimeout(()=>e.style.display="none",2200)}
-function doLogin(){const name=document.getElementById("loginName").value.trim();if(!name){toast("Digite seu nome");return}user={name:name,role:document.getElementById("loginRole").value};localStorage.setItem("tangaraUser",JSON.stringify(user));start()}
-function start(){if(!user)return;document.getElementById("loginScreen").style.display="none";document.getElementById("app").style.display="block";document.getElementById("userLabel").textContent=user.role;document.getElementById("hello").textContent=user.name.split(" ")[0];document.getElementById("profileName").textContent=user.name;document.getElementById("profileRole").textContent=user.role;fillAreas();refresh()}
-function logout(){localStorage.removeItem("tangaraUser");location.reload()}
-function fillAreas(){let opts=AREAS.map(a=>`<option>${a}</option>`).join("");areaSelect.innerHTML=opts;occArea.innerHTML=opts;renderChecklist()}
-function show(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll(".nav").forEach(x=>x.classList.toggle("active",x.dataset.s===id));if(id==="history")renderHistory();if(id==="reports")renderReports();if(id==="check")renderChecklist();if(id==="home")renderHome()}
-function renderChecklist(){let area=areaSelect.value;checks.innerHTML=ITEMS[area].map((x,i)=>`<div class="check"><input type="checkbox" id="c${i}"><div><b>${x}</b><div class="muted">Marque somente após verificar.</div></div></div>`).join("");checkObs.value=""}
-function saveChecklist(){let area=areaSelect.value;let values=ITEMS[area].map((x,i)=>({item:x,ok:document.getElementById("c"+i).checked}));let ok=values.filter(x=>x.ok).length;db.inspections.unshift({id:Date.now(),type:"check",date:new Date().toISOString(),user:user.name,area,ok,total:values.length,obs:checkObs.value.trim(),items:values});persist();toast("Inspeção salva");renderHome()}
+function doLogin(){
+  try{
+    const nameEl=document.getElementById("loginName");
+    const roleEl=document.getElementById("loginRole");
+    const name=(nameEl?.value||"").trim();
+    if(!name){toast("Digite seu nome");return}
+    user={name:name,role:roleEl?.value||"Colaborador"};
+    localStorage.setItem("tangaraUser",JSON.stringify(user));
+    start();
+  }catch(err){
+    console.error(err);
+    alert("Não foi possível entrar. Recarregue a página e tente novamente.");
+  }
+}
+function start(){
+  if(!user)return;
+  document.getElementById("loginScreen").style.display="none";
+  document.getElementById("app").style.display="block";
+  document.getElementById("userLabel").textContent=user.role;
+  document.getElementById("hello").textContent=(user.name||"").split(" ")[0];
+  document.getElementById("profileName").textContent=user.name||"";
+  document.getElementById("profileRole").textContent=user.role||"";
+  fillAreas();
+  refresh();
+}
+function fillAreas(){
+  const areaSelectEl=document.getElementById("areaSelect");
+  const occAreaEl=document.getElementById("occArea");
+  const opts=AREAS.map(a=>`<option>${a}</option>`).join("");
+  areaSelectEl.innerHTML=opts;
+  occAreaEl.innerHTML=opts;
+  renderChecklist();
+}
+function show(id){
+  document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.querySelectorAll(".nav").forEach(x=>x.classList.toggle("active",x.dataset.s===id));
+  if(id==="history")renderHistory();
+  if(id==="reports")renderReports();
+  if(id==="check")renderChecklist();
+  if(id==="home")renderHome();
+}
+function renderChecklist(){
+  const area=document.getElementById("areaSelect").value;
+  const checksEl=document.getElementById("checks");
+  const obsEl=document.getElementById("checkObs");
+  checksEl.innerHTML=ITEMS[area].map((x,i)=>`<div class="check"><input type="checkbox" id="c${i}"><div><b>${x}</b><div class="muted">Marque somente após verificar.</div></div></div>`).join("");
+  obsEl.value="";
+}
+function saveChecklist(){const area=document.getElementById("areaSelect").value;const obs=document.getElementById("checkObs").value.trim();let values=ITEMS[area].map((x,i)=>({item:x,ok:document.getElementById("c"+i).checked}));let ok=values.filter(x=>x.ok).length;db.inspections.unshift({id:Date.now(),type:"check",date:new Date().toISOString(),user:user.name,area,ok,total:values.length,obs:obs,items:values});persist();toast("Inspeção salva");renderHome()}
 function saveOccurrence(){let title=occTitle.value.trim();if(!title)return toast("Informe o título");let file=occPhoto.files[0];let finish=(photo)=>{db.occurrences.unshift({id:Date.now(),type:"occ",date:new Date().toISOString(),user:user.name,area:occArea.value,title,priority:occPriority.value,desc:occDesc.value.trim(),photo:photo||"",status:"Aberta"});persist();occTitle.value="";occDesc.value="";occPhoto.value="";toast("Ocorrência registrada");renderHome();show("history")};if(file){let r=new FileReader();r.onload=()=>finish(r.result);r.readAsDataURL(file)}else finish("")}
-function renderHome(){let last=db.inspections;let ok=last.filter(x=>x.ok===x.total).length;let pend=last.filter(x=>x.ok<x.total).length;let open=db.occurrences.filter(x=>x.status!=="Resolvida").length;mOk.textContent=ok;mPending.textContent=pend;mOcc.textContent=open;mPct.textContent=(AREAS.length?Math.round(new Set(last.map(x=>x.area)).size/AREAS.length*100):0)+"%";areaSummary.innerHTML=AREAS.map(a=>{let x=last.find(i=>i.area===a);return `<div class="area"><b>${a}</b><span class="pill ${!x?'pending':x.ok===x.total?'ok':'bad'}">${!x?'Pendente':x.ok===x.total?'Conforme':'Atenção'}</span></div>`}).join("")}
-function renderHistory(){let f=histFilter.value;let all=[...db.inspections,...db.occurrences].filter(x=>f==="all"||x.type===f).sort((a,b)=>b.id-a.id);historyList.innerHTML=all.length?all.map(x=>x.type==="check"?`<div class="card"><div class="row between"><b>📋 ${x.area}</b><span class="pill ${x.ok===x.total?'ok':'bad'}">${x.ok}/${x.total}</span></div><div class="muted">${fmt(x.date)} • ${x.user}</div>${x.obs?`<p>${esc(x.obs)}</p>`:""}</div>`:`<div class="card"><div class="row between"><b>🔧 ${esc(x.title)}</b><span class="pill ${x.status==="Resolvida"?'ok':'pending'}">${x.status}</span></div><div class="muted">${x.area} • ${x.priority} • ${fmt(x.date)} • ${x.user}</div><p>${esc(x.desc||"")}</p>${x.photo?`<img src="${x.photo}" style="width:100%;max-height:220px;object-fit:cover;border-radius:12px">`:""}<button class="btn secondary full" style="margin-top:8px" onclick="toggleOcc(${x.id})">${x.status==="Resolvida"?"Reabrir":"Marcar como resolvida"}</button></div>`).join(""):"<div class='empty'>Nenhum registro encontrado.</div>"}
+function renderHome(){const mOkEl=document.getElementById("mOk"),mPendingEl=document.getElementById("mPending"),mOccEl=document.getElementById("mOcc"),mPctEl=document.getElementById("mPct"),areaSummaryEl=document.getElementById("areaSummary");let last=db.inspections;let ok=last.filter(x=>x.ok===x.total).length;let pend=last.filter(x=>x.ok<x.total).length;let open=db.occurrences.filter(x=>x.status!=="Resolvida").length;mOkEl.textContent=ok;mPendingEl.textContent=pend;mOccEl.textContent=open;mPctEl.textContent=(AREAS.length?Math.round(new Set(last.map(x=>x.area)).size/AREAS.length*100):0)+"%";areaSummaryEl.innerHTML=AREAS.map(a=>{let x=last.find(i=>i.area===a);return `<div class="area"><b>${a}</b><span class="pill ${!x?'pending':x.ok===x.total?'ok':'bad'}">${!x?'Pendente':x.ok===x.total?'Conforme':'Atenção'}</span></div>`}).join("")}
+function renderHistory(){const histFilterEl=document.getElementById("histFilter"),historyListEl=document.getElementById("historyList");let f=histFilterEl.value;let all=[...db.inspections,...db.occurrences].filter(x=>f==="all"||x.type===f).sort((a,b)=>b.id-a.id);historyListEl.innerHTML=all.length?all.map(x=>x.type==="check"?`<div class="card"><div class="row between"><b>📋 ${x.area}</b><span class="pill ${x.ok===x.total?'ok':'bad'}">${x.ok}/${x.total}</span></div><div class="muted">${fmt(x.date)} • ${x.user}</div>${x.obs?`<p>${esc(x.obs)}</p>`:""}</div>`:`<div class="card"><div class="row between"><b>🔧 ${esc(x.title)}</b><span class="pill ${x.status==="Resolvida"?'ok':'pending'}">${x.status}</span></div><div class="muted">${x.area} • ${x.priority} • ${fmt(x.date)} • ${x.user}</div><p>${esc(x.desc||"")}</p>${x.photo?`<img src="${x.photo}" style="width:100%;max-height:220px;object-fit:cover;border-radius:12px">`:""}<button class="btn secondary full" style="margin-top:8px" onclick="toggleOcc(${x.id})">${x.status==="Resolvida"?"Reabrir":"Marcar como resolvida"}</button></div>`).join(""):"<div class='empty'>Nenhum registro encontrado.</div>"}
 function toggleOcc(id){let x=db.occurrences.find(o=>o.id===id);if(x){x.status=x.status==="Resolvida"?"Aberta":"Resolvida";persist();renderHistory();renderHome();toast("Status atualizado")}}
-function renderReports(){let ins=db.inspections, occ=db.occurrences;rInspections.textContent=ins.length;rOcc.textContent=occ.length;rOpen.textContent=occ.filter(x=>x.status!=="Resolvida").length;rResolved.textContent=occ.filter(x=>x.status==="Resolvida").length;areaReport.innerHTML=AREAS.map(a=>{let n=occ.filter(x=>x.area===a).length;return `<div class="area"><b>${a}</b><span>${n} ocorrência(s)</span></div>`}).join("")}
+function renderReports(){const rInspectionsEl=document.getElementById("rInspections"),rOccEl=document.getElementById("rOcc"),rOpenEl=document.getElementById("rOpen"),rResolvedEl=document.getElementById("rResolved"),areaReportEl=document.getElementById("areaReport");let ins=db.inspections, occ=db.occurrences;rInspectionsEl.textContent=ins.length;rOccEl.textContent=occ.length;rOpenEl.textContent=occ.filter(x=>x.status!=="Resolvida").length;rResolvedEl.textContent=occ.filter(x=>x.status==="Resolvida").length;areaReportEl.innerHTML=AREAS.map(a=>{let n=occ.filter(x=>x.area===a).length;return `<div class="area"><b>${a}</b><span>${n} ocorrência(s)</span></div>`}).join("")}
 function fmt(d){return new Date(d).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}
 function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
 function exportCSV(){let rows=[["Tipo","Data","Usuário","Área","Status/Conforme","Detalhes"],...db.inspections.map(x=>["Inspeção",fmt(x.date),x.user,x.area,`${x.ok}/${x.total}`,x.obs||""]),...db.occurrences.map(x=>["Ocorrência",fmt(x.date),x.user,x.area,x.status,`${x.title} - ${x.desc||""}`])];let csv=rows.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(";")).join("\\n");let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));a.download="tangara-zeladoria-relatorio.csv";a.click()}
 function refresh(){renderHome();renderReports();renderHistory()}
 if(user)start();
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=42",{updateViaCache:"none"}).catch(()=>{});
 </script>
 </body>
 </html>
