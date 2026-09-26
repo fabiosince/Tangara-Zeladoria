@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#173b2b">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="logo-tangara.png">
-<title>Tangará Zeladoria V9.3</title>
+<title>Tangará Zeladoria V9.4</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
@@ -225,7 +225,7 @@ function updateChecklistScore(){
   document.getElementById("checkScore").innerHTML=`Itens avaliados: <b>${evaluated}/${statuses.length}</b> • Conforme: <b>${ok}</b> • Percentual: <b>${pct}%</b>`;
 }
 
-function renderChecklistButtonsOnly(){document.querySelectorAll('.status-btn').forEach(b=>{const txt=b.textContent;const idx=b.closest('.check').querySelector('input[type=hidden]').id.replace('status','');const st=document.getElementById('status'+idx).value;b.classList.remove('sel-ok','sel-att','sel-bad');if((st==='Conforme'&&txt.includes('Conforme'))||(st==='Atenção'&&txt.includes('Atenção'))||(st==='Não conforme'&&txt.includes('Não conforme')))b.classList.add(st==='Conforme'?'sel-ok':st==='Atenção'?'sel-att':'sel-bad')})}
+function renderChecklistButtonsOnly(){document.querySelectorAll('.check').forEach(card=>{const input=card.querySelector('input[type=hidden]');if(!input)return;const st=input.value;card.querySelectorAll('.status-btn').forEach(b=>{const txt=b.textContent;b.classList.remove('sel-ok','sel-att','sel-bad');if((st==='Conforme'&&txt.includes('Conforme'))||(st==='Atenção'&&txt.includes('Atenção'))||(st==='Não conforme'&&txt.includes('Não conforme')))b.classList.add(st==='Conforme'?'sel-ok':st==='Atenção'?'sel-att':'sel-bad')});const statusEl=card.querySelector('.muted b');if(statusEl)statusEl.textContent=st})}
 function saveChecklist(){
   const area=document.getElementById("areaSelect").value,obs=document.getElementById("checkObs").value.trim();
   const statuses=ITEMS[area].map((x,i)=>({item:x,status:document.getElementById("status"+i)?.value||"Pendente"}));
