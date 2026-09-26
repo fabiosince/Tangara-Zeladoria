@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#124a35">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Tangará Zeladoria V43</title>
+<title>Tangará Zeladoria V44</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
 .priority-hero{border:2px solid var(--green2);box-shadow:0 8px 24px rgba(23,59,43,.10)} .priority-hero .critical-item{padding:12px 0;border-top:1px solid var(--line)} .priority-hero .critical-item:first-of-type{border-top:0} .priority-hero .priority-badge{font-size:12px;font-weight:700;letter-spacing:.02em}
@@ -673,7 +673,7 @@ function renderPending(){
   const heading=statusFilter==='Aberta'?'Pendências ativas':'Ocorrências encontradas';
   listEl.innerHTML=`<div class="muted" style="margin:10px 0 6px;font-weight:800">${heading}</div>`+occ.map(x=>{
     const cls=x.status==='Resolvida'?'ok':x.priority==='Alta'||x.priority==='Urgente'?'bad':'pending';
-    const action=resident?'':'<button type="button" class="btn secondary" onclick="openOccurrenceEditor('+JSON.stringify(x.id)+')">✏️ Ver / editar</button>';
+    const action=resident?'':`<button type="button" class="btn secondary full edit-occurrence-btn" data-edit-occurrence="${String(x.id).replaceAll("\"","&quot;")}">✏️ Ver / editar pendência</button>`;
     return `<div class="area"><div style="flex:1"><div class="row between"><b>🔧 ${x.title}</b><span class="pill ${cls}">${x.status}</span></div><div class="muted">${x.area} • ${x.priority} • ${fmt(x.date)} • ${x.user}</div>${x.desc?`<div class="muted" style="margin-top:4px">${x.desc}</div>`:''}${x.photo?`<div class="photo-view"><img class="thumb" src="${x.photo}" alt="Foto da pendência"><span class="muted">Foto anexada.</span></div>`:''}</div>${action}</div>`;
   }).join('');
 }
@@ -1008,9 +1008,13 @@ function refresh(){renderHome();renderReports();renderHistory();renderPending()}
 if(user)start();
 document.addEventListener("click",e=>{
   const btn=e.target.closest?.("[data-edit-occurrence]");
-  if(btn){e.preventDefault();openOccurrenceEditor(btn.getAttribute("data-edit-occurrence"));}
+  if(!btn)return;
+  e.preventDefault();
+  e.stopPropagation();
+  const id=btn.getAttribute("data-edit-occurrence");
+  openOccurrenceEditor(id);
 });
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=430",{updateViaCache:"none"}).catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=440",{updateViaCache:"none"}).catch(()=>{});
 </script>
 </body>
 </html>
