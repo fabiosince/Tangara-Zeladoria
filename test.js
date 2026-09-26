@@ -1,135 +1,4 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#173b2b">
-<link rel="manifest" href="manifest.json">
-<link rel="icon" href="logo-tangara.png">
-<title>Tangará Zeladoria V12</title>
-<style>
-:root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-button,input,select,textarea{font:inherit}button{cursor:pointer}
-.app{max-width:760px;margin:auto;min-height:100vh}.top{background:var(--green);color:white;padding:18px 18px 16px;position:sticky;top:0;z-index:5;box-shadow:0 2px 12px #0002}
-.brand{display:flex;align-items:center;gap:12px}.logo{width:42px;height:42px;border-radius:12px;background:white;padding:6px}.brand h1{font-size:18px;margin:0}.brand small{opacity:.75}
-main{padding:16px 14px 92px}.screen{display:none}.screen.active{display:block}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 3px 14px #173b2b08}
-.hero{background:linear-gradient(135deg,var(--green),#2d654b);color:white;border:0}.hero h2{margin:0 0 4px}.muted{color:var(--muted);font-size:13px}.hero .muted{color:#d8e4dd}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.metric{padding:14px;border-radius:14px;background:#f7f9f7;border:1px solid var(--line)}.metric b{display:block;font-size:25px}.metric span{font-size:12px;color:var(--muted)}
-.btn{border:0;border-radius:12px;padding:12px 14px;font-weight:700;background:var(--green);color:white}.btn.secondary{background:#eef2ef;color:var(--green)}.btn.gold{background:var(--gold);color:#241d0b}.btn.danger{background:#f8e7e5;color:var(--danger)}.btn.full{width:100%}
-.row{display:flex;gap:8px;align-items:center}.between{justify-content:space-between}.wrap{flex-wrap:wrap}
-label{font-size:13px;font-weight:700;display:block;margin:10px 0 6px}input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:11px;background:white}textarea{min-height:90px;resize:vertical}
-.area{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)}.area:last-child{border-bottom:0}.area b{font-size:14px}.pill{font-size:11px;padding:5px 8px;border-radius:99px;font-weight:800}.ok{background:#e2f3e9;color:var(--ok)}.pending{background:#fff1d7;color:var(--warn)}.bad{background:#f8e1df;color:var(--danger)}
-.bottom{position:fixed;bottom:0;left:0;right:0;max-width:760px;margin:auto;background:white;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);z-index:6}.nav{border:0;background:white;padding:10px 4px;color:var(--muted);font-size:11px}.nav.active{color:var(--green);font-weight:800}.nav span{display:block;font-size:20px;margin-bottom:2px}
-.check{display:flex;gap:10px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}.check input{width:22px;height:22px;accent-color:var(--green)}
-.timeline{border-left:3px solid #d8e1db;padding-left:14px}.event{position:relative;margin:0 0 16px}.event:before{content:"";position:absolute;left:-22px;top:4px;width:10px;height:10px;background:var(--green);border-radius:50%}
-.empty{text-align:center;padding:28px;color:var(--muted)}.progress{height:9px;background:#e8ede9;border-radius:99px;overflow:hidden}.progress i{display:block;height:100%;background:var(--green2);border-radius:99px}.status-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:6px}.status-btn{border:1px solid var(--line);background:#f7f9f7;color:var(--text);border-radius:10px;padding:8px 4px;font-size:11px;font-weight:800}.status-btn.sel-ok{background:#e2f3e9;color:var(--ok);border-color:#b8dfc6}.status-btn.sel-att{background:#fff1d7;color:var(--warn);border-color:#efd39a}.status-btn.sel-bad{background:#f8e1df;color:var(--danger);border-color:#e9b7b3}.critical{border-left:4px solid var(--danger)}.critical-item{padding:10px 0;border-bottom:1px solid var(--line)}.critical-item:last-child{border-bottom:0}.thumb{width:72px;height:72px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}.photo-view{display:flex;gap:10px;align-items:center;margin-top:8px}.role-note{font-size:12px;color:#d8e4dd;margin-top:2px}.filters{display:grid;grid-template-columns:1fr 1fr;gap:8px}.toast{position:fixed;left:50%;bottom:78px;transform:translateX(-50%);background:#17201b;color:white;padding:11px 16px;border-radius:99px;display:none;z-index:20;font-size:13px}
-table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;padding:9px 6px;border-bottom:1px solid var(--line)}th{color:var(--muted)}
-.modal{position:fixed;inset:0;background:#0008;display:none;align-items:flex-end;justify-content:center;z-index:30;padding:12px}.modal.open{display:flex}.modal-card{width:100%;max-width:760px;max-height:82vh;overflow:auto;background:white;border-radius:20px;padding:18px;box-shadow:0 8px 30px #0004}.detail-row{padding:9px 0;border-bottom:1px solid var(--line)}.detail-row:last-child{border-bottom:0}.login{min-height:100vh;display:flex;align-items:center;padding:22px;background:linear-gradient(145deg,#173b2b,#2c6049)}.loginbox{width:100%;max-width:430px;margin:auto;background:white;border-radius:24px;padding:24px}.loginbox img{width:70px;height:70px;display:block;margin:0 auto 10px}.loginbox h2{text-align:center;margin:0}.loginbox p{text-align:center;color:var(--muted)}
-@media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}main{padding:20px}.bottom{position:sticky;bottom:0;border:1px solid var(--line);border-radius:16px;margin-bottom:12px}}
-</style>
-</head>
-<body>
-<div id="loginScreen" class="login">
-  <div class="loginbox">
-    <img src="logo-tangara.png"><h2>Tangará Zeladoria</h2><p>Controle de limpeza, conservação e manutenção</p>
-    <label>Nome</label><input id="loginName" placeholder="Digite seu nome">
-    <label>Perfil</label><select id="loginRole"><option>Colaborador</option><option>Síndico</option><option>Administradora</option></select>
-    <button class="btn full" style="margin-top:14px" onclick="doLogin()">Entrar</button>
-  </div>
-</div>
 
-<div id="app" class="app" style="display:none">
-<header class="top"><div class="brand"><img class="logo" src="logo-tangara.png"><div><h1>Tangará Zeladoria</h1><small id="userLabel"></small></div></div></header>
-<main>
-<section id="home" class="screen active">
-  <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div></div>
-  <div class="grid">
-    <div class="metric"><b id="mOk">0</b><span>Áreas conformes</span></div>
-    <div class="metric"><b id="mPending">0</b><span>Itens em atenção</span></div>
-    <div class="metric"><b id="mOcc">0</b><span>Ocorrências abertas</span></div>
-    <div class="metric"><b id="mPct">0%</b><span>Áreas concluídas</span></div>
-  </div>
-  <div class="card"><div class="row between"><div><h3 style="margin:0">Progresso das áreas</h3><div class="muted">Última inspeção registrada por área.</div></div><b id="todayLabel" class="muted"></b></div><div id="areaProgress"></div></div>
-  <div id="rolePanel"></div>
-  <div class="card"><div class="row between"><h3 style="margin:0">Áreas</h3><button class="btn secondary" onclick="show('check')">Ver checklist</button></div><div id="areaSummary"></div></div>
-  <div class="card critical" id="priorityPanel"></div>
-  <div class="card"><h3 style="margin-top:0">Ações rápidas</h3><div class="row wrap">
-    <button class="btn" onclick="show('check')">📋 Checklist</button>
-    <button class="btn gold" onclick="show('occ')">🔧 Nova ocorrência</button>
-    <button class="btn secondary" onclick="show('history')">🕘 Histórico</button>
-    <button class="btn secondary" onclick="show('pending')">⚠️ Pendências</button>
-  </div></div>
-</section>
-
-<section id="check" class="screen">
-  <div class="card"><div class="row between"><div><h2 style="margin:0">Checklist V12</h2><div class="muted">Avalie cada item após verificar a área.</div></div><select id="areaSelect" style="max-width:180px" onchange="renderChecklist()"></select></div><div id="checkMeta" class="muted" style="margin-top:10px"></div><div id="checkRule" class="card" style="margin:10px 0;background:#f7f9f7"></div><div id="checks"></div><div id="checkScore" class="muted" style="margin:10px 0"></div><label>Observação da área</label><textarea id="checkObs" placeholder="Ex.: piso limpo; lâmpada queimada; material a repor..."></textarea><button class="btn full" onclick="saveChecklist()">Salvar inspeção</button></div>
-</section>
-
-<section id="occ" class="screen">
-  <div class="card"><h2 style="margin-top:0">Nova ocorrência</h2>
-    <label>Área</label><select id="occArea"></select>
-    <label>Título</label><input id="occTitle" placeholder="Ex.: Lâmpada queimada">
-    <label>Prioridade</label><select id="occPriority"><option>Baixa</option><option selected>Média</option><option>Alta</option><option>Urgente</option></select>
-    <label>Descrição</label><textarea id="occDesc" placeholder="Descreva o problema e a ação necessária"></textarea>
-    <label>Foto</label><input id="occPhoto" type="file" accept="image/*" capture="environment">
-    <button class="btn gold full" style="margin-top:12px" onclick="saveOccurrence()">Registrar ocorrência</button>
-  </div>
-</section>
-
-<section id="pending" class="screen">
-  <div class="card"><div class="row between"><div><h2 style="margin:0">Pendências</h2><div class="muted">Itens em atenção ou não conformes nas últimas inspeções.</div></div><span class="pill pending" id="pendingCount">0</span></div>
-  <div class="filters" style="margin-top:10px"><select id="pendingArea" onchange="renderPending()"><option value="all">Todas as áreas</option></select><select id="pendingStatus" onchange="renderPending()"><option value="all">Todos os status</option><option>Atenção</option><option>Não conforme</option></select></div>
-  <div id="pendingList" style="margin-top:8px"></div></div>
-  <div class="card"><h3 style="margin-top:0">Ocorrências em aberto</h3><div id="pendingOccurrences"></div></div>
-</section>
-
-<section id="history" class="screen">
-  <div class="card"><div class="row between"><div><h2 style="margin:0">Histórico</h2><div class="muted">Inspeções e ocorrências registradas.</div></div><button class="btn secondary" onclick="exportCSV()">Exportar</button></div>
-  <label>Filtro</label><select id="histFilter" onchange="renderHistory()"><option value="all">Todos</option><option value="check">Inspeções</option><option value="occ">Ocorrências</option></select>
-  <div id="historyList"></div></div>
-</section>
-
-<section id="reports" class="screen">
-  <div class="card"><h2 style="margin-top:0">Relatórios</h2><div class="filters"><div><label>Período</label><select id="reportPeriod" onchange="renderReports()"><option value="7">Últimos 7 dias</option><option value="30" selected>Últimos 30 dias</option><option value="90">Últimos 90 dias</option><option value="all">Todo o histórico</option></select></div><div><label>Área</label><select id="reportArea" onchange="renderReports()"><option value="all">Todas as áreas</option></select></div></div><div class="grid" style="margin-top:10px">
-    <div class="metric"><b id="rInspections">0</b><span>Inspeções</span></div><div class="metric"><b id="rOcc">0</b><span>Ocorrências</span></div><div class="metric"><b id="rOpen">0</b><span>Em aberto</span></div><div class="metric"><b id="rResolved">0</b><span>Resolvidas</span></div>
-  </div></div>
-  <div class="card"><h3 style="margin-top:0">Ocorrências por área</h3><div id="areaReport"></div></div>
-  <div class="card"><h3 style="margin-top:0">Visão gerencial</h3><div class="grid">
-    <div class="metric"><b id="rCompliance">0%</b><span>Conformidade média</span></div>
-    <div class="metric"><b id="rAttention">0</b><span>Itens em atenção</span></div>
-    <div class="metric"><b id="rBad">0</b><span>Não conformes</span></div>
-    <div class="metric"><b id="rPriority">0</b><span>Alta/urgente abertas</span></div>
-  </div><div id="areaCompliance" style="margin-top:8px"></div></div>
-  <div class="card"><h3 style="margin-top:0">Últimas ocorrências</h3><div id="recentOccReport"></div></div>
-</section>
-
-<section id="more" class="screen">
-  <div class="card"><h2 style="margin-top:0">Mais</h2><div class="muted">Acesse histórico, relatórios e seu perfil.</div></div>
-  <div class="card">
-    <button class="btn secondary full" onclick="show('history')" style="margin-bottom:10px">🕘 Histórico</button>
-    <button class="btn secondary full" onclick="show('reports')" style="margin-bottom:10px">📊 Relatórios</button>
-    <button class="btn secondary full" onclick="show('pending')" style="margin-bottom:10px">⚠️ Pendências</button>
-    <button class="btn secondary full" onclick="show('profile')">👤 Perfil e acesso</button>
-  </div>
-</section>
-
-<section id="profile" class="screen">
-  <div class="card"><h2 style="margin-top:0">Perfil</h2><p><b id="profileName"></b><br><span class="muted" id="profileRole"></span></p><button class="btn danger full" onclick="logout(event)">Sair do aplicativo</button></div>
-  <div class="card"><h3 style="margin-top:0">Sobre a V12</h3><p class="muted">Gestão de pendências, ligação entre inspeções e ocorrências, filtros por área e status, proteção contra registros duplicados e ocorrências com foto. Os registros continuam armazenados no aparelho.</p></div>
-</section>
-</main>
-<nav class="bottom">
-<button class="nav active" data-s="home" onclick="show('home')"><span>⌂</span>Início</button>
-<button class="nav" data-s="check" onclick="show('check')"><span>✓</span>Checklist</button>
-<button class="nav" data-s="occ" onclick="show('occ')"><span>🔧</span>Ocorrências</button>
-<button class="nav" data-s="more" onclick="show('more')"><span>☷</span>Mais</button>
-</nav>
-</div>
-<div id="inspectionModal" class="modal" onclick="closeInspection(event)"><div class="modal-card" onclick="event.stopPropagation()"><div class="row between"><h2 style="margin:0">Detalhes da inspeção</h2><button class="btn secondary" onclick="closeInspection()">Fechar</button></div><div id="inspectionDetail" style="margin-top:10px"></div></div></div><div id="toast" class="toast"></div>
-
-<script>
 const AREAS=["Hall e corredores","Salão de festas","Salão gourmet","Academia","Salão de jogos","Brinquedoteca","Garagem","Áreas externas"];
 const AREA_RULES={
 "Hall e corredores":"Manter circulação livre, limpa e bem iluminada.",
@@ -151,11 +20,11 @@ const ITEMS={
 "Garagem":["Piso e circulação em ordem","Iluminação funcionando","Sinalização preservada","Lixeiras/área organizada","Acessos e portões em condições aparentes","Sem obstáculos nas áreas de circulação"],
 "Áreas externas":["Calçadas e acessos limpos","Jardins e áreas verdes em ordem","Lixeiras higienizadas","Iluminação externa funcionando","Mobiliário externo organizado","Sem obstáculos ou resíduos aparentes"]
 };
-const V12_KEY="tangaraV12";
+const V11_KEY="tangaraV11";
 const V10_KEY="tangaraV10";
 const V9_KEY="tangaraV9";
 function migrateDB(){
-  let raw=localStorage.getItem(V12_KEY)||localStorage.getItem(V10_KEY)||localStorage.getItem(V9_KEY)||localStorage.getItem("tangaraV8")||localStorage.getItem("tangaraV6")||localStorage.getItem("tangaraV5")||localStorage.getItem("tangaraV4");
+  let raw=localStorage.getItem(V11_KEY)||localStorage.getItem(V10_KEY)||localStorage.getItem(V9_KEY)||localStorage.getItem("tangaraV8")||localStorage.getItem("tangaraV6")||localStorage.getItem("tangaraV5")||localStorage.getItem("tangaraV4");
   let parsed={inspections:[],occurrences:[]};
   try{parsed=raw?JSON.parse(raw):parsed}catch(e){}
   parsed.inspections=Array.isArray(parsed.inspections)?parsed.inspections:[];
@@ -168,9 +37,9 @@ function migrateDB(){
   return parsed;
 }
 let db=migrateDB();
-localStorage.setItem(V12_KEY,JSON.stringify(db));
+localStorage.setItem(V11_KEY,JSON.stringify(db));
 let user=JSON.parse(localStorage.getItem("tangaraUser")||"null");
-function persist(){localStorage.setItem(V12_KEY,JSON.stringify(db))}
+function persist(){localStorage.setItem(V11_KEY,JSON.stringify(db))}
 function toast(t){let e=document.getElementById("toast");e.textContent=t;e.style.display="block";setTimeout(()=>e.style.display="none",2200)}
 function doLogin(){
   try{
@@ -209,8 +78,6 @@ function fillAreas(){
   const opts=AREAS.map(a=>`<option>${a}</option>`).join("");
   areaSelectEl.innerHTML=opts;
   occAreaEl.innerHTML=opts;
-  const pendingAreaEl=document.getElementById("pendingArea");
-  if(pendingAreaEl) pendingAreaEl.innerHTML=`<option value="all">Todas as áreas</option>`+opts;
   const reportAreaEl=document.getElementById("reportArea");
   if(reportAreaEl) reportAreaEl.innerHTML=`<option value="all">Todas as áreas</option>`+opts;
   renderChecklist();
@@ -220,7 +87,6 @@ function show(id){
   document.getElementById(id).classList.add("active");
   document.querySelectorAll(".nav").forEach(x=>x.classList.toggle("active",x.dataset.s===id));
   if(id==="history")renderHistory();
-  if(id==="pending")renderPending();
   if(id==="reports")renderReports();
   if(id==="check")renderChecklist();
   if(id==="home")renderHome();
@@ -274,28 +140,6 @@ function saveChecklist(){
 }
 
 function fmt(date){return new Date(date).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"})}
-function createOccurrenceFromPending(area,item,status){
-  const areaEl=document.getElementById("occArea"),titleEl=document.getElementById("occTitle"),priorityEl=document.getElementById("occPriority"),descEl=document.getElementById("occDesc");
-  if(areaEl) areaEl.value=area;
-  if(titleEl) titleEl.value=item;
-  if(priorityEl) priorityEl.value=status==='Não conforme'?'Alta':'Média';
-  if(descEl) descEl.value=`Pendência identificada na inspeção: ${item}. Status: ${status}.`;
-  show('occ');
-  toast('Ocorrência preparada a partir da pendência');
-}
-function renderPending(){
-  const area=document.getElementById('pendingArea')?.value||'all', statusFilter=document.getElementById('pendingStatus')?.value||'all';
-  const latestByArea=Object.fromEntries(AREAS.map(a=>[a,db.inspections.find(i=>i.area===a && Number(i.total)===ITEMS[a].length)]));
-  const rows=[];
-  AREAS.forEach(a=>{if(area!=='all'&&a!==area)return; const ins=latestByArea[a]; (ins?.items||[]).forEach(it=>{if(it.status==='Pendente'||(statusFilter!=='all'&&it.status!==statusFilter))return; if(it.status==='Atenção'||it.status==='Não conforme') rows.push({area:a,item:it.item,status:it.status,date:ins.date,user:ins.user,inspectionId:ins.id});});});
-  rows.sort((a,b)=>new Date(b.date)-new Date(a.date));
-  const list=document.getElementById('pendingList');
-  document.getElementById('pendingCount').textContent=rows.length;
-  list.innerHTML=rows.length?rows.map(x=>`<div class="critical-item"><div class="row between"><div><b>${x.item}</b><div class="muted">${x.area} • ${fmt(x.date)} • ${x.user}</div></div><span class="pill ${x.status==='Não conforme'?'bad':'pending'}">${x.status}</span></div><button class="btn gold full" style="margin-top:8px" onclick="createOccurrenceFromPending(${JSON.stringify(x.area)},${JSON.stringify(x.item)},${JSON.stringify(x.status)})">🔧 Criar ocorrência</button></div>`).join(''):'<div class="empty">Nenhuma pendência encontrada nos filtros selecionados.</div>';
-  const occ=[...db.occurrences].filter(x=>x.status!=='Resolvida'&&(area==='all'||x.area===area)).sort((a,b)=>new Date(b.date)-new Date(a.date));
-  document.getElementById('pendingOccurrences').innerHTML=occ.length?occ.map(x=>`<div class="area"><div><b>${x.title}</b><div class="muted">${x.area} • ${x.priority} • ${fmt(x.date)}</div></div><button class="btn secondary" onclick="show('history')">Ver</button></div>`).join(''):'<div class="empty">Nenhuma ocorrência em aberto.</div>';
-}
-
 function renderHistory(){
   const el=document.getElementById("historyList");
   if(!el)return;
@@ -458,16 +302,10 @@ function renderHome(){
     priorityPanel.innerHTML=`<h3 style="margin-top:0">Pendências prioritárias</h3>${priority.length?priority.map(x=>`<div class="critical-item"><div class="row between"><b>🔧 ${x.title}</b><span class="pill bad">${x.priority}</span></div><div class="muted">${x.area} • ${fmt(x.date)}</div></div>`).join(''):'<div class="muted">Nenhuma ocorrência de prioridade alta ou urgente em aberto.</div>'}`;
   }
 
-  const inspectionPendencies=[]; AREAS.forEach(a=>{const ins=latestByArea[a]; (ins?.items||[]).forEach(it=>{if(it.status==='Atenção'||it.status==='Não conforme') inspectionPendencies.push({area:a,item:it.item,status:it.status});});});
-  if(priorityPanel && inspectionPendencies.length){ priorityPanel.innerHTML += `<div style="margin-top:12px"><div class="row between"><b>Itens da inspeção que exigem atenção</b><button class="btn secondary" onclick="show('pending')">Ver todas</button></div>${inspectionPendencies.slice(0,3).map(x=>`<div class="critical-item"><div class="row between"><span>${x.area} — ${x.item}</span><span class="pill ${x.status==='Não conforme'?'bad':'pending'}">${x.status}</span></div></div>`).join('')}</div>`; }
-
   document.getElementById("todayLabel").textContent=new Date().toLocaleDateString("pt-BR");
   document.getElementById("areaSummary").innerHTML=AREAS.map(a=>{let x=latestByArea[a];let status=!x?"Pendente":x.ok===x.total?"Conforme":(x.bad||0)>0?"Não conforme":"Atenção";let cls=status==='Conforme'?'ok':status==='Não conforme'?'bad':'pending';return `<div class="area"><b>${a}</b><span class="pill ${cls}">${status}</span></div>`}).join("");
   document.getElementById("areaProgress").innerHTML=AREAS.map(a=>{let x=latestByArea[a],pct=x?Math.round(x.ok/x.total*100):0;return `<div style="padding:9px 0"><div class="row between"><span style="font-size:13px;font-weight:700">${a}</span><span class="muted">${pct}%</span></div><div class="progress"><i style="width:${pct}%"></i></div></div>`}).join("");
 }
-function refresh(){renderHome();renderReports();renderHistory();renderPending()}
+function refresh(){renderHome();renderReports();renderHistory()}
 if(user)start();
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=120",{updateViaCache:"none"}).catch(()=>{});
-</script>
-</body>
-</html>
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=110",{updateViaCache:"none"}).catch(()=>{});
