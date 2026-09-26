@@ -1,15 +1,8 @@
-# Tangará Zeladoria V26
+# Tangará Zeladoria — V28
 
-Evolução da V25 com foco em um painel mais intuitivo e orientado à ação.
-
-## Novidades
-- Painel "O que precisa de atenção" prioriza ocorrências urgentes, ocorrências abertas, inspeções e compras pendentes.
-- Nova área "Pendências prioritárias" reúne ocorrências de alta/urgente, itens de inspeção e materiais aguardando compra.
-- Quando não há pendências prioritárias, a tela informa claramente "Tudo em ordem".
-- Atalhos e indicadores da V25 foram preservados.
-- Mantidos os fluxos validados: ocorrências Aberta/Resolvida, materiais, compras, data/observação e exportações.
-- Perfil Síndico disponível no login.
-- Logo atual do Tangará Residencial preservado.
-
-
-V27: painel de ação visualmente destacado e cache-bust atualizado.
+## V28 — Ícone do aplicativo / PWA
+- Novo ícone de área de trabalho baseado na imagem enviada pelo usuário.
+- Ícones 192x192, 512x512, Apple Touch Icon e favicon.
+- Manifest PWA configurado para instalação como aplicativo.
+- Service Worker com cache identificado como V28 para atualização mais confiável.
+- Mantidas as funcionalidades e a interface operacional da V27.
