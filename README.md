@@ -1,32 +1,65 @@
-# Tangará Zeladoria V53.1 — Fundação Central
+# Tangará Zeladoria V53.2 — Sistema Central Conectável
 
-A V53.1 parte do código visual/funcional da V51 e prepara a arquitetura para uso multi-dispositivo.
+A V53.2 transforma a fundação da V53.1 em uma aplicação preparada para autenticação e sincronização reais com Supabase, mantendo o modo local como fallback enquanto o backend não estiver configurado.
 
-## O que foi preservado
-- Identidade Tangará Residencial e fundo fornecido.
-- Perfis Síndico, Colaborador e Morador.
-- Status de ocorrência: Aberta / Resolvida.
-- Reabertura de ocorrência.
-- Pendências, checklist, materiais, histórico e exportações.
-- Regras de acesso já definidas no aplicativo.
+## O que entra nesta versão
 
-## O que entra nesta etapa
-- Estrutura PostgreSQL central em `supabase-schema.sql`.
-- Modelo de autenticação central baseado no Supabase Auth.
-- Perfis ligados ao condomínio.
-- Ocorrências, materiais, inspeções e compras preparados para dados compartilhados.
-- Fotos preparadas para armazenamento em bucket privado.
-- `supabase-config.example.js` como configuração inicial.
+- Login central via Supabase Auth (e-mail + senha).
+- Sessão persistente entre Android, iPhone e navegador.
+- Perfil central: Síndico, Colaborador ou Morador.
+- Carregamento central de ocorrências, materiais, inspeções e compras.
+- Criação/edição de ocorrências no banco central.
+- Dar baixa e reabrir ocorrências no banco central.
+- Checklist/inspeções gravados no banco central.
+- Materiais de ocorrência gravados no banco central.
+- Compras sincronizadas para o perfil Síndico.
+- Fotos de ocorrências preparadas para bucket privado `occurrence-photos`.
+- Senha alterada pelo Supabase Auth.
+- PWA/cache atualizado para V53.2.
 
-## Importante
-Esta entrega é a fundação do backend. O aplicativo ainda permanece em modo local até que o projeto Supabase seja criado e configurado. Não coloque uma chave de serviço (service_role) no aplicativo.
+## Como ativar o modo central
+
+1. Crie um projeto no Supabase.
+2. Abra o SQL Editor e execute `supabase-schema.sql` completo.
+3. Crie um bucket privado chamado `occurrence-photos`.
+4. Crie o condomínio em `public.condominiums`.
+5. Crie os usuários em **Authentication → Users** usando e-mail e senha.
+6. Para cada usuário criado, insira seu perfil em `public.profiles`, usando o mesmo UUID do usuário Auth. Exemplo:
+
+```sql
+insert into public.profiles (id, condominium_id, username, full_name, role)
+values (
+  'UUID_DO_USUARIO_AUTH',
+  'UUID_DO_CONDOMINIO',
+  'nome.usuario',
+  'Nome do Usuário',
+  'Colaborador'
+);
+```
+
+7. Copie `supabase-config.example.js` para `supabase-config.js` e informe a URL e a chave **anon/public**.
+8. Publique os arquivos no mesmo domínio do PWA.
+
+## Login
+
+No modo central, a tela de login usa **e-mail + senha** porque a autenticação é feita pelo Supabase Auth. O campo `username` continua existindo no perfil para identificação dentro do aplicativo.
+
+## Segurança
+
+- Nunca coloque `service_role` no aplicativo.
+- O acesso aos dados depende do usuário autenticado e das políticas RLS.
+- Morador pode criar ocorrência, mas não editar ocorrência existente, materiais ou inspeções.
+- Colaborador pode operar ocorrências e checklist.
+- Síndico possui acesso gerencial e às exportações.
+
+## Importante sobre usuários
+
+No modo central, criação, ativação/desativação e redefinição de senha devem ser feitas pelo fluxo administrativo do Supabase. O aplicativo não guarda senhas locais quando o backend está ativo.
+
+## Fallback local
+
+Enquanto `supabase-config.js` estiver com `enabled: false`, o aplicativo continua funcionando no modo local para testes. Esse modo não compartilha dados entre dispositivos e não deve ser tratado como produção.
 
 ## Próximo passo
-1. Criar um projeto Supabase.
-2. Executar `supabase-schema.sql` no SQL Editor.
-3. Criar o bucket privado `occurrence-photos`.
-4. Configurar `supabase-config.js` a partir do exemplo.
-5. Na V53.2, ligar login, ocorrências, inspeções, materiais e fotos à API central.
 
-## Teste atual
-O login local continua disponível enquanto o backend não estiver conectado. Isso evita bloquear os testes do aplicativo durante a migração.
+**V53.3 — migração assistida dos dados locais existentes e teste de sincronização em dois celulares.**

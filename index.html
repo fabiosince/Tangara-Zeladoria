@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#124a35">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Tangará Zeladoria V53.1</title>
+<title>Tangará Zeladoria V53.2</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
 .priority-hero{border:2px solid var(--green2);box-shadow:0 8px 24px rgba(23,59,43,.10)} .priority-hero .critical-item{padding:12px 0;border-top:1px solid var(--line)} .priority-hero .critical-item:first-of-type{border-top:0} .priority-hero .priority-badge{font-size:12px;font-weight:700;letter-spacing:.02em}
@@ -70,7 +70,7 @@ input,select,textarea{border-radius:13px;border-color:#d7e3da;outline:none}input
 <div id="loginScreen" class="login">
   <div class="loginbox">
     <img src="logo-tangara.png"><h2>Tangará Zeladoria</h2><p>Controle de limpeza, conservação e manutenção</p>
-    <label>Usuário</label><input id="loginUsername" autocomplete="username" placeholder="Digite seu usuário">
+    <label id="loginUserLabel">Usuário</label><input id="loginUsername" autocomplete="username" placeholder="Digite seu usuário">
     <label>Senha</label><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Digite sua senha" onkeydown="if(event.key==='Enter')doLogin()">
     <button class="btn full" style="margin-top:14px" onclick="doLogin()">Entrar</button>
     <div id="loginError" class="role-hint" style="color:var(--danger);display:none"></div>
@@ -79,10 +79,10 @@ input,select,textarea{border-radius:13px;border-color:#d7e3da;outline:none}input
 </div>
 
 <div id="app" class="app" style="display:none">
-<header class="top"><div class="brand"><img class="logo" src="logo-tangara.png"><div><h1>Tangará Zeladoria</h1><small id="userLabel"></small><small style="display:block;font-size:10px;opacity:.65;margin-top:2px">V53.1</small></div></div></header>
+<header class="top"><div class="brand"><img class="logo" src="logo-tangara.png"><div><h1>Tangará Zeladoria</h1><small id="userLabel"></small><small style="display:block;font-size:10px;opacity:.65;margin-top:2px">V53.2</small></div></div></header>
 <main>
 <section id="home" class="screen active">
-  <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div><div class="muted" style="font-size:11px;margin-top:6px;opacity:.7">Painel V53.1</div></div>
+  <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div><div class="muted" style="font-size:11px;margin-top:6px;opacity:.7">Painel V53.2</div></div>
   <div class="card" id="focusPanel"></div>
   <div class="card priority-hero" id="priorityPanel"></div>
   <div class="grid" id="dashboardMetrics">
@@ -210,7 +210,7 @@ input,select,textarea{border-radius:13px;border-color:#d7e3da;outline:none}input
     <label>Senha inicial</label><input id="newUserPassword" type="password" autocomplete="new-password" placeholder="Mínimo 6 caracteres">
     <button class="btn full" onclick="createUser()">➕ Criar usuário</button>
   </div>
-  <div class="card"><h3 style="margin-top:0">Sobre a V53.1</h3><p class="muted">A V53.1 prepara o aplicativo para autenticação e dados centralizados. O modo atual continua local até a configuração do backend central.</p></div>
+  <div class="card"><h3 style="margin-top:0">Sobre a V53.2</h3><p class="muted">A V53.2 prepara o aplicativo para autenticação e dados centralizados. O modo atual continua local até a configuração do backend central.</p></div>
 </section>
 </main>
 <nav class="bottom">
@@ -222,7 +222,125 @@ input,select,textarea{border-radius:13px;border-color:#d7e3da;outline:none}input
 </div>
 <div id="materialsModal" class="modal" onclick="closeMaterialsModal(event)"><div class="modal-card" onclick="event.stopPropagation()"><div class="row between"><h2 style="margin:0">Materiais da ocorrência</h2><button class="btn secondary" onclick="closeMaterialsModal()">Fechar</button></div><div id="materialsModalBody" style="margin-top:10px"></div></div></div><div id="inspectionModal" class="modal" onclick="closeInspection(event)"><div class="modal-card" onclick="event.stopPropagation()"><div class="row between"><h2 style="margin:0">Detalhes da inspeção</h2><button class="btn secondary" onclick="closeInspection()">Fechar</button></div><div id="inspectionDetail" style="margin-top:10px"></div></div></div><div id="toast" class="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
+<script>
+const CENTRAL_ENABLED=!!(window.TANGARA_BACKEND?.enabled && window.TANGARA_BACKEND?.url && window.TANGARA_BACKEND?.anonKey && !String(window.TANGARA_BACKEND.url).includes("SEU-PROJETO"));
+let supabaseClient=null;
+let centralProfile=null;
+let centralReady=false;
+if(CENTRAL_ENABLED && window.supabase?.createClient){
+  supabaseClient=window.supabase.createClient(window.TANGARA_BACKEND.url,window.TANGARA_BACKEND.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+}
+function isCentral(){return !!supabaseClient && CENTRAL_ENABLED;}
+function centralErrorMessage(err){
+  const msg=String(err?.message||err||"Erro desconhecido");
+  if(/Invalid login credentials/i.test(msg))return "Usuário ou senha inválidos.";
+  if(/Email not confirmed/i.test(msg))return "A conta ainda não foi confirmada no sistema central.";
+  if(/JWT|token|session/i.test(msg))return "Sua sessão expirou. Entre novamente.";
+  return msg;
+}
+async function centralSignIn(username,password){
+  const email=String(username||"").trim().toLowerCase();
+  if(!isCentral())return false;
+  const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+  if(error)throw error;
+  const authUser=data.user;
+  if(!authUser)throw new Error("Sessão não criada.");
+  const {data:profile,error:profileError}=await supabaseClient.from("profiles").select("id,condominium_id,username,full_name,role,active").eq("id",authUser.id).single();
+  if(profileError)throw profileError;
+  if(!profile?.active) {await supabaseClient.auth.signOut();throw new Error("Este usuário está desativado.");}
+  centralProfile=profile;
+  user={id:authUser.id,username:profile.username||email,name:profile.full_name,role:profile.role,condominiumId:profile.condominium_id};
+  localStorage.setItem(SESSION_KEY,JSON.stringify(user));
+  return true;
+}
+async function signedPhotoUrl(path){
+  if(!path)return "";
+  if(!isCentral())return path;
+  const {data,error}=await supabaseClient.storage.from("occurrence-photos").createSignedUrl(path,86400);
+  if(error){console.warn("Foto privada não pôde ser aberta",error);return "";}
+  return data?.signedUrl||"";
+}
+function dataUrlToBlob(dataUrl){
+  const parts=String(dataUrl||"").split(",");
+  if(parts.length<2)return null;
+  const mime=(parts[0].match(/:(.*?);/)||[])[1]||"image/jpeg";
+  const bin=atob(parts[1]); const arr=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);
+  return new Blob([arr],{type:mime});
+}
+async function uploadOccurrencePhoto(dataUrl){
+  if(!isCentral() || !dataUrl)return "";
+  const blob=dataUrlToBlob(dataUrl); if(!blob)throw new Error("Foto inválida.");
+  const path=`${centralProfile.condominium_id}/${centralProfile.id}/${crypto.randomUUID?.()||Date.now()}.jpg`;
+  const {error}=await supabaseClient.storage.from("occurrence-photos").upload(path,blob,{contentType:"image/jpeg",upsert:false});
+  if(error)throw error;
+  return path;
+}
+function mapCentralOccurrence(row,photo){
+  return {id:row.id,type:"occ",date:row.created_at,user:row.created_by===centralProfile?.id?(centralProfile?.full_name||user?.name||"Usuário"):"Usuário",created_by:row.created_by||null,area:row.area,title:row.title,priority:row.priority,desc:row.description||"",photo:photo||"",photo_path:row.photo_path||"",status:row.status,resolvedAt:row.resolved_at||"",resolvedBy:row.resolved_by||"",materials:[]};
+}
+async function loadCentralData(){
+  if(!isCentral()||!centralProfile)return;
+  const cid=centralProfile.condominium_id;
+  const [occRes,matRes,insRes,purRes]=await Promise.all([
+    supabaseClient.from("occurrences").select("*").eq("condominium_id",cid).order("created_at",{ascending:false}),
+    supabaseClient.from("occurrence_materials").select("*").order("created_at",{ascending:true}),
+    supabaseClient.from("inspections").select("*").eq("condominium_id",cid).order("created_at",{ascending:false}),
+    supabaseClient.from("purchase_items").select("*").eq("condominium_id",cid)
+  ]);
+  for(const r of [occRes,matRes,insRes,purRes])if(r.error)throw r.error;
+  const occRows=occRes.data||[]; const matRows=matRes.data||[];
+  const photoPairs=await Promise.all(occRows.map(async r=>[r.id,await signedPhotoUrl(r.photo_path)]));
+  const photoMap=Object.fromEntries(photoPairs);
+  const matsByOcc={};
+  matRows.forEach(m=>{(matsByOcc[m.occurrence_id] ||= []).push({name:m.name,qty:Number(m.quantity)||0,unit:m.unit||"un"});});
+  db.occurrences=occRows.map(r=>{const o=mapCentralOccurrence(r,photoMap[r.id]);o.materials=matsByOcc[r.id]||[];return o;});
+  db.inspections=(insRes.data||[]).map(r=>({id:r.id,type:"check",date:r.created_at,user:centralProfile?.full_name||"Usuário",area:r.area,ok:r.ok,total:r.total,attention:r.attention,bad:r.bad,obs:r.observation||"",items:Array.isArray(r.items)?r.items:[],signature:[r.area,r.created_by||"",r.ok,r.attention,r.bad,r.observation||"",JSON.stringify(r.items||[])].join("|")}));
+  purchaseData={};
+  (purRes.data||[]).forEach(r=>{purchaseData[purchaseKey(r.material,r.unit)]={status:r.status,purchasedAt:r.purchased_at||"",note:r.note||""};});
+  persist(); persistPurchases(); centralReady=true; refresh();
+}
+async function centralInsertInspection(payload){
+  const {data,error}=await supabaseClient.from("inspections").insert({condominium_id:centralProfile.condominium_id,created_by:centralProfile.id,area:payload.area,total:payload.total,ok:payload.ok,attention:payload.attention,bad:payload.bad,observation:payload.obs||"",items:payload.items}).select().single();
+  if(error)throw error; return data;
+}
+async function centralUpsertOccurrence(o,{newRecord=false,photoDataUrl="",materials=null}={}){
+  let photoPath=o.photo_path||"";
+  if(photoDataUrl)photoPath=await uploadOccurrencePhoto(photoDataUrl);
+  const row={condominium_id:centralProfile.condominium_id,created_by:o.created_by||centralProfile.id,area:o.area,title:o.title,priority:o.priority,description:o.desc||"",status:o.status||"Aberta",photo_path:photoPath||null,resolved_at:o.resolvedAt||null,resolved_by:o.resolvedBy||null,updated_at:new Date().toISOString()};
+  if(newRecord){
+    const {data,error}=await supabaseClient.from("occurrences").insert(row).select().single();
+    if(error)throw error; o.id=data.id; o.date=data.created_at; o.photo_path=data.photo_path||"";
+  }else{
+    const {data,error}=await supabaseClient.from("occurrences").update(row).eq("id",o.id).select().single();
+    if(error)throw error; o.date=data.created_at; o.photo_path=data.photo_path||"";
+  }
+  if(materials!==null){
+    const {error:delError}=await supabaseClient.from("occurrence_materials").delete().eq("occurrence_id",o.id);
+    if(delError)throw delError;
+    if(materials.length){
+      const rows=materials.map(m=>({occurrence_id:o.id,name:m.name,quantity:Number(m.qty)||0,unit:m.unit||"un"}));
+      const {error:matError}=await supabaseClient.from("occurrence_materials").insert(rows);
+      if(matError)throw matError;
+    }
+  }
+  const signed=await signedPhotoUrl(o.photo_path); o.photo=signed; o.materials=materials!==null?materials:o.materials||[];
+  return o;
+}
+async function centralUpdateStatus(id,status){
+  const patch={status,updated_at:new Date().toISOString(),resolved_at:status==="Resolvida"?new Date().toISOString():null,resolved_by:status==="Resolvida"?centralProfile.id:null};
+  const {data,error}=await supabaseClient.from("occurrences").update(patch).eq("id",id).eq("condominium_id",centralProfile.condominium_id).select().single();
+  if(error)throw error; return data;
+}
+async function centralUpsertPurchase(material,unit,meta){
+  const row={condominium_id:centralProfile.condominium_id,material,unit,status:meta.status||"Pendente",purchased_at:meta.purchasedAt||null,note:meta.note||"",updated_by:centralProfile.id,updated_at:new Date().toISOString()};
+  const {error}=await supabaseClient.from("purchase_items").upsert(row,{onConflict:"condominium_id,material,unit"});
+  if(error)throw error;
+}
+async function centralChangePassword(next){const {error}=await supabaseClient.auth.updateUser({password:next});if(error)throw error;}
+</script>
 <script>
 let editingOccurrenceId=null;
 const AREAS=["Hall e corredores","Salão de festas","Salão gourmet","Academia","Salão de jogos","Brinquedoteca","Garagem","Áreas externas"];
@@ -316,50 +434,67 @@ function getAuthUsers(){
   localStorage.setItem(AUTH_KEY,JSON.stringify(DEFAULT_USERS));
   return DEFAULT_USERS.slice();
 }
+function updateLoginMode(){
+  const label=document.getElementById("loginUserLabel"),input=document.getElementById("loginUsername"),help=document.querySelector(".login-help");
+  if(isCentral()){if(label)label.textContent="E-mail";if(input){input.type="email";input.autocomplete="email";input.placeholder="Digite seu e-mail cadastrado";}if(help)help.textContent="Acesso centralizado por e-mail e senha.";}
+}
+updateLoginMode();
 function showLoginError(msg){
   const e=document.getElementById("loginError");
   if(e){e.textContent=msg;e.style.display=msg?"block":"none";}
 }
-function doLogin(){
+async function doLogin(){
   try{
     const username=(document.getElementById("loginUsername")?.value||"").trim().toLowerCase();
     const password=document.getElementById("loginPassword")?.value||"";
     showLoginError("");
     if(!username||!password){showLoginError("Informe usuário e senha.");return}
+    if(isCentral()){
+      await centralSignIn(username,password);
+      await start();
+      return;
+    }
     const account=getAuthUsers().find(x=>String(x.username).toLowerCase()===username&&x.password===password);
     if(!account){showLoginError("Usuário ou senha inválidos.");return}
     if(account.active===false){showLoginError("Este usuário está desativado.");return}
     user={username:account.username,name:account.name,role:account.role};
     localStorage.setItem(SESSION_KEY,JSON.stringify(user));
-    start();
-  }catch(err){
-    console.error(err);
-    showLoginError("Não foi possível entrar. Tente novamente.");
-  }
+    await start();
+  }catch(err){console.error(err);showLoginError(centralErrorMessage(err)||"Não foi possível entrar. Tente novamente.");}
 }
-function logout(e){
+async function logout(e){
   if(e)e.preventDefault();
+  if(isCentral()){try{await supabaseClient.auth.signOut()}catch(err){console.warn(err)}}
   localStorage.removeItem(SESSION_KEY);
-  user=null;
+  user=null; centralProfile=null; centralReady=false;
   location.reload();
 }
 
 function saveAuthUsers(users){ localStorage.setItem(AUTH_KEY,JSON.stringify(users)); }
-function changeMyPassword(){
+async function changeMyPassword(){
   if(!user?.username){return}
   const current=document.getElementById("currentPassword")?.value||"", next=document.getElementById("newPassword")?.value||"", confirm=document.getElementById("confirmPassword")?.value||"";
-  const users=getAuthUsers(), idx=users.findIndex(x=>String(x.username).toLowerCase()===String(user.username).toLowerCase());
-  if(idx<0){toast("Usuário não encontrado");return}
-  if(users[idx].password!==current){toast("Senha atual incorreta");return}
   if(next.length<6){toast("A nova senha deve ter pelo menos 6 caracteres");return}
   if(next!==confirm){toast("As senhas novas não conferem");return}
-  users[idx].password=next; saveAuthUsers(users);
-  document.getElementById("currentPassword").value="";document.getElementById("newPassword").value="";document.getElementById("confirmPassword").value="";
-  toast("Senha alterada com sucesso");
+  try{
+    if(isCentral()){await centralChangePassword(next);}
+    else{
+      const users=getAuthUsers(), idx=users.findIndex(x=>String(x.username).toLowerCase()===String(user.username).toLowerCase());
+      if(idx<0){toast("Usuário não encontrado");return}
+      if(users[idx].password!==current){toast("Senha atual incorreta");return}
+      users[idx].password=next; saveAuthUsers(users);
+    }
+    document.getElementById("currentPassword").value="";document.getElementById("newPassword").value="";document.getElementById("confirmPassword").value="";
+    toast("Senha alterada com sucesso");
+  }catch(err){toast(centralErrorMessage(err));}
 }
 function renderUserAdmin(){
   const card=document.getElementById("userAdminCard"); if(!card)return;
   const allowed=user?.role==="Síndico"; card.style.display=allowed?"block":"none"; if(!allowed)return;
+  if(isCentral()){
+    card.innerHTML='<h3 style="margin-top:0">👥 Gestão de usuários</h3><div class="muted">No modo central, contas e senhas são administradas no Supabase. O aplicativo não armazena nem redefine senhas localmente.</div>';
+    return;
+  }
   const list=document.getElementById("userAdminList"), users=getAuthUsers();
   list.innerHTML=users.map((x,i)=>`<div class="area" style="margin-bottom:7px"><div><b>${x.name}</b><div class="muted">@${x.username} • ${x.role} • ${x.active===false?'Desativado':'Ativo'}</div></div><div class="row" style="gap:6px"><button class="btn secondary" onclick="resetUserPassword(${i})">🔑 Resetar</button><button class="btn ${x.active===false?'gold':'danger'}" onclick="toggleUserActive(${i})">${x.active===false?'Ativar':'Desativar'}</button></div></div>`).join('');
 }
@@ -401,13 +536,14 @@ function persistPurchases(){localStorage.setItem(V22_PURCHASE_KEY,JSON.stringify
 function purchaseKey(material,unit){return `${materialKey(material)}|${String(unit||"un").trim().toLowerCase()}`}
 function getPurchaseMeta(material,unit){const k=purchaseKey(material,unit);if(!purchaseData[k])purchaseData[k]={status:"Pendente",purchasedAt:"",note:""};return purchaseData[k]}
 function todayISO(){return new Date().toISOString().slice(0,10)}
-function updatePurchaseField(material,unit,field,value){
-  if(user?.role==="Morador"){toast("Morador não tem acesso ao controle de materiais.");return;}
-  const m=getPurchaseMeta(material,unit);
-  m[field]=value;
+async function updatePurchaseField(material,unit,field,value){
+  if(user?.role!=="Síndico"){toast("Somente o Síndico pode controlar compras.");return;}
+  const m=getPurchaseMeta(material,unit); m[field]=value;
   if(field==="status" && value==="Comprado" && !m.purchasedAt)m.purchasedAt=todayISO();
   if(field==="status" && value==="Pendente")m.purchasedAt="";
-  persistPurchases(); renderMaterials();
+  persistPurchases();
+  if(isCentral()){try{await centralUpsertPurchase(material,unit,m);toast("Compra atualizada no sistema central");}catch(err){toast("Falha ao sincronizar compra: "+centralErrorMessage(err));}}
+  renderMaterials();
 }
 function purchaseStats(){
   const arr=consolidatedMaterials(); let pending=0,bought=0;
@@ -416,7 +552,7 @@ function purchaseStats(){
 }
 function toast(t){let e=document.getElementById("toast");e.textContent=t;e.style.display="block";setTimeout(()=>e.style.display="none",2200)}
 
-function start(){
+async function start(){
   if(!user)return;
   document.getElementById("loginScreen").style.display="none";
   document.getElementById("app").style.display="block";
@@ -453,6 +589,10 @@ function start(){
   const homeMoreOcc=document.getElementById('homeMoreOcc'); if(homeMoreOcc) homeMoreOcc.textContent=isColab?'📝 Nova pendência':'🔧 Nova ocorrência';
   const moreIntro=document.getElementById("moreIntro");
   if(moreIntro) moreIntro.textContent=isResident?"Ações simples: registrar e consultar pendências.":isSyndic?"Visão geral, acompanhamento e exportações.":"Rotina de zeladoria e acompanhamento.";
+  if(isCentral() && !centralReady){
+    try{await loadCentralData();}
+    catch(err){console.error(err);showLoginError("Não foi possível carregar os dados centrais: "+centralErrorMessage(err));await supabaseClient.auth.signOut();localStorage.removeItem(SESSION_KEY);user=null;return;}
+  }
   const navCheck=document.querySelector('.nav[data-s="check"]');
   const navOcc=document.querySelector('.nav[data-s="occ"]');
   const navMore=document.querySelector('.nav[data-s="more"]');
@@ -546,7 +686,7 @@ function updateChecklistScore(){
 }
 
 function renderChecklistButtonsOnly(){document.querySelectorAll('.check').forEach(card=>{const input=card.querySelector('input[type=hidden]');if(!input)return;const st=input.value;card.querySelectorAll('.status-btn').forEach(b=>{const txt=b.textContent;b.classList.remove('sel-ok','sel-att','sel-bad');if((st==='Conforme'&&txt.includes('Conforme'))||(st==='Atenção'&&txt.includes('Atenção'))||(st==='Não conforme'&&txt.includes('Não conforme')))b.classList.add(st==='Conforme'?'sel-ok':st==='Atenção'?'sel-att':'sel-bad')});const statusEl=card.querySelector('.muted b');if(statusEl)statusEl.textContent=st})}
-function saveChecklist(){
+async function saveChecklist(){
   if(user?.role==="Morador"){toast("Morador tem acesso somente de leitura às pendências.");return;}
   const btn=document.querySelector('#check .btn.full');
   if(btn?.dataset.saving==='1')return;
@@ -558,9 +698,19 @@ function saveChecklist(){
   const recent=db.inspections[0];
   if(recent && recent.signature===signature && (Date.now()-new Date(recent.date).getTime())<60000){toast("Esta inspeção já foi registrada");return}
   if(btn){btn.dataset.saving='1';btn.disabled=true;btn.textContent='Salvando…';}
-  db.inspections.unshift({id:Date.now(),type:"check",date:new Date().toISOString(),user:user.name,area,ok,total:statuses.length,attention,bad,obs,items:statuses,signature});
-  persist();toast("Inspeção salva");renderHome();renderReports();renderChecklist();
-  setTimeout(()=>{if(btn){btn.dataset.saving='0';btn.disabled=false;btn.textContent='Salvar inspeção';}},350);
+  try{
+    if(isCentral()){
+      const row=await centralInsertInspection({area,total:statuses.length,ok,attention,bad,obs,items:statuses});
+      db.inspections.unshift({id:row.id,type:"check",date:row.created_at,user:user.name,area,ok,total:statuses.length,attention,bad,obs,items:statuses,signature});
+      persist();
+      toast("Inspeção salva no sistema central");
+    }else{
+      db.inspections.unshift({id:Date.now(),type:"check",date:new Date().toISOString(),user:user.name,area,ok,total:statuses.length,attention,bad,obs,items:statuses,signature});
+      persist();toast("Inspeção salva");
+    }
+    renderHome();renderReports();renderChecklist();
+  }catch(err){console.error(err);toast("Não foi possível salvar a inspeção: "+centralErrorMessage(err));}
+  finally{setTimeout(()=>{if(btn){btn.dataset.saving='0';btn.disabled=false;btn.textContent='Salvar inspeção';}},350);}
 }
 
 function fmt(date){return new Date(date).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"})}
@@ -830,22 +980,21 @@ document.addEventListener("click",e=>{
   else if(action==="reopen") setOccurrenceStatus(id,"Aberta");
 });
 
-function setOccurrenceStatus(id,status){
+async function setOccurrenceStatus(id,status){
   if(user?.role==="Morador"){toast("Morador não pode alterar o status de ocorrências.");return;}
-  const x=db.occurrences.find(o=>o.id===id);
-  if(!x)return;
+  const x=db.occurrences.find(o=>String(o.id)===String(id)); if(!x)return;
   status=status==="Resolvida"?"Resolvida":"Aberta";
-  x.status=status;
-  if(status==="Resolvida"){
-    x.resolvedAt=x.resolvedAt||new Date().toISOString();
-    x.resolvedBy=x.resolvedBy||user?.name||"Usuário";
-  }else{
-    x.resolvedAt="";
-    x.resolvedBy="";
-  }
-  persist();
-  renderHome(); renderReports(); renderHistory(); renderPending();
-  toast(status==="Resolvida"?"Ocorrência resolvida":"Ocorrência reaberta");
+  try{
+    if(isCentral()){
+      const row=await centralUpdateStatus(x.id,status);
+      x.status=row.status;x.resolvedAt=row.resolved_at||"";x.resolvedBy=row.resolved_by||"";x.date=row.created_at;
+    }else{
+      x.status=status;
+      if(status==="Resolvida"){x.resolvedAt=x.resolvedAt||new Date().toISOString();x.resolvedBy=x.resolvedBy||user?.name||"Usuário";}else{x.resolvedAt="";x.resolvedBy="";}
+      persist();
+    }
+    renderHome();renderReports();renderHistory();renderPending();toast(status==="Resolvida"?"Ocorrência resolvida":"Ocorrência reaberta");
+  }catch(err){console.error(err);toast("Não foi possível atualizar: "+centralErrorMessage(err));}
 }
 function resolveOccurrence(id){setOccurrenceStatus(id,"Resolvida")}
 function reopenOccurrence(id){setOccurrenceStatus(id,"Aberta")}
@@ -941,66 +1090,42 @@ function prepareNewOccurrence(){
 async function saveOccurrence(){
   if(user?.role==="Morador"){show("residentIssue");toast("Use Registrar pendência para enviar um problema.");return;}
   try{
-    const title=document.getElementById("occTitle").value.trim();
-    if(!title){toast("Informe o título");return;}
-    const area=document.getElementById("occArea").value;
-    const priority=document.getElementById("occPriority").value;
-    const desc=document.getElementById("occDesc").value.trim();
+    const title=document.getElementById("occTitle").value.trim(); if(!title){toast("Informe o título");return;}
+    const area=document.getElementById("occArea").value,priority=document.getElementById("occPriority").value,desc=document.getElementById("occDesc").value.trim();
     const file=document.getElementById("occPhoto").files[0];
-    const editing=editingOccurrenceId!==null;
-    const existing=editing?getOccurrenceById(editingOccurrenceId):null;
+    const editing=editingOccurrenceId!==null; const existing=editing?getOccurrenceById(editingOccurrenceId):null;
     if(editing&&!existing){editingOccurrenceId=null;toast("Pendência não encontrada.");return;}
-    let photo=existing?.photo||"";
-    if(file) photo=await compressPhoto(file);
-
+    let photo=existing?.photo||"", photoDataUrl="";
+    if(file){photoDataUrl=await compressPhoto(file); if(!isCentral())photo=photoDataUrl;}
     if(!editing){
       const duplicate=db.occurrences.find(x=>x.area===area&&x.title===title&&x.desc===desc&&x.status!=="Resolvida"&&Date.now()-new Date(x.date).getTime()<60000);
       if(duplicate){toast("Esta ocorrência já foi registrada");return;}
     }
-
-    if(!editing && !occurrenceMaterials.length){
-      const automatic=getSuggestedMaterials();
-      automatic.forEach(m=>occurrenceMaterials.push({name:m.name,qty:1,unit:m.unit}));
-    }
+    if(!editing&&!occurrenceMaterials.length){getSuggestedMaterials().forEach(m=>occurrenceMaterials.push({name:m.name,qty:1,unit:m.unit}));}
     const materials=occurrenceMaterials.filter(m=>String(m.name||"").trim()).map(m=>({name:materialKey(m.name)==="lampada"?"Lâmpada LED":String(m.name).trim(),qty:Math.max(0,Number(m.qty)||0),unit:String(m.unit||"un").trim()||"un"}));
-
     if(existing){
-      existing.area=area;
-      existing.title=title;
-      existing.priority=priority;
-      existing.desc=desc;
-      existing.photo=photo;
-      if(user?.role==="Síndico") existing.materials=materials;
-      else if(!Array.isArray(existing.materials)) existing.materials=[];
-      persist();
-      editingOccurrenceId=null;
-      occurrenceMaterials=[];
-      document.getElementById("occTitle").value="";
-      document.getElementById("occDesc").value="";
-      document.getElementById("occPhoto").value="";
-      const current=document.getElementById("occCurrentPhoto"); if(current){current.style.display="none";current.innerHTML="";}
-      renderOccurrenceMaterials(); refreshMaterialSuggestions();
-      renderHome(); renderReports(); renderHistory(); renderPending();
-      toast("Pendência atualizada");
-      show("pending");
-      return;
+      existing.area=area;existing.title=title;existing.priority=priority;existing.desc=desc;
+      if(file||!isCentral())existing.photo=photo;
+      if(user?.role==="Síndico")existing.materials=materials;
+      if(isCentral()){
+        await centralUpsertOccurrence(existing,{newRecord:false,photoDataUrl,materials:user?.role==="Síndico"?materials:null});
+      }else{persist();}
+      editingOccurrenceId=null;occurrenceMaterials=[];
+      document.getElementById("occTitle").value="";document.getElementById("occDesc").value="";document.getElementById("occPhoto").value="";
+      const current=document.getElementById("occCurrentPhoto");if(current){current.style.display="none";current.innerHTML="";}
+      renderOccurrenceMaterials();refreshMaterialSuggestions();renderHome();renderReports();renderHistory();renderPending();
+      toast("Pendência atualizada");show("pending");return;
     }
-
-    db.occurrences.unshift({id:Date.now(),type:"occ",date:new Date().toISOString(),user:user.name,area,title,priority,desc,photo,status:"Aberta",materials});
-    persist();
-    occurrenceMaterials=[];
-    document.getElementById("occTitle").value="";
-    document.getElementById("occDesc").value="";
-    document.getElementById("occPhoto").value="";
-    const current=document.getElementById("occCurrentPhoto"); if(current){current.style.display="none";current.innerHTML="";}
-    renderOccurrenceMaterials(); refreshMaterialSuggestions();
-    renderHome(); renderReports(); renderHistory();
-    toast(materials.length?`Ocorrência registrada • ${materials.length} material(is) vinculado(s)`:"Ocorrência registrada");
-    show("history");
-  }catch(e){
-    console.error(e);
-    toast("Não foi possível registrar. Tente novamente.");
-  }
+    const occurrence={id:crypto.randomUUID?.()||String(Date.now()),type:"occ",date:new Date().toISOString(),user:user.name,created_by:user?.id||null,area,title,priority,desc,photo,status:"Aberta",materials};
+    if(isCentral()){
+      await centralUpsertOccurrence(occurrence,{newRecord:true,photoDataUrl,materials});
+    }else{db.occurrences.unshift(occurrence);persist();}
+    db.occurrences.unshift(occurrence); if(isCentral())db.occurrences=db.occurrences.filter((x,i,a)=>a.findIndex(y=>String(y.id)===String(x.id))===i);
+    occurrenceMaterials=[];document.getElementById("occTitle").value="";document.getElementById("occDesc").value="";document.getElementById("occPhoto").value="";
+    const current=document.getElementById("occCurrentPhoto");if(current){current.style.display="none";current.innerHTML="";}
+    renderOccurrenceMaterials();refreshMaterialSuggestions();renderHome();renderReports();renderHistory();renderPending();
+    toast(materials.length?`Ocorrência registrada • ${materials.length} material(is) vinculado(s)`:"Ocorrência registrada");show("history");
+  }catch(e){console.error(e);toast("Não foi possível registrar: "+centralErrorMessage(e));}
 }
 function compressPhoto(file){
   return new Promise((resolve,reject)=>{
@@ -1031,22 +1156,17 @@ function previewResidentPhoto(){
 }
 document.addEventListener("change",e=>{if(e.target&&e.target.id==="residentPhoto")previewResidentPhoto()});
 async function saveResidentIssue(){
-  const area=document.getElementById("residentArea")?.value||AREAS[0];
-  const type=document.getElementById("residentType")?.value||"Outro";
-  const desc=(document.getElementById("residentDesc")?.value||"").trim();
-  const file=document.getElementById("residentPhoto")?.files?.[0];
-  if(!desc && !file){alert("Descreva a pendência ou adicione uma foto.");return;}
-  let photo="";
-  if(file) photo=await compressPhoto(file);
-  const titles={"Luz queimada":"Luz queimada","Vazamento":"Vazamento","Limpeza":"Pendência de limpeza","Porta/fechadura":"Problema em porta/fechadura","Dano em equipamento":"Dano em equipamento","Outro":"Pendência do morador"};
-  const occurrence={id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),type:"occ",area,title:titles[type]||type,priority:"Média",desc:desc||"Pendência registrada com foto.",photo,status:"Aberta",date:new Date().toISOString(),user:user?.name||"Morador",materials:[]};
-  db.occurrences.unshift(occurrence);persist();
-  document.getElementById("residentDesc").value="";
-  document.getElementById("residentPhoto").value="";
-  document.getElementById("residentPhotoPreview").textContent="";
-  refresh();
-  alert("Pendência enviada para a zeladoria.");
-  show("home");
+  const area=document.getElementById("residentArea")?.value||AREAS[0],type=document.getElementById("residentType")?.value||"Outro",desc=(document.getElementById("residentDesc")?.value||"").trim(),file=document.getElementById("residentPhoto")?.files?.[0];
+  if(!desc&&!file){alert("Descreva a pendência ou adicione uma foto.");return;}
+  try{
+    const titles={"Luz queimada":"Luz queimada","Vazamento":"Vazamento","Limpeza":"Pendência de limpeza","Porta/fechadura":"Problema em porta/fechadura","Dano em equipamento":"Dano em equipamento","Outro":"Pendência do morador"};
+    let photo="",photoDataUrl="";if(file){photoDataUrl=await compressPhoto(file);if(!isCentral())photo=photoDataUrl;}
+    const occurrence={id:crypto.randomUUID?.()||String(Date.now()),type:"occ",area,title:titles[type]||type,priority:"Média",desc:desc||"Pendência registrada com foto.",photo,status:"Aberta",date:new Date().toISOString(),user:user?.name||"Morador",created_by:user?.id||null,materials:[]};
+    if(isCentral())await centralUpsertOccurrence(occurrence,{newRecord:true,photoDataUrl,materials:[]});
+    db.occurrences.unshift(occurrence);if(isCentral())db.occurrences=db.occurrences.filter((x,i,a)=>a.findIndex(y=>String(y.id)===String(x.id))===i);else persist();
+    document.getElementById("residentDesc").value="";document.getElementById("residentPhoto").value="";document.getElementById("residentPhotoPreview").textContent="";
+    refresh();alert(isCentral()?"Pendência enviada para a zeladoria e sincronizada no sistema central.":"Pendência enviada para a zeladoria.");show("home");
+  }catch(err){console.error(err);alert("Não foi possível enviar a pendência: "+centralErrorMessage(err));}
 }
 
 function renderDailySummary(){
@@ -1131,7 +1251,19 @@ function renderHome(){
   document.getElementById("areaProgress").innerHTML=AREAS.map(a=>{let x=latestByArea[a],pct=x?Math.round(x.ok/x.total*100):0;return `<div style="padding:9px 0"><div class="row between"><span style="font-size:13px;font-weight:700">${a}</span><span class="muted">${pct}%</span></div><div class="progress"><i style="width:${pct}%"></i></div></div>`}).join("");
 }
 function refresh(){renderHome();renderReports();renderHistory();renderPending()}
-if(user)start();
+if(isCentral()){
+  supabaseClient.auth.getSession().then(async ({data})=>{
+    if(data?.session?.user){
+      try{
+        const {data:profile,error}=await supabaseClient.from("profiles").select("id,condominium_id,username,full_name,role,active").eq("id",data.session.user.id).single();
+        if(error)throw error;
+        if(!profile.active){await supabaseClient.auth.signOut();return;}
+        centralProfile=profile;user={id:data.session.user.id,username:profile.username||data.session.user.email,name:profile.full_name,role:profile.role,condominiumId:profile.condominium_id};
+        localStorage.setItem(SESSION_KEY,JSON.stringify(user));await start();
+      }catch(err){console.error(err);localStorage.removeItem(SESSION_KEY);}
+    }
+  });
+}else if(user)start();
 document.addEventListener("click",e=>{
   const btn=e.target.closest?.("[data-edit-occurrence]");
   if(!btn)return;

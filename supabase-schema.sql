@@ -132,3 +132,37 @@ using (condominium_id = public.current_condominium_id());
 create policy purchases_write on public.purchase_items for all to authenticated
 using (public.current_role() = 'Síndico' and condominium_id = public.current_condominium_id())
 with check (public.current_role() = 'Síndico' and condominium_id = public.current_condominium_id());
+
+-- V53.2: reforço de autoria para impedir que um cliente autenticado
+-- crie uma ocorrência em nome de outro usuário.
+drop policy if exists occurrences_insert on public.occurrences;
+create policy occurrences_insert on public.occurrences for insert to authenticated
+with check (condominium_id = public.current_condominium_id() and created_by = auth.uid());
+
+-- V53.2: permite ao usuário autenticado atualizar apenas o próprio perfil
+-- de dados não administrativos; a função de gestão de contas permanece no Auth.
+
+-- V53.2: Storage privado das fotos de ocorrências.
+-- O primeiro segmento do caminho do arquivo deve ser o UUID do condomínio.
+create policy occurrence_photos_select on storage.objects
+for select to authenticated
+using (
+  bucket_id = 'occurrence-photos'
+  and split_part(name, '/', 1) = public.current_condominium_id()::text
+);
+
+create policy occurrence_photos_insert on storage.objects
+for insert to authenticated
+with check (
+  bucket_id = 'occurrence-photos'
+  and split_part(name, '/', 1) = public.current_condominium_id()::text
+);
+
+-- V53.2: inspeções devem ser criadas em nome do usuário autenticado.
+drop policy if exists inspections_insert on public.inspections;
+create policy inspections_insert on public.inspections for insert to authenticated
+with check (
+  condominium_id = public.current_condominium_id()
+  and public.current_role() in ('Síndico','Colaborador')
+  and created_by = auth.uid()
+);
