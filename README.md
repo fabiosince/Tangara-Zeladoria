@@ -1,10 +1,14 @@
-# Tangará Zeladoria V15
+# Tangará Zeladoria — V16
 
-Evolução da V12 com o ícone/logo da V11 restaurado e um resumo operacional da última atividade no painel inicial.
+Aplicativo PWA mobile-first para controle de limpeza, conservação, inspeções e manutenção do Condomínio Tangará.
 
-- Mantém os dados da V12 e versões anteriores por migração automática.
-- Mantém checklist por itens, histórico, detalhes, pendências, relatórios e ocorrências com foto.
-- Mantém proteção contra registros duplicados.
-- Restaura o logo visual da V11 como ícone/favicon/PWA.
-- Inclui resumo da última atividade no Início.
-- PWA/offline com cache V14.
+## V16
+- Fluxo de ocorrências simplificado: somente **Aberta** e **Resolvida**.
+- Removido completamente o status “Em andamento”.
+- Ocorrências antigas que estavam “Em andamento” são convertidas para “Aberta”, preservando os registros.
+- Botão para ocorrência aberta: “Dar baixa / marcar como resolvida”.
+- Ocorrência resolvida: “Reabrir ocorrência”.
+- Filtro do Histórico somente com Aberta e Resolvida.
+- Relatórios sem indicador de “Em andamento”.
+- Checklist, histórico, fotos, exportação e identidade visual preservados.
+- Ícone atual do Tangará preservado.

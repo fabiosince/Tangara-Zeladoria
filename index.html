@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#173b2b">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="logo-tangara.png">
-<title>Tangará Zeladoria V14</title>
+<title>Tangará Zeladoria V16</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
@@ -65,7 +65,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 </section>
 
 <section id="check" class="screen">
-  <div class="card"><div class="row between"><div><h2 style="margin:0">Checklist V14</h2><div class="muted">Avalie cada item após verificar a área.</div></div><select id="areaSelect" style="max-width:180px" onchange="renderChecklist()"></select></div><div id="checkMeta" class="muted" style="margin-top:10px"></div><div id="checkRule" class="card" style="margin:10px 0;background:#f7f9f7"></div><div id="checks"></div><div id="checkScore" class="muted" style="margin:10px 0"></div><label>Observação da área</label><textarea id="checkObs" placeholder="Ex.: piso limpo; lâmpada queimada; material a repor..."></textarea><button class="btn full" onclick="saveChecklist()">Salvar inspeção</button></div>
+  <div class="card"><div class="row between"><div><h2 style="margin:0">Checklist V16</h2><div class="muted">Avalie cada item após verificar a área.</div></div><select id="areaSelect" style="max-width:180px" onchange="renderChecklist()"></select></div><div id="checkMeta" class="muted" style="margin-top:10px"></div><div id="checkRule" class="card" style="margin:10px 0;background:#f7f9f7"></div><div id="checks"></div><div id="checkScore" class="muted" style="margin:10px 0"></div><label>Observação da área</label><textarea id="checkObs" placeholder="Ex.: piso limpo; lâmpada queimada; material a repor..."></textarea><button class="btn full" onclick="saveChecklist()">Salvar inspeção</button></div>
 </section>
 
 <section id="occ" class="screen">
@@ -88,7 +88,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 
 <section id="history" class="screen">
   <div class="card"><div class="row between"><div><h2 style="margin:0">Histórico</h2><div class="muted">Inspeções e ocorrências registradas.</div></div><button class="btn secondary" onclick="exportCSV()">Exportar</button></div>
-  <label>Filtro</label><select id="histFilter" onchange="renderHistory()"><option value="all">Todos</option><option value="check">Inspeções</option><option value="occ">Ocorrências</option></select>
+  <label>Filtro</label><div class="filters"><select id="histFilter" onchange="renderHistory()"><option value="all">Todos</option><option value="check">Inspeções</option><option value="occ">Ocorrências</option></select><select id="histOccStatus" onchange="renderHistory()"><option value="all">Todos os status</option><option>Aberta</option><option>Resolvida</option></select></div>
   <div id="historyList"></div></div>
 </section>
 
@@ -118,7 +118,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 
 <section id="profile" class="screen">
   <div class="card"><h2 style="margin-top:0">Perfil</h2><p><b id="profileName"></b><br><span class="muted" id="profileRole"></span></p><button class="btn danger full" onclick="logout(event)">Sair do aplicativo</button></div>
-  <div class="card"><h3 style="margin-top:0">Sobre a V14</h3><p class="muted">Painel operacional aprimorado, resumo da última atividade, gestão de pendências, ligação entre inspeções e ocorrências, filtros por área e status, proteção contra registros duplicados e ocorrências com foto. Os registros continuam armazenados no aparelho.</p></div>
+  <div class="card"><h3 style="margin-top:0">Sobre a V16</h3><p class="muted">Fluxo de ocorrências simplificado com apenas os status Aberta e Resolvida, detalhes de inspeções, fotos, filtros e indicadores gerenciais. Os registros continuam armazenados no aparelho.</p></div>
 </section>
 </main>
 <nav class="bottom">
@@ -152,12 +152,14 @@ const ITEMS={
 "Garagem":["Piso e circulação em ordem","Iluminação funcionando","Sinalização preservada","Lixeiras/área organizada","Acessos e portões em condições aparentes","Sem obstáculos nas áreas de circulação"],
 "Áreas externas":["Calçadas e acessos limpos","Jardins e áreas verdes em ordem","Lixeiras higienizadas","Iluminação externa funcionando","Mobiliário externo organizado","Sem obstáculos ou resíduos aparentes"]
 };
+const V16_KEY="tangaraV16";
+const V15_KEY="tangaraV15";
 const V14_KEY="tangaraV14";
 const V12_KEY="tangaraV12";
 const V10_KEY="tangaraV10";
 const V9_KEY="tangaraV9";
 function migrateDB(){
-  let raw=localStorage.getItem(V14_KEY)||localStorage.getItem(V12_KEY)||localStorage.getItem(V10_KEY)||localStorage.getItem(V9_KEY)||localStorage.getItem("tangaraV8")||localStorage.getItem("tangaraV6")||localStorage.getItem("tangaraV5")||localStorage.getItem("tangaraV4");
+  let raw=localStorage.getItem(V16_KEY)||localStorage.getItem(V15_KEY)||localStorage.getItem(V14_KEY)||localStorage.getItem(V12_KEY)||localStorage.getItem(V10_KEY)||localStorage.getItem(V9_KEY)||localStorage.getItem("tangaraV8")||localStorage.getItem("tangaraV6")||localStorage.getItem("tangaraV5")||localStorage.getItem("tangaraV4");
   let parsed={inspections:[],occurrences:[]};
   try{parsed=raw?JSON.parse(raw):parsed}catch(e){}
   parsed.inspections=Array.isArray(parsed.inspections)?parsed.inspections:[];
@@ -170,9 +172,11 @@ function migrateDB(){
   return parsed;
 }
 let db=migrateDB();
-localStorage.setItem(V14_KEY,JSON.stringify(db));
+// Migração V16: ocorrências possuem somente os status Aberta e Resolvida.
+db.occurrences.forEach(x=>{if(x.status!=="Resolvida")x.status="Aberta";});
+localStorage.setItem(V16_KEY,JSON.stringify(db));
 let user=JSON.parse(localStorage.getItem("tangaraUser")||"null");
-function persist(){localStorage.setItem(V14_KEY,JSON.stringify(db))}
+function persist(){localStorage.setItem(V16_KEY,JSON.stringify(db))}
 function toast(t){let e=document.getElementById("toast");e.textContent=t;e.style.display="block";setTimeout(()=>e.style.display="none",2200)}
 function doLogin(){
   try{
@@ -302,7 +306,8 @@ function renderHistory(){
   const el=document.getElementById("historyList");
   if(!el)return;
   const filter=document.getElementById("histFilter")?.value||"all";
-  const rawRecords=[...db.inspections,...db.occurrences].filter(x=>filter==="all"||x.type===filter);
+  const occStatus=document.getElementById("histOccStatus")?.value||"all";
+  const rawRecords=[...db.inspections,...db.occurrences].filter(x=>(filter==="all"||x.type===filter)&&(x.type!=="occ"||occStatus==="all"||x.status===occStatus));
   const seen=new Set();
   const records=rawRecords.filter(x=>{
     const sig=x.type+"|"+[x.date||"",x.user||"",x.area||"",x.title||"",x.ok||0,x.total||0,x.attention||0,x.bad||0,x.obs||"",x.status||""].join("|");
@@ -334,30 +339,24 @@ function showInspectionDetail(id){
   document.getElementById('inspectionModal').classList.add('open');
 }
 function closeInspection(){document.getElementById('inspectionModal').classList.remove('open')}
-function resolveOccurrence(id){
+function setOccurrenceStatus(id,status){
   const x=db.occurrences.find(o=>o.id===id);
   if(!x)return;
-  x.status="Resolvida";
-  x.resolvedAt=new Date().toISOString();
-  x.resolvedBy=user?.name||"Usuário";
+  status=status==="Resolvida"?"Resolvida":"Aberta";
+  x.status=status;
+  if(status==="Resolvida"){
+    x.resolvedAt=x.resolvedAt||new Date().toISOString();
+    x.resolvedBy=x.resolvedBy||user?.name||"Usuário";
+  }else{
+    x.resolvedAt="";
+    x.resolvedBy="";
+  }
   persist();
-  renderHome();
-  renderReports();
-  renderHistory();
-  toast("Ocorrência marcada como resolvida");
+  renderHome(); renderReports(); renderHistory(); renderPending();
+  toast(status==="Resolvida"?"Ocorrência resolvida":"Ocorrência reaberta");
 }
-function reopenOccurrence(id){
-  const x=db.occurrences.find(o=>o.id===id);
-  if(!x)return;
-  x.status="Aberta";
-  x.resolvedAt="";
-  x.resolvedBy="";
-  persist();
-  renderHome();
-  renderReports();
-  renderHistory();
-  toast("Ocorrência reaberta");
-}
+function resolveOccurrence(id){setOccurrenceStatus(id,"Resolvida")}
+function reopenOccurrence(id){setOccurrenceStatus(id,"Aberta")}
 function inPeriod(date,days){
   if(days==='all')return true;
   const d=new Date(date), now=new Date();
@@ -368,7 +367,7 @@ function renderReports(){
   const days=document.getElementById("reportPeriod")?.value||"30", area=selectedReportArea();
   const ins=db.inspections.filter(x=>inPeriod(x.date,days)&&(area==='all'||x.area===area));
   const occ=db.occurrences.filter(x=>inPeriod(x.date,days)&&(area==='all'||x.area===area));
-  const open=occ.filter(x=>x.status!=="Resolvida").length, resolved=occ.length-open;
+  const open=occ.filter(x=>x.status!=="Resolvida").length, resolved=occ.filter(x=>x.status==="Resolvida").length;
   document.getElementById("rInspections").textContent=ins.length;
   document.getElementById("rOcc").textContent=occ.length;
   document.getElementById("rOpen").textContent=open;
@@ -405,6 +404,8 @@ async function saveOccurrence(){
     const file=document.getElementById("occPhoto").files[0];
     let photo="";
     if(file) photo=await compressPhoto(file);
+    const duplicate=db.occurrences.find(x=>x.area===area&&x.title===title&&x.desc===desc&&x.status!=="Resolvida"&&Date.now()-new Date(x.date).getTime()<60000);
+    if(duplicate){toast("Esta ocorrência já foi registrada");return;}
     db.occurrences.unshift({id:Date.now(),type:"occ",date:new Date().toISOString(),user:user.name,area,title,priority,desc,photo,status:"Aberta"});
     persist();
     document.getElementById("occTitle").value="";
