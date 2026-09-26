@@ -1,4 +1,4 @@
-# Tangará Zeladoria V7
+# Tangará Zeladoria V8
 
 Checklist completo por item, com três estados (Conforme, Atenção e Não conforme), percentual automático, orientação específica por área e bloqueio de salvamento enquanto houver itens sem avaliação.
 

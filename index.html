@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#173b2b">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg">
-<title>Tangará Zeladoria V7</title>
+<title>Tangará Zeladoria V8</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
@@ -61,7 +61,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 </section>
 
 <section id="check" class="screen">
-  <div class="card"><div class="row between"><div><h2 style="margin:0">Checklist V7</h2><div class="muted">Avalie cada item após verificar a área.</div></div><select id="areaSelect" style="max-width:180px" onchange="renderChecklist()"></select></div><div id="checkMeta" class="muted" style="margin-top:10px"></div><div id="checkRule" class="card" style="margin:10px 0;background:#f7f9f7"></div><div id="checks"></div><div id="checkScore" class="muted" style="margin:10px 0"></div><label>Observação da área</label><textarea id="checkObs" placeholder="Ex.: piso limpo; lâmpada queimada; material a repor..."></textarea><button class="btn full" onclick="saveChecklist()">Salvar inspeção</button></div>
+  <div class="card"><div class="row between"><div><h2 style="margin:0">Checklist V8</h2><div class="muted">Avalie cada item após verificar a área.</div></div><select id="areaSelect" style="max-width:180px" onchange="renderChecklist()"></select></div><div id="checkMeta" class="muted" style="margin-top:10px"></div><div id="checkRule" class="card" style="margin:10px 0;background:#f7f9f7"></div><div id="checks"></div><div id="checkScore" class="muted" style="margin:10px 0"></div><label>Observação da área</label><textarea id="checkObs" placeholder="Ex.: piso limpo; lâmpada queimada; material a repor..."></textarea><button class="btn full" onclick="saveChecklist()">Salvar inspeção</button></div>
 </section>
 
 <section id="occ" class="screen">
@@ -99,7 +99,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 
 <section id="profile" class="screen">
   <div class="card"><h2 style="margin-top:0">Perfil</h2><p><b id="profileName"></b><br><span class="muted" id="profileRole"></span></p><button class="btn danger full" onclick="logout(event)">Sair do aplicativo</button></div>
-  <div class="card"><h3 style="margin-top:0">Sobre a V7</h3><p class="muted">Checklist completo por item, percentual automático, regras específicas das áreas e painel de indicadores. Os registros continuam armazenados no aparelho.</p></div>
+  <div class="card"><h3 style="margin-top:0">Sobre a V8</h3><p class="muted">Checklist completo por item, percentual automático, regras específicas das áreas e painel de indicadores. Os registros continuam armazenados no aparelho.</p></div>
 </section>
 </main>
 <nav class="bottom">
@@ -133,10 +133,10 @@ const ITEMS={
 "Garagem":["Piso e circulação em ordem","Iluminação funcionando","Sinalização preservada","Lixeiras/área organizada","Acessos e portões em condições aparentes","Sem obstáculos nas áreas de circulação"],
 "Áreas externas":["Calçadas e acessos limpos","Jardins e áreas verdes em ordem","Lixeiras higienizadas","Iluminação externa funcionando","Mobiliário externo organizado","Sem obstáculos ou resíduos aparentes"]
 };
-let db=JSON.parse(localStorage.getItem("tangaraV7")||localStorage.getItem("tangaraV6")||localStorage.getItem("tangaraV5")||localStorage.getItem("tangaraV4")||'{"inspections":[],"occurrences":[]}');
-if(!localStorage.getItem("tangaraV7")){localStorage.setItem("tangaraV7",JSON.stringify(db));}
+let db=JSON.parse(localStorage.getItem("tangaraV8")||localStorage.getItem("tangaraV6")||localStorage.getItem("tangaraV5")||localStorage.getItem("tangaraV4")||'{"inspections":[],"occurrences":[]}');
+if(!localStorage.getItem("tangaraV8")){localStorage.setItem("tangaraV8",JSON.stringify(db));}
 let user=JSON.parse(localStorage.getItem("tangaraUser")||"null");
-function persist(){localStorage.setItem("tangaraV7",JSON.stringify(db))}
+function persist(){localStorage.setItem("tangaraV8",JSON.stringify(db))}
 function toast(t){let e=document.getElementById("toast");e.textContent=t;e.style.display="block";setTimeout(()=>e.style.display="none",2200)}
 function doLogin(){
   try{
@@ -211,7 +211,6 @@ function updateChecklistScore(){
   document.getElementById("checkScore").innerHTML=`Itens avaliados: <b>${evaluated}/${statuses.length}</b> • Conforme: <b>${ok}</b> • Percentual: <b>${pct}%</b>`;
 }
 
-function setItemStatus(i,status){document.getElementById("status"+i).value=status;renderChecklistButtonsOnly();}
 function renderChecklistButtonsOnly(){document.querySelectorAll('.status-btn').forEach(b=>{const txt=b.textContent;const idx=b.closest('.check').querySelector('input[type=hidden]').id.replace('status','');const st=document.getElementById('status'+idx).value;b.classList.remove('sel-ok','sel-att','sel-bad');if((st==='Conforme'&&txt.includes('Conforme'))||(st==='Atenção'&&txt.includes('Atenção'))||(st==='Não conforme'&&txt.includes('Não conforme')))b.classList.add(st==='Conforme'?'sel-ok':st==='Atenção'?'sel-att':'sel-bad')})}
 function saveChecklist(){
   const area=document.getElementById("areaSelect").value,obs=document.getElementById("checkObs").value.trim();
@@ -219,6 +218,38 @@ function saveChecklist(){
   if(statuses.some(x=>x.status==="Pendente")){toast("Avalie todos os itens antes de salvar");return}
   const ok=statuses.filter(x=>x.status==="Conforme").length, attention=statuses.filter(x=>x.status==="Atenção").length, bad=statuses.filter(x=>x.status==="Não conforme").length;
   db.inspections.unshift({id:Date.now(),type:"check",date:new Date().toISOString(),user:user.name,area,ok,total:statuses.length,attention,bad,obs,items:statuses});persist();toast("Inspeção salva");renderHome();renderReports();renderChecklist();
+}
+
+function fmt(date){return new Date(date).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"})}
+function renderHistory(){
+  const el=document.getElementById("historyList");
+  if(!el)return;
+  const filter=document.getElementById("histFilter")?.value||"all";
+  const records=[...db.inspections,...db.occurrences].filter(x=>filter==="all"||x.type===filter).sort((a,b)=>new Date(b.date)-new Date(a.date));
+  if(!records.length){el.innerHTML='<div class="empty">Nenhum registro encontrado.</div>';return;}
+  el.innerHTML='<div class="timeline">'+records.map(x=>{
+    if(x.type==="check"){
+      const pct=Math.round((x.ok||0)/(x.total||1)*100);
+      const status=(x.bad||0)>0?"Não conforme":(x.attention||0)>0?"Atenção":"Conforme";
+      const cls=status==='Conforme'?'ok':status==='Não conforme'?'bad':'pending';
+      return `<div class="event"><div class="row between"><b>📋 ${x.area}</b><span class="pill ${cls}">${status}</span></div><div class="muted">${fmt(x.date)} • ${x.user}</div><div style="margin-top:6px"><b>${pct}%</b> — ${x.ok}/${x.total} conformes</div><div class="muted">Atenção: ${x.attention||0} • Não conformes: ${x.bad||0}</div>${x.obs?`<div style="margin-top:6px">${x.obs}</div>`:""}</div>`;
+    }
+    const cls=x.status==="Resolvida"?"ok":x.priority==="Urgente"||x.priority==="Alta"?"bad":"pending";
+    return `<div class="event"><div class="row between"><b>🔧 ${x.title}</b><span class="pill ${cls}">${x.status}</span></div><div class="muted">${fmt(x.date)} • ${x.user} • ${x.area}</div><div style="margin-top:6px">Prioridade: <b>${x.priority}</b></div>${x.desc?`<div class="muted" style="margin-top:4px">${x.desc}</div>`:""}</div>`;
+  }).join('')+'</div>';
+}
+function renderReports(){
+  const ins=db.inspections.length, occ=db.occurrences.length, open=db.occurrences.filter(x=>x.status!=="Resolvida").length, resolved=occ-open;
+  document.getElementById("rInspections").textContent=ins;document.getElementById("rOcc").textContent=occ;document.getElementById("rOpen").textContent=open;document.getElementById("rResolved").textContent=resolved;
+  const counts=Object.fromEntries(AREAS.map(a=>[a,0])); db.occurrences.forEach(x=>{if(counts[x.area]!==undefined)counts[x.area]++});
+  document.getElementById("areaReport").innerHTML=AREAS.map(a=>`<div class="area"><b>${a}</b><span class="pill ${counts[a]?'pending':'ok'}">${counts[a]} ocorrência${counts[a]===1?'':'s'}</span></div>`).join('');
+}
+function exportCSV(){
+  const rows=[["Tipo","Data","Usuário","Área","Status","Prioridade","Conformes","Total","Atenção","Não conformes","Título/Observação"]];
+  db.inspections.forEach(x=>rows.push(["Inspeção",fmt(x.date),x.user,x.area,(x.bad||0)>0?"Não conforme":(x.attention||0)>0?"Atenção":"Conforme","",x.ok,x.total,x.attention||0,x.bad||0,x.obs||""]));
+  db.occurrences.forEach(x=>rows.push(["Ocorrência",fmt(x.date),x.user,x.area,x.status,x.priority,"","","","",`${x.title}${x.desc?' — '+x.desc:''}`]));
+  const csv=rows.map(r=>r.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(';')).join('\n');
+  const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='tangara-historico.csv'; a.click(); URL.revokeObjectURL(a.href); toast('CSV exportado');
 }
 
 function saveOccurrence(){let title=occTitle.value.trim();if(!title)return toast("Informe o título");let file=occPhoto.files[0];let finish=(photo)=>{db.occurrences.unshift({id:Date.now(),type:"occ",date:new Date().toISOString(),user:user.name,area:occArea.value,title,priority:occPriority.value,desc:occDesc.value.trim(),photo:photo||"",status:"Aberta"});persist();occTitle.value="";occDesc.value="";occPhoto.value="";toast("Ocorrência registrada");renderHome();show("history")};if(file){let r=new FileReader();r.onload=()=>finish(r.result);r.readAsDataURL(file)}else finish("")}
