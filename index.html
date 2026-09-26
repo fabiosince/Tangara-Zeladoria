@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#124a35">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Tangará Zeladoria V27</title>
+<title>Tangará Zeladoria V31</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
 .priority-hero{border:2px solid var(--green2);box-shadow:0 8px 24px rgba(23,59,43,.10)} .priority-hero .critical-item{padding:12px 0;border-top:1px solid var(--line)} .priority-hero .critical-item:first-of-type{border-top:0} .priority-hero .priority-badge{font-size:12px;font-weight:700;letter-spacing:.02em}
@@ -91,7 +91,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 </section>
 
 <section id="check" class="screen">
-  <div class="card"><div class="row between"><div><h2 style="margin:0">Checklist V30</h2><div class="muted">Avalie cada item após verificar a área.</div></div><select id="areaSelect" style="max-width:180px" onchange="renderChecklist()"></select></div><div id="checkMeta" class="muted" style="margin-top:10px"></div><div id="checkRule" class="card" style="margin:10px 0;background:#f7f9f7"></div><div id="checks"></div><div id="checkScore" class="muted" style="margin:10px 0"></div><label>Observação da área</label><textarea id="checkObs" placeholder="Ex.: piso limpo; lâmpada queimada; material a repor..."></textarea><button class="btn full" onclick="saveChecklist()">Salvar inspeção</button></div>
+  <div class="card"><div class="row between"><div><h2 style="margin:0">Checklist</h2><div class="muted">Avalie cada item após verificar a área.</div></div><select id="areaSelect" style="max-width:180px" onchange="renderChecklist()"></select></div><div id="checkMeta" class="muted" style="margin-top:10px"></div><div id="checkRule" class="card" style="margin:10px 0;background:#f7f9f7"></div><div id="checks"></div><div id="checkScore" class="muted" style="margin:10px 0"></div><label>Observação da área</label><textarea id="checkObs" placeholder="Ex.: piso limpo; lâmpada queimada; material a repor..."></textarea><button class="btn full" onclick="saveChecklist()">Salvar inspeção</button></div>
 </section>
 
 <section id="occ" class="screen">
@@ -124,7 +124,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 </section>
 
 <section id="pending" class="screen">
-  <div class="card"><div class="row between"><div><h2 style="margin:0">Pendências</h2><div class="muted" id="pendingIntro">Itens em atenção ou não conformes nas últimas inspeções.</div></div><span class="pill pending" id="pendingCount">0</span></div>
+  <div class="card"><div class="row between"><div><h2 style="margin:0">Pendências</h2><div class="muted" id="pendingIntro">Itens em atenção ou não conformes nas últimas inspeções.</div></div><div class="row wrap"><span class="pill pending" id="pendingCount">0</span><button id="exportPendingBtn" class="btn secondary small-btn" onclick="exportPendingCSV()" style="display:none">Exportar lista</button></div></div>
   <div class="filters" style="margin-top:10px"><select id="pendingArea" onchange="renderPending()"><option value="all">Todas as áreas</option></select><select id="pendingStatus" onchange="renderPending()"><option value="all">Todos os status</option><option>Atenção</option><option>Não conforme</option></select></div>
   <div id="pendingList" style="margin-top:8px"></div></div>
   <div class="card"><h3 style="margin-top:0">Ocorrências em aberto</h3><div id="pendingOccurrences"></div></div>
@@ -162,16 +162,16 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 </section>
 
 <section id="materials" class="screen">
-  <div class="card"><div class="row between"><div><h2 style="margin:0">Banco de materiais</h2><div class="muted">Materiais registrados nas ocorrências, com quantidade, compra e observação.</div></div><div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn secondary" onclick="exportMaterialsCSV()">Exportar detalhado</button><button class="btn secondary" onclick="exportConsolidatedCSV()">Exportar compras</button></div></div>
+  <div class="card"><div class="row between"><div><h2 style="margin:0">Banco de materiais</h2><div class="muted">Materiais registrados nas ocorrências, com quantidade, compra e observação.</div></div><div class="row" style="gap:8px;flex-wrap:wrap"><button id="exportMaterialsBtn" class="btn secondary" onclick="exportMaterialsCSV()" style="display:none">Exportar lista</button><button id="exportPurchasesBtn" class="btn secondary" onclick="exportConsolidatedCSV()" style="display:none">Exportar compras</button></div></div>
     <div class="grid" style="margin-top:10px"><div class="metric"><b id="matRecordCount">0</b><span>Itens registrados</span></div><div class="metric"><b id="matOccCount">0</b><span>Ocorrências com materiais</span></div><div class="metric"><b id="matCatalogCount">0</b><span>Materiais no catálogo</span></div><div class="metric"><b id="matQtyCount">0</b><span>Quantidade total</span></div><div class="metric"><b id="matPendingCount">0</b><span>Compras pendentes</span></div><div class="metric"><b id="matBoughtCount">0</b><span>Compras concluídas</span></div></div>
   </div>
-  <div class="card"><div class="row between"><div><h3 style="margin:0">Lista consolidada de compras</h3><div class="muted">Marque cada material como Pendente ou Comprado. A data e a observação ficam salvas no aparelho.</div></div><div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn secondary small-btn" onclick="downloadMaterialsJSON()">Exportar banco (.json)</button><button class="btn secondary small-btn" onclick="downloadConsolidatedJSON()">Exportar consolidado</button></div></div><div id="materialsTable" style="margin-top:8px;overflow-x:auto"></div></div>
+  <div class="card"><div class="row between"><div><h3 style="margin:0">Lista consolidada de compras</h3><div class="muted">Marque cada material como Pendente ou Comprado. A data e a observação ficam salvas no aparelho.</div></div><div class="row" style="gap:8px;flex-wrap:wrap"><button id="exportMaterialsJsonBtn" class="btn secondary small-btn" onclick="downloadMaterialsJSON()" style="display:none">Exportar banco (.json)</button><button id="exportConsolidatedJsonBtn" class="btn secondary small-btn" onclick="downloadConsolidatedJSON()" style="display:none">Exportar consolidado</button></div></div><div id="materialsTable" style="margin-top:8px;overflow-x:auto"></div></div>
   <div class="card"><h3 style="margin-top:0">Catálogo de sugestões</h3><div class="muted">O aplicativo usa este catálogo para sugerir materiais quando uma ocorrência é aberta.</div><div id="materialCatalog" style="margin-top:8px"></div></div>
 </section>
 
 <section id="profile" class="screen">
   <div class="card"><h2 style="margin-top:0">Perfil</h2><p><b id="profileName"></b><br><span class="muted" id="profileRole"></span></p><button class="btn danger full" onclick="logout(event)">Sair do aplicativo</button></div>
-  <div class="card"><h3 style="margin-top:0">Sobre a V30</h3><p class="muted">Fluxo de ocorrências com apenas os status Aberta e Resolvida, materiais de reposição sugeridos automaticamente, edição por ocorrência, consolidação para compras, acompanhamento Pendente/Comprado com data e observação, exportação detalhada e consolidada em CSV e JSON, detalhes de inspeções, fotos, filtros e indicadores gerenciais. Os registros continuam armazenados no aparelho.</p></div>
+  <div class="card"><h3 style="margin-top:0">Sobre a V31</h3><p class="muted">Fluxo de ocorrências com apenas os status Aberta e Resolvida, materiais de reposição sugeridos automaticamente, edição por ocorrência, consolidação para compras, acompanhamento Pendente/Comprado com data e observação, exportação detalhada e consolidada em CSV e JSON, detalhes de inspeções, fotos, filtros e indicadores gerenciais. Os registros continuam armazenados no aparelho.</p></div>
 </section>
 </main>
 <nav class="bottom">
@@ -331,16 +331,35 @@ function start(){
   const isResident=user.role==="Morador";
   const residentQuick=document.getElementById("residentQuick");
   if(residentQuick) residentQuick.style.display=isResident?"block":"none";
-  const ids={quickOcc:!isResident,quickCheck:!isResident,quickMaterials:!isResident,quickHistory:!isResident,homeMoreCheck:!isResident,homeMoreOcc:!isResident,homeMoreHistory:!isResident,moreHistory:!isResident,moreReports:!isResident,moreMaterials:!isResident};
+  const isSyndic=user.role==="Síndico";
+  const isColab=user.role==="Colaborador";
+  const ids={
+    quickOcc:isColab||isSyndic, quickCheck:isColab, quickMaterials:isSyndic, quickHistory:isSyndic||isColab,
+    homeMoreCheck:isColab, homeMoreOcc:isColab||isSyndic, homeMoreHistory:isSyndic||isColab,
+    moreHistory:isSyndic||isColab, moreReports:isSyndic, moreMaterials:isSyndic
+  };
   Object.entries(ids).forEach(([id,visible])=>{const el=document.getElementById(id);if(el)el.style.display=visible?"block":"none";});
   const moreIntro=document.getElementById("moreIntro");
-  if(moreIntro) moreIntro.textContent=isResident?"Acesso de leitura às pendências e ao seu perfil.":"Acesse histórico, relatórios e seu perfil.";
+  if(moreIntro) moreIntro.textContent=isResident?"Ações simples: registrar e consultar pendências.":isSyndic?"Visão geral, acompanhamento e exportações.":"Rotina de zeladoria e acompanhamento.";
   const navCheck=document.querySelector('.nav[data-s="check"]');
+  const navOcc=document.querySelector('.nav[data-s="occ"]');
+  const navMore=document.querySelector('.nav[data-s="more"]');
   const navCheckLabel=document.getElementById("navCheckLabel");
   const navOccLabel=document.getElementById("navOccLabel");
-  if(navCheck) navCheck.style.display=isResident?"none":"";
-  if(navCheckLabel) navCheckLabel.textContent="Checklist";
-  if(navOccLabel) navOccLabel.textContent=isResident?"Pendência":"Ocorrências";
+  if(isResident){
+    if(navCheck){navCheck.style.display="";navCheck.dataset.s="pending";navCheck.onclick=()=>show("pending");navCheck.querySelector('span').textContent="👁";}
+    if(navCheckLabel) navCheckLabel.textContent="Pendências";
+    if(navOcc){navOcc.style.display="";navOcc.dataset.s="residentIssue";navOcc.onclick=()=>show("residentIssue");navOcc.querySelector('span').textContent="📷";}
+    if(navOccLabel) navOccLabel.textContent="Registrar";
+  }else{
+    if(navCheck){navCheck.style.display=isColab?"":"";navCheck.dataset.s="check";navCheck.onclick=()=>show("check");navCheck.querySelector('span').textContent="✓";}
+    if(navCheckLabel) navCheckLabel.textContent=isSyndic?"Pendências":"Checklist";
+    if(isSyndic && navCheck){navCheck.onclick=()=>show("pending");navCheck.dataset.s="pending";}
+    if(navOcc){navOcc.style.display="";navOcc.dataset.s="occ";navOcc.onclick=()=>show("occ");navOcc.querySelector('span').textContent="🔧";}
+    if(navOccLabel) navOccLabel.textContent="Ocorrências";
+  }
+  const exportIds={exportPendingBtn:isSyndic,exportMaterialsBtn:isSyndic,exportPurchasesBtn:isSyndic,exportMaterialsJsonBtn:isSyndic,exportConsolidatedJsonBtn:isSyndic};
+  Object.entries(exportIds).forEach(([id,visible])=>{const el=document.getElementById(id);if(el)el.style.display=visible?"block":"none";});
   fillAreas();
   resetOccurrenceMaterials();
   refresh();
@@ -544,7 +563,7 @@ function saveOccurrenceMaterials(id){
   o.materials=out; persist(); closeMaterialsModal(); renderHistory(); renderMaterials(); toast("Materiais atualizados");
 }
 function closeMaterialsModal(){document.getElementById('materialsModal').classList.remove('open')}
-function exportMaterialsCSV(){
+function exportMaterialsCSV(){if(user?.role!=="Síndico"){toast("Somente o Síndico pode exportar materiais.");return;}
   const rows=[["ID ocorrência","Data","Usuário","Área","Ocorrência","Status","Prioridade","Material","Quantidade","Unidade","Compra","Data da compra","Observação"]];
   materialRecords().forEach(r=>{const m=getPurchaseMeta(r.material,r.unit);rows.push([r.occurrenceId,fmt(r.date),r.user,r.area,r.title,r.status,r.priority,r.material,r.quantity,r.unit,m.status,m.purchasedAt,m.note])});
   const csv=rows.map(r=>r.map(v=>'"'+String(v??'').replaceAll('"','""')+'"').join(';')).join('\n');
@@ -560,17 +579,17 @@ function consolidatedMaterials(){
   });
   return Object.values(totals).sort((a,b)=>a.material.localeCompare(b.material,"pt-BR"));
 }
-function exportConsolidatedCSV(){
+function exportConsolidatedCSV(){if(user?.role!=="Síndico"){toast("Somente o Síndico pode exportar compras.");return;}
   const rows=[["Material","Quantidade total","Unidade","Ocorrências","Compra","Data da compra","Observação"]];
   consolidatedMaterials().forEach(r=>{const m=getPurchaseMeta(r.material,r.unit);rows.push([r.material,r.quantity,r.unit,r.occurrences,m.status,m.purchasedAt,m.note])});
   const csv=rows.map(r=>r.map(v=>'"'+String(v??'').replaceAll('"','""')+'"').join(';')).join("\n");
   const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="tangara-lista-de-compras.csv"; a.click(); URL.revokeObjectURL(a.href); toast("Lista consolidada exportada");
 }
-function downloadConsolidatedJSON(){
+function downloadConsolidatedJSON(){if(user?.role!=="Síndico"){toast("Somente o Síndico pode exportar compras.");return;}
   const payload={exportedAt:new Date().toISOString(),version:"V22",summary:consolidatedMaterials().map(r=>({...r,purchase:getPurchaseMeta(r.material,r.unit)}))};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json;charset=utf-8"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="tangara-lista-de-compras.json"; a.click(); URL.revokeObjectURL(a.href); toast("Lista consolidada exportada");
 }
-function downloadMaterialsJSON(){
+function downloadMaterialsJSON(){if(user?.role!=="Síndico"){toast("Somente o Síndico pode exportar materiais.");return;}
   const payload={exportedAt:new Date().toISOString(),version:"V22",materials:materialRecords().map(r=>({...r,purchase:getPurchaseMeta(r.material,r.unit)})),consolidated:consolidatedMaterials().map(r=>({...r,purchase:getPurchaseMeta(r.material,r.unit)}))};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='tangara-banco-materiais.json';a.click();URL.revokeObjectURL(a.href);toast('Banco de materiais exportado');
 }
@@ -687,6 +706,15 @@ function renderReports(){
   document.getElementById("areaCompliance").innerHTML=AREAS.map(a=>{const ai=ins.filter(x=>x.area===a),ti=ai.reduce((n,x)=>n+Number(x.total||0),0),ao=ai.reduce((n,x)=>n+Number(x.ok||0),0),p=ti?Math.round(ao/ti*100):0;return `<div style="padding:8px 0"><div class="row between"><b style="font-size:13px">${a}</b><span class="muted">${p}%</span></div><div class="progress"><i style="width:${p}%"></i></div></div>`}).join('');
   const recent=[...occ].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,5);
   document.getElementById("recentOccReport").innerHTML=recent.length?recent.map(x=>`<div class="area"><div><b>${x.title}</b><div class="muted">${x.area} • ${fmt(x.date)}</div></div><span class="pill ${x.status==='Resolvida'?'ok':x.priority==='Alta'||x.priority==='Urgente'?'bad':'pending'}">${x.status}</span></div>`).join(''):'<div class="empty">Nenhuma ocorrência no período.</div>';
+}
+function exportPendingCSV(){
+  if(user?.role!=="Síndico"){toast("Somente o Síndico pode exportar a lista de pendências.");return;}
+  const rows=[["Tipo","Data","Usuário","Área","Status","Prioridade","Descrição"]];
+  const latestByArea=Object.fromEntries(AREAS.map(a=>[a,db.inspections.find(i=>i.area===a && Number(i.total)===ITEMS[a].length)]));
+  AREAS.forEach(a=>(latestByArea[a]?.items||[]).forEach(it=>{if(it.status==="Atenção"||it.status==="Não conforme") rows.push(["Inspeção",fmt(latestByArea[a].date),latestByArea[a].user,a,it.status,"",it.item]);}));
+  db.occurrences.filter(x=>x.status!=="Resolvida").forEach(x=>rows.push(["Ocorrência",fmt(x.date),x.user,x.area,x.status,x.priority,`${x.title}${x.desc?" — "+x.desc:""}`]));
+  const csv=rows.map(r=>r.map(v=>'"'+String(v??"").replaceAll('"','""')+'"').join(';')).join('\n');
+  const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="tangara-lista-de-pendencias.csv"; a.click(); URL.revokeObjectURL(a.href); toast("Lista de pendências exportada");
 }
 function exportCSV(){
   const rows=[["Tipo","Data","Usuário","Área","Status","Prioridade","Conformes","Total","Atenção","Não conformes","Título/Observação"]];
@@ -830,6 +858,7 @@ function renderHome(){
     const isResident=label==='Morador'; const isColab=label==='Colaborador'; const title=isResident?'Participação do morador':isColab?'Rotina de zeladoria':'Visão gerencial'; const sub=isResident?'Registre uma pendência com foto e consulte o painel em modo leitura.':isColab?'Confira as áreas pendentes e registre o que encontrar.':'Acompanhe pendências, ocorrências e inspeções recentes.'; rolePanel.innerHTML=`<div class="card" style="background:#eef4ef"><div class="row between"><div><b>${title}</b><div class="muted">${sub}</div></div><span class="pill ok">${label}</span></div>${isResident?'<div class="row wrap" style="margin-top:10px"><button class="btn secondary" onclick="show(&quot;residentIssue&quot;)">📷 Enviar foto da pendência</button><button class="btn" onclick="show(&quot;pending&quot;)">👁 Ver pendências</button></div>':''}</div>`;
   }
   const priorityPanel=document.getElementById("priorityPanel");
+  if(user?.role==="Morador" && priorityPanel){ priorityPanel.innerHTML=`<div class="row between"><div><div class="priority-badge">VISÃO DO MORADOR</div><h3 style="margin:2px 0 4px">Acompanhe sem editar</h3><div class="muted">Veja pendências e registre um problema com foto.</div></div><span class="pill ok">Somente leitura</span></div><div class="row wrap" style="margin-top:10px"><button class="btn" onclick="show('pending')">👁 Ver pendências</button><button class="btn gold" onclick="show('residentIssue')">📷 Registrar</button></div>`; }
   const priority=[...db.occurrences].filter(x=>x.status!=="Resolvida"&&["Alta","Urgente"].includes(x.priority)).sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,3);
   const inspectionPendencies=[];
   AREAS.forEach(a=>{const ins=latestByArea[a]; (ins?.items||[]).forEach(it=>{if(it.status==='Atenção'||it.status==='Não conforme') inspectionPendencies.push({area:a,item:it.item,status:it.status});});});
