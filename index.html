@@ -1,93 +1,140 @@
 <!doctype html>
 <html lang="pt-BR">
-<head><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#123f58"><link rel="icon" href="icon.svg">
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#123f58"><link rel="manifest" href="manifest.json">
-<title>Tangará Zeladoria</title>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#173b2b">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg">
+<title>Tangará Zeladoria V4</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f3f6f8;color:#17232d;font-family:Arial,sans-serif}
-.app{max-width:520px;margin:auto;min-height:100vh;background:#f3f6f8;padding-bottom:78px}
-.top{background:linear-gradient(145deg,#123f58,#1d6684);color:#fff;padding:24px 18px 28px;border-radius:0 0 26px 26px}
-.top small{opacity:.8}.top h1{margin:6px 0 2px;font-size:25px}.top p{margin:0;opacity:.85}
-main{padding:16px}.screen{display:none}.screen.active{display:block}
-.card{background:#fff;border:1px solid #e2e8ed;border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 4px 16px #123f5810}
-h2{font-size:20px;margin:5px 0 14px}h3{margin:0 0 8px}.muted{color:#6b7783;font-size:13px}
-input,select,textarea{width:100%;padding:13px;border:1px solid #dbe2e8;border-radius:12px;font:inherit;background:#fff;margin-bottom:9px}
-button{border:0;border-radius:12px;padding:13px 15px;font-weight:700;font:inherit;cursor:pointer}.primary{background:#174d68;color:white}.secondary{background:#edf2f5;color:#17232d}.danger{background:#fde7e7;color:#b83232}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{padding:14px;border-radius:16px;background:#fff;border:1px solid #e2e8ed}.stat b{font-size:25px;display:block}.stat span{font-size:12px;color:#71808c}
-.area{display:flex;align-items:center;gap:12px}.icon{font-size:25px}.area b{display:block}.area small{color:#75828d}.progress{height:7px;background:#e9eef1;border-radius:99px;margin-top:9px;overflow:hidden}.progress i{display:block;height:100%;background:#218653}
-.check{display:flex;gap:11px;padding:14px 0;border-top:1px solid #edf0f2}.check input{width:22px;height:22px;margin:0}.check label{flex:1}.pill{font-size:11px;font-weight:700;border-radius:99px;padding:5px 8px;background:#e6f5ec;color:#218653}
-.photo{border:2px dashed #cdd7de;padding:16px;text-align:center;border-radius:14px;color:#687681;margin-bottom:10px}.photo input{display:none}
-.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);background:#fff;border-top:1px solid #dde4e8;display:flex;justify-content:space-around;padding:8px 4px calc(8px + env(safe-area-inset-bottom));z-index:5}
-.nav button{background:none;color:#65727c;padding:7px 10px;font-size:11px}.nav button.active{color:#174d68}.nav span{display:block;font-size:21px}
-.login{padding:40px 20px}.logo{width:70px;height:70px;border-radius:20px;background:#174d68;color:#fff;display:grid;place-items:center;font-size:35px;margin-bottom:20px}
-.hidden{display:none!important}.row{display:flex;justify-content:space-between;gap:10px;align-items:center}.occ{border-left:4px solid #d88916;padding-left:12px;margin:10px 0}
+:root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+.app{max-width:760px;margin:auto;min-height:100vh}.top{background:var(--green);color:white;padding:18px 18px 16px;position:sticky;top:0;z-index:5;box-shadow:0 2px 12px #0002}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:42px;height:42px;border-radius:12px;background:white;padding:6px}.brand h1{font-size:18px;margin:0}.brand small{opacity:.75}
+main{padding:16px 14px 92px}.screen{display:none}.screen.active{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 3px 14px #173b2b08}
+.hero{background:linear-gradient(135deg,var(--green),#2d654b);color:white;border:0}.hero h2{margin:0 0 4px}.muted{color:var(--muted);font-size:13px}.hero .muted{color:#d8e4dd}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.metric{padding:14px;border-radius:14px;background:#f7f9f7;border:1px solid var(--line)}.metric b{display:block;font-size:25px}.metric span{font-size:12px;color:var(--muted)}
+.btn{border:0;border-radius:12px;padding:12px 14px;font-weight:700;background:var(--green);color:white}.btn.secondary{background:#eef2ef;color:var(--green)}.btn.gold{background:var(--gold);color:#241d0b}.btn.danger{background:#f8e7e5;color:var(--danger)}.btn.full{width:100%}
+.row{display:flex;gap:8px;align-items:center}.between{justify-content:space-between}.wrap{flex-wrap:wrap}
+label{font-size:13px;font-weight:700;display:block;margin:10px 0 6px}input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:11px;background:white}textarea{min-height:90px;resize:vertical}
+.area{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)}.area:last-child{border-bottom:0}.area b{font-size:14px}.pill{font-size:11px;padding:5px 8px;border-radius:99px;font-weight:800}.ok{background:#e2f3e9;color:var(--ok)}.pending{background:#fff1d7;color:var(--warn)}.bad{background:#f8e1df;color:var(--danger)}
+.bottom{position:fixed;bottom:0;left:0;right:0;max-width:760px;margin:auto;background:white;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);z-index:6}.nav{border:0;background:white;padding:10px 4px;color:var(--muted);font-size:11px}.nav.active{color:var(--green);font-weight:800}.nav span{display:block;font-size:20px;margin-bottom:2px}
+.check{display:flex;gap:10px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}.check input{width:22px;height:22px;accent-color:var(--green)}
+.timeline{border-left:3px solid #d8e1db;padding-left:14px}.event{position:relative;margin:0 0 16px}.event:before{content:"";position:absolute;left:-22px;top:4px;width:10px;height:10px;background:var(--green);border-radius:50%}
+.empty{text-align:center;padding:28px;color:var(--muted)}.toast{position:fixed;left:50%;bottom:78px;transform:translateX(-50%);background:#17201b;color:white;padding:11px 16px;border-radius:99px;display:none;z-index:20;font-size:13px}
+table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;padding:9px 6px;border-bottom:1px solid var(--line)}th{color:var(--muted)}
+.login{min-height:100vh;display:flex;align-items:center;padding:22px;background:linear-gradient(145deg,#173b2b,#2c6049)}.loginbox{width:100%;max-width:430px;margin:auto;background:white;border-radius:24px;padding:24px}.loginbox img{width:70px;height:70px;display:block;margin:0 auto 10px}.loginbox h2{text-align:center;margin:0}.loginbox p{text-align:center;color:var(--muted)}
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}main{padding:20px}.bottom{position:sticky;bottom:0;border:1px solid var(--line);border-radius:16px;margin-bottom:12px}}
 </style>
 </head>
 <body>
-<div class="app">
-<header class="top" id="header"><small>CONDOMÍNIO</small><h1>Tangará Zeladoria</h1><p id="welcome">Controle de limpeza, conservação e manutenção</p></header>
+<div id="login" class="login">
+  <div class="loginbox">
+    <img src="icon.svg"><h2>Tangará Zeladoria</h2><p>Controle de limpeza, conservação e manutenção</p>
+    <label>Nome</label><input id="loginName" placeholder="Digite seu nome">
+    <label>Perfil</label><select id="loginRole"><option>Colaborador</option><option>Síndico</option><option>Administradora</option></select>
+    <button class="btn full" style="margin-top:14px" onclick="login()">Entrar</button>
+  </div>
+</div>
 
-<section id="login" class="login">
-<div class="logo">🏢</div><h2>Acesso</h2>
-<p class="muted">Entre para registrar as verificações do condomínio.</p>
-<input id="user" placeholder="Nome do responsável">
-<select id="role"><option>Colaborador</option><option>Síndico</option><option>Administradora</option></select>
-<button class="primary" style="width:100%" onclick="login()">Entrar no aplicativo</button>
-</section>
-
-<main id="main" class="hidden">
+<div id="app" class="app" style="display:none">
+<header class="top"><div class="brand"><img class="logo" src="icon.svg"><div><h1>Tangará Zeladoria</h1><small id="userLabel"></small></div></div></header>
+<main>
 <section id="home" class="screen active">
-<h2>Resumo de hoje</h2>
-<div class="grid">
-<div class="stat"><b id="sDone">0</b><span>Conformes</span></div><div class="stat"><b id="sPending">0</b><span>Pendentes</span></div>
-<div class="stat"><b id="sOcc">0</b><span>Ocorrências</span></div><div class="stat"><b id="sArea">0%</b><span>Áreas concluídas</span></div>
-</div>
-<h2 style="margin-top:22px">Áreas comuns</h2><div id="areas"></div>
+  <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div></div>
+  <div class="grid">
+    <div class="metric"><b id="mOk">0</b><span>Conformes</span></div>
+    <div class="metric"><b id="mPending">0</b><span>Pendências</span></div>
+    <div class="metric"><b id="mOcc">0</b><span>Ocorrências abertas</span></div>
+    <div class="metric"><b id="mPct">0%</b><span>Áreas concluídas</span></div>
+  </div>
+  <div class="card"><div class="row between"><h3 style="margin:0">Áreas</h3><button class="btn secondary" onclick="show('check')">Ver checklist</button></div><div id="areaSummary"></div></div>
+  <div class="card"><h3 style="margin-top:0">Ações rápidas</h3><div class="row wrap">
+    <button class="btn" onclick="show('check')">📋 Checklist</button>
+    <button class="btn gold" onclick="show('occ')">🔧 Nova ocorrência</button>
+    <button class="btn secondary" onclick="show('history')">🕘 Histórico</button>
+  </div></div>
 </section>
 
-<section id="check" class="screen"><div class="row"><h2 id="checkTitle">Checklist</h2><button class="secondary" onclick="go('home')">Voltar</button></div><div id="checks"></div>
-<div class="card"><h3>Observação</h3><textarea id="note" placeholder="Registre uma observação desta área..."></textarea><button class="primary" onclick="saveNote()">Salvar observação</button></div>
+<section id="check" class="screen">
+  <div class="card"><div class="row between"><div><h2 style="margin:0">Checklist</h2><div class="muted">Registre a situação de cada área.</div></div><select id="areaSelect" style="max-width:180px" onchange="renderChecklist()"></select></div><div id="checks"></div><label>Observação da área</label><textarea id="checkObs" placeholder="Ex.: piso limpo, lâmpada queimada..."></textarea><button class="btn full" onclick="saveChecklist()">Salvar inspeção</button></div>
 </section>
 
-<section id="occurrences" class="screen"><h2>Ocorrências</h2>
-<div class="card"><input id="occArea" placeholder="Área"><input id="occTitle" placeholder="Título"><select id="priority"><option>Baixa</option><option selected>Média</option><option>Alta</option></select><textarea id="occDesc" placeholder="Descreva o problema e a providência necessária"></textarea>
-<label class="photo">📷 Adicionar foto<input type="file" accept="image/*" capture="environment" onchange="photoChosen(this)"></label><div id="photoName" class="muted"></div>
-<button class="primary" style="width:100%" onclick="addOcc()">Registrar ocorrência</button></div><div id="occList"></div>
+<section id="occ" class="screen">
+  <div class="card"><h2 style="margin-top:0">Nova ocorrência</h2>
+    <label>Área</label><select id="occArea"></select>
+    <label>Título</label><input id="occTitle" placeholder="Ex.: Lâmpada queimada">
+    <label>Prioridade</label><select id="occPriority"><option>Baixa</option><option selected>Média</option><option>Alta</option><option>Urgente</option></select>
+    <label>Descrição</label><textarea id="occDesc" placeholder="Descreva o problema e a ação necessária"></textarea>
+    <label>Foto</label><input id="occPhoto" type="file" accept="image/*" capture="environment">
+    <button class="btn gold full" style="margin-top:12px" onclick="saveOccurrence()">Registrar ocorrência</button>
+  </div>
 </section>
 
-<section id="profile" class="screen"><h2>Perfil</h2><div class="card"><b id="profileName"></b><p class="muted" id="profileRole"></p><button class="danger" onclick="logout()">Sair</button></div>
-<div class="card"><h3>Sobre o app</h3><p class="muted">MVP mobile do Tangará Zeladoria. Os dados desta versão ficam armazenados no aparelho.</p></div></section>
+<section id="history" class="screen">
+  <div class="card"><div class="row between"><div><h2 style="margin:0">Histórico</h2><div class="muted">Inspeções e ocorrências registradas.</div></div><button class="btn secondary" onclick="exportCSV()">Exportar</button></div>
+  <label>Filtro</label><select id="histFilter" onchange="renderHistory()"><option value="all">Todos</option><option value="check">Inspeções</option><option value="occ">Ocorrências</option></select>
+  <div id="historyList"></div></div>
+</section>
+
+<section id="reports" class="screen">
+  <div class="card"><h2 style="margin-top:0">Relatórios</h2><div class="grid">
+    <div class="metric"><b id="rInspections">0</b><span>Inspeções</span></div><div class="metric"><b id="rOcc">0</b><span>Ocorrências</span></div><div class="metric"><b id="rOpen">0</b><span>Em aberto</span></div><div class="metric"><b id="rResolved">0</b><span>Resolvidas</span></div>
+  </div></div>
+  <div class="card"><h3 style="margin-top:0">Ocorrências por área</h3><div id="areaReport"></div></div>
+</section>
+
+<section id="profile" class="screen">
+  <div class="card"><h2 style="margin-top:0">Perfil</h2><p><b id="profileName"></b><br><span class="muted" id="profileRole"></span></p><button class="btn danger full" onclick="logout()">Sair do aplicativo</button></div>
+  <div class="card"><h3 style="margin-top:0">Sobre a V4</h3><p class="muted">Versão profissional do Tangará Zeladoria. Os registros desta versão ficam armazenados no aparelho. A próxima etapa pode conectar os dados à nuvem.</p></div>
+</section>
 </main>
-
-<nav class="nav hidden" id="nav"><button onclick="go('home')" data-tab="home"><span>🏠</span>Início</button><button onclick="go('occurrences')" data-tab="occurrences"><span>🔧</span>Ocorrências</button><button onclick="go('profile')" data-tab="profile"><span>👤</span>Perfil</button></nav>
+<nav class="bottom">
+<button class="nav active" data-s="home" onclick="show('home')"><span>⌂</span>Início</button>
+<button class="nav" data-s="check" onclick="show('check')"><span>✓</span>Checklist</button>
+<button class="nav" data-s="occ" onclick="show('occ')"><span>🔧</span>Ocorrências</button>
+<button class="nav" data-s="history" onclick="show('history')"><span>☷</span>Mais</button>
+</nav>
 </div>
+<div id="toast" class="toast"></div>
+
 <script>
-const areas={
-"Hall e corredores":["Piso limpo e seco","Vidros e espelhos limpos","Lixeiras higienizadas","Iluminação funcionando","Paredes e corrimãos sem sujeira"],
-"Salão de festas":["Limpeza geral realizada","Mesas e cadeiras limpas e organizadas","Banheiros verificados","Lixeiras higienizadas","Itens preservados após uso"],
-"Salão gourmet":["Limpeza geral realizada","Bancadas e pia higienizadas","Equipamentos limpos","Lixeiras higienizadas","Piso limpo e seco"],
-"Academia":["Equipamentos limpos","Piso limpo","Espelhos limpos","Ventilação adequada","Equipamentos sem avarias aparentes"],
-"Salão de jogos":["Mesas e equipamentos organizados","Piso limpo","Lixeiras higienizadas","Mobiliário em bom estado"],
-"Brinquedoteca":["Brinquedos organizados","Superfícies higienizadas","Piso limpo","Mobiliário em bom estado"],
-"Garagem":["Piso e circulação verificados","Iluminação funcionando","Sinalização visível","Portões funcionando","Ausência de vazamentos aparentes"],
-"Áreas externas":["Limpeza geral","Jardins/canteiros verificados","Ralos e grelhas desobstruídos","Iluminação externa funcionando"]
+const AREAS=["Hall e corredores","Salão de festas","Salão gourmet","Academia","Salão de jogos","Brinquedoteca","Garagem","Áreas externas"];
+const ITEMS={
+"Hall e corredores":["Piso e circulação limpos","Elevadores e áreas de acesso organizados","Paredes e vidros em boas condições","Iluminação funcionando"],
+"Salão de festas":["Piso limpo","Mesas e cadeiras organizadas","Lixeiras higienizadas","Área pronta para uso/reserva"],
+"Salão gourmet":["Bancadas limpas","Equipamentos e utensílios organizados","Piso limpo","Lixeiras higienizadas"],
+"Academia":["Equipamentos organizados","Piso limpo","Espelhos e superfícies limpos","Ambiente em ordem"],
+"Salão de jogos":["Mesas e equipamentos organizados","Piso limpo","Mobiliário em ordem","Ambiente preservado"],
+"Brinquedoteca":["Brinquedos organizados","Piso limpo","Mobiliário em ordem","Ambiente seguro e preservado"],
+"Garagem":["Piso e circulação em ordem","Iluminação funcionando","Sinalização preservada","Lixeiras/área organizada"],
+"Áreas externas":["Calçadas e acessos limpos","Jardins e áreas verdes em ordem","Lixeiras higienizadas","Iluminação externa funcionando"]
 };
-const icons={"Hall e corredores":"🚪","Salão de festas":"🎉","Salão gourmet":"🍽️","Academia":"🏋️","Salão de jogos":"🎮","Brinquedoteca":"🧸","Garagem":"🚗","Áreas externas":"🌳"};
-let current="", photo="";
-function data(){return JSON.parse(localStorage.getItem("tz_v2")||'{"user":"","role":"","checks":{},"notes":{},"occ":[]}')}
-function save(d){localStorage.setItem("tz_v2",JSON.stringify(d))}
-function login(){let u=document.getElementById("user").value.trim();if(!u)return alert("Digite seu nome.");let d=data();d.user=u;d.role=document.getElementById("role").value;save(d);start()}
-function start(){let d=data();if(!d.user)return;document.getElementById("login").classList.add("hidden");document.getElementById("main").classList.remove("hidden");document.getElementById("nav").classList.remove("hidden");document.getElementById("welcome").textContent="Olá, "+d.user+" • "+d.role;document.getElementById("profileName").textContent=d.user;document.getElementById("profileRole").textContent=d.role;renderHome();renderOcc()}
-function go(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.tab===id));if(id==="home")renderHome();if(id==="occurrences")renderOcc()}
-function renderHome(){let d=data(),total=0,done=0,finished=0;let el=document.getElementById("areas");el.innerHTML="";for(let a in areas){let n=areas[a].length,c=areas[a].filter((_,i)=>d.checks[a+"_"+i]).length;total+=n;done+=c;if(c===n)finished++;let div=document.createElement("div");div.className="card";div.innerHTML=`<div class="area"><span class="icon">${icons[a]}</span><div style="flex:1"><b>${a}</b><small>${c}/${n} verificações</small><div class="progress"><i style="width:${c/n*100}%"></i></div></div><button class="secondary" onclick="openCheck('${a}')">Abrir</button></div>`;el.appendChild(div)}document.getElementById("sDone").textContent=done;document.getElementById("sPending").textContent=total-done;document.getElementById("sOcc").textContent=d.occ.length;document.getElementById("sArea").textContent=Math.round(finished/Object.keys(areas).length*100)+"%"}
-function openCheck(a){current=a;let d=data();document.getElementById("checkTitle").textContent=a;document.getElementById("note").value=d.notes[a]||"";let el=document.getElementById("checks");el.innerHTML="";areas[a].forEach((x,i)=>{let k=a+"_"+i;let row=document.createElement("div");row.className="check";row.innerHTML=`<input type="checkbox" ${d.checks[k]?"checked":""} onchange="toggle('${k}')"><label>${x}</label><span class="pill">${d.checks[k]?"OK":"Pendente"}</span>`;el.appendChild(row)});go("check")}
-function toggle(k){let d=data();d.checks[k]=!d.checks[k];save(d);openCheck(current)}
-function saveNote(){let d=data();d.notes[current]=document.getElementById("note").value;save(d);alert("Observação salva.");renderHome()}
-function photoChosen(x){photo=x.files[0]?.name||"";document.getElementById("photoName").textContent=photo?"Foto selecionada: "+photo:""}
-function addOcc(){let area=document.getElementById("occArea").value.trim(),title=document.getElementById("occTitle").value.trim();if(!area||!title)return alert("Informe área e título.");let d=data();d.occ.unshift({area,title,priority:document.getElementById("priority").value,desc:document.getElementById("occDesc").value,photo,time:new Date().toLocaleString("pt-BR")});save(d);["occArea","occTitle","occDesc"].forEach(x=>document.getElementById(x).value="");photo="";document.getElementById("photoName").textContent="";renderOcc();alert("Ocorrência registrada.")}
-function renderOcc(){let d=data(),el=document.getElementById("occList");el.innerHTML=d.occ.length?"":"<div class='card muted'>Nenhuma ocorrência registrada.</div>";d.occ.forEach(o=>{let div=document.createElement("div");div.className="card";div.innerHTML=`<div class="row"><b>${o.title}</b><span class="pill">${o.priority}</span></div><div class="muted">${o.area} • ${o.time}</div><p>${o.desc||""}</p>${o.photo?"<div class='muted'>📷 "+o.photo+"</div>":""}`;el.appendChild(div)})}
-function logout(){localStorage.removeItem("tz_v2");location.reload()}
-start();
+let db=JSON.parse(localStorage.getItem("tangaraV4")||'{"inspections":[],"occurrences":[]}');
+let user=JSON.parse(localStorage.getItem("tangaraUser")||"null");
+function persist(){localStorage.setItem("tangaraV4",JSON.stringify(db))}
+function toast(t){let e=document.getElementById("toast");e.textContent=t;e.style.display="block";setTimeout(()=>e.style.display="none",2200)}
+function login(){let name=document.getElementById("loginName").value.trim();if(!name)return toast("Digite seu nome");user={name,role:document.getElementById("loginRole").value};localStorage.setItem("tangaraUser",JSON.stringify(user));start()}
+function start(){if(!user)return;login.style.display="none";app.style.display="block";userLabel.textContent=user.role;hello.textContent=user.name.split(" ")[0];profileName.textContent=user.name;profileRole.textContent=user.role;fillAreas();refresh()}
+function logout(){localStorage.removeItem("tangaraUser");location.reload()}
+function fillAreas(){let opts=AREAS.map(a=>`<option>${a}</option>`).join("");areaSelect.innerHTML=opts;occArea.innerHTML=opts;renderChecklist()}
+function show(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll(".nav").forEach(x=>x.classList.toggle("active",x.dataset.s===id));if(id==="history")renderHistory();if(id==="reports")renderReports();if(id==="check")renderChecklist();if(id==="home")renderHome()}
+function renderChecklist(){let area=areaSelect.value;checks.innerHTML=ITEMS[area].map((x,i)=>`<div class="check"><input type="checkbox" id="c${i}"><div><b>${x}</b><div class="muted">Marque somente após verificar.</div></div></div>`).join("");checkObs.value=""}
+function saveChecklist(){let area=areaSelect.value;let values=ITEMS[area].map((x,i)=>({item:x,ok:document.getElementById("c"+i).checked}));let ok=values.filter(x=>x.ok).length;db.inspections.unshift({id:Date.now(),type:"check",date:new Date().toISOString(),user:user.name,area,ok,total:values.length,obs:checkObs.value.trim(),items:values});persist();toast("Inspeção salva");renderHome()}
+function saveOccurrence(){let title=occTitle.value.trim();if(!title)return toast("Informe o título");let file=occPhoto.files[0];let finish=(photo)=>{db.occurrences.unshift({id:Date.now(),type:"occ",date:new Date().toISOString(),user:user.name,area:occArea.value,title,priority:occPriority.value,desc:occDesc.value.trim(),photo:photo||"",status:"Aberta"});persist();occTitle.value="";occDesc.value="";occPhoto.value="";toast("Ocorrência registrada");renderHome();show("history")};if(file){let r=new FileReader();r.onload=()=>finish(r.result);r.readAsDataURL(file)}else finish("")}
+function renderHome(){let last=db.inspections;let ok=last.filter(x=>x.ok===x.total).length;let pend=last.filter(x=>x.ok<x.total).length;let open=db.occurrences.filter(x=>x.status!=="Resolvida").length;mOk.textContent=ok;mPending.textContent=pend;mOcc.textContent=open;mPct.textContent=(AREAS.length?Math.round(new Set(last.map(x=>x.area)).size/AREAS.length*100):0)+"%";areaSummary.innerHTML=AREAS.map(a=>{let x=last.find(i=>i.area===a);return `<div class="area"><b>${a}</b><span class="pill ${!x?'pending':x.ok===x.total?'ok':'bad'}">${!x?'Pendente':x.ok===x.total?'Conforme':'Atenção'}</span></div>`}).join("")}
+function renderHistory(){let f=histFilter.value;let all=[...db.inspections,...db.occurrences].filter(x=>f==="all"||x.type===f).sort((a,b)=>b.id-a.id);historyList.innerHTML=all.length?all.map(x=>x.type==="check"?`<div class="card"><div class="row between"><b>📋 ${x.area}</b><span class="pill ${x.ok===x.total?'ok':'bad'}">${x.ok}/${x.total}</span></div><div class="muted">${fmt(x.date)} • ${x.user}</div>${x.obs?`<p>${esc(x.obs)}</p>`:""}</div>`:`<div class="card"><div class="row between"><b>🔧 ${esc(x.title)}</b><span class="pill ${x.status==="Resolvida"?'ok':'pending'}">${x.status}</span></div><div class="muted">${x.area} • ${x.priority} • ${fmt(x.date)} • ${x.user}</div><p>${esc(x.desc||"")}</p>${x.photo?`<img src="${x.photo}" style="width:100%;max-height:220px;object-fit:cover;border-radius:12px">`:""}<button class="btn secondary full" style="margin-top:8px" onclick="toggleOcc(${x.id})">${x.status==="Resolvida"?"Reabrir":"Marcar como resolvida"}</button></div>`).join(""):"<div class='empty'>Nenhum registro encontrado.</div>"}
+function toggleOcc(id){let x=db.occurrences.find(o=>o.id===id);if(x){x.status=x.status==="Resolvida"?"Aberta":"Resolvida";persist();renderHistory();renderHome();toast("Status atualizado")}}
+function renderReports(){let ins=db.inspections, occ=db.occurrences;rInspections.textContent=ins.length;rOcc.textContent=occ.length;rOpen.textContent=occ.filter(x=>x.status!=="Resolvida").length;rResolved.textContent=occ.filter(x=>x.status==="Resolvida").length;areaReport.innerHTML=AREAS.map(a=>{let n=occ.filter(x=>x.area===a).length;return `<div class="area"><b>${a}</b><span>${n} ocorrência(s)</span></div>`}).join("")}
+function fmt(d){return new Date(d).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function exportCSV(){let rows=[["Tipo","Data","Usuário","Área","Status/Conforme","Detalhes"],...db.inspections.map(x=>["Inspeção",fmt(x.date),x.user,x.area,`${x.ok}/${x.total}`,x.obs||""]),...db.occurrences.map(x=>["Ocorrência",fmt(x.date),x.user,x.area,x.status,`${x.title} - ${x.desc||""}`])];let csv=rows.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(";")).join("\\n");let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));a.download="tangara-zeladoria-relatorio.csv";a.click()}
+function refresh(){renderHome();renderReports();renderHistory()}
+if(user)start();
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
 </script>
-<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{});}</script></body></html>
+</body>
+</html>
