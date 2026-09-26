@@ -1,11 +1,10 @@
-# Tangará Zeladoria V37
+# Tangará Zeladoria V38
 
-Correção do acesso do Colaborador à tela de Pendências.
+Correção do botão **Ver** na tela de Pendências.
 
-## Novidades
-- Ao abrir Pendências como Colaborador, o filtro inicia em **Aberta** para mostrar imediatamente as pendências ativas.
-- O Colaborador pode trocar para **Todos** ou **Resolvida** quando quiser consultar outros registros.
-- O texto da tela identifica claramente **Pendências ativas** quando o filtro Aberta está selecionado.
-- Mantidos os filtros por Área e os status oficiais **Aberta** e **Resolvida**.
-- Mantidas as permissões por perfil.
-- Cache atualizado para V37.
+- O botão **Ver** de uma ocorrência não abre mais o histórico/abrir pendência.
+- Ele direciona para a tela **Pendências** com o filtro **Aberta** selecionado.
+- Para o Colaborador, as pendências ativas aparecem imediatamente.
+- Os filtros **Aberta / Resolvida / Todos** e **Área** continuam disponíveis.
+- Mantidos os perfis e permissões das versões anteriores.
+- Mantidos apenas os status oficiais **Aberta** e **Resolvida**.

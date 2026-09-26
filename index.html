@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#124a35">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Tangará Zeladoria V37</title>
+<title>Tangará Zeladoria V38</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
 .priority-hero{border:2px solid var(--green2);box-shadow:0 8px 24px rgba(23,59,43,.10)} .priority-hero .critical-item{padding:12px 0;border-top:1px solid var(--line)} .priority-hero .critical-item:first-of-type{border-top:0} .priority-hero .priority-badge{font-size:12px;font-weight:700;letter-spacing:.02em}
@@ -59,7 +59,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 <header class="top"><div class="brand"><img class="logo" src="logo-tangara.png"><div><h1>Tangará Zeladoria</h1><small id="userLabel"></small></div></div></header>
 <main>
 <section id="home" class="screen active">
-  <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div><div class="muted" style="font-size:11px;margin-top:6px;opacity:.7">Painel V37</div></div>
+  <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div><div class="muted" style="font-size:11px;margin-top:6px;opacity:.7">Painel V38</div></div>
   <div class="card" id="focusPanel"></div>
   <div class="card priority-hero" id="priorityPanel"></div>
   <div class="grid" id="dashboardMetrics">
@@ -171,7 +171,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 
 <section id="profile" class="screen">
   <div class="card"><h2 style="margin-top:0">Perfil</h2><p><b id="profileName"></b><br><span class="muted" id="profileRole"></span></p><button class="btn danger full" onclick="logout(event)">Sair do aplicativo</button></div>
-  <div class="card"><h3 style="margin-top:0">Sobre a V37</h3><p class="muted">Fluxo de ocorrências com apenas os status Aberta e Resolvida, materiais de reposição sugeridos automaticamente, edição por ocorrência, consolidação para compras, acompanhamento Pendente/Comprado com data e observação, exportação detalhada e consolidada em CSV e JSON, detalhes de inspeções, fotos, filtros e indicadores gerenciais. Os registros continuam armazenados no aparelho.</p></div>
+  <div class="card"><h3 style="margin-top:0">Sobre a V38</h3><p class="muted">Fluxo de ocorrências com apenas os status Aberta e Resolvida, materiais de reposição sugeridos automaticamente, edição por ocorrência, consolidação para compras, acompanhamento Pendente/Comprado com data e observação, exportação detalhada e consolidada em CSV e JSON, detalhes de inspeções, fotos, filtros e indicadores gerenciais. Os registros continuam armazenados no aparelho.</p></div>
 </section>
 </main>
 <nav class="bottom">
@@ -391,6 +391,11 @@ function fillAreas(){
   const reportAreaEl=document.getElementById("reportArea");
   if(reportAreaEl) reportAreaEl.innerHTML=`<option value="all">Todas as áreas</option>`+opts;
   renderChecklist();
+}
+function openOpenPendencies(){
+  const statusEl=document.getElementById("pendingStatus");
+  if(statusEl){ statusEl.value="Aberta"; statusEl.dataset.initialized="1"; }
+  show("pending");
 }
 function show(id){
   const isResident=user?.role==="Morador";
@@ -660,7 +665,7 @@ function renderPending(){
     const heading=statusFilter==='Aberta'?'Pendências ativas':'Ocorrências encontradas';
     document.getElementById('pendingOccurrences').innerHTML=`<div class="muted" style="margin:10px 0 6px;font-weight:800">${heading}</div>`+occ.map(x=>{
       const cls=x.status==='Resolvida'?'ok':x.priority==='Alta'||x.priority==='Urgente'?'bad':'pending';
-      return `<div class="area"><div style="flex:1"><div class="row between"><b>🔧 ${x.title}</b><span class="pill ${cls}">${x.status}</span></div><div class="muted">${x.area} • ${x.priority} • ${fmt(x.date)} • ${x.user}</div>${x.desc?`<div class="muted" style="margin-top:4px">${x.desc}</div>`:''}${x.photo?`<div class="photo-view"><img class="thumb" src="${x.photo}" alt="Foto da pendência"><span class="muted">Foto anexada.</span></div>`:''}</div>${resident?'':`<button class="btn secondary" onclick="show('history')">Ver</button>`}</div>`;
+      return `<div class="area"><div style="flex:1"><div class="row between"><b>🔧 ${x.title}</b><span class="pill ${cls}">${x.status}</span></div><div class="muted">${x.area} • ${x.priority} • ${fmt(x.date)} • ${x.user}</div>${x.desc?`<div class="muted" style="margin-top:4px">${x.desc}</div>`:''}${x.photo?`<div class="photo-view"><img class="thumb" src="${x.photo}" alt="Foto da pendência"><span class="muted">Foto anexada.</span></div>`:''}</div>${resident?'':`<button class="btn secondary" onclick="openOpenPendencies()">Ver</button>`}</div>`;
     }).join('');
   }else{
     document.getElementById('pendingOccurrences').innerHTML='<div class="empty">Nenhuma ocorrência encontrada nos filtros selecionados.</div>';
@@ -879,15 +884,15 @@ function renderFocusPanel(){
   const purchasePending=purchaseStats().pending;
 
   if(role==="Morador"){
-    el.innerHTML=`<div class="row between"><div><h3 class="focus-title">Área do morador</h3><div class="focus-sub">Registre um problema com foto ou consulte as pendências do condomínio.</div></div><span class="pill ok">Somente leitura</span></div><div class="focus-grid"><div class="focus-item"><div><b>📌 ${open} pendência${open===1?"":"s"} em aberto</b><span>Acompanhe o que foi registrado no condomínio.</span></div><button class="btn" onclick="show('pending')">Ver</button></div><div class="focus-item"><div><b>📷 Encontrou um problema?</b><span>Envie uma foto e uma descrição para a zeladoria.</span></div><button class="btn gold" onclick="show('residentIssue')">Registrar</button></div></div>`;
+    el.innerHTML=`<div class="row between"><div><h3 class="focus-title">Área do morador</h3><div class="focus-sub">Registre um problema com foto ou consulte as pendências do condomínio.</div></div><span class="pill ok">Somente leitura</span></div><div class="focus-grid"><div class="focus-item"><div><b>📌 ${open} pendência${open===1?"":"s"} em aberto</b><span>Acompanhe o que foi registrado no condomínio.</span></div><button class="btn" onclick="openOpenPendencies()">Ver</button></div><div class="focus-item"><div><b>📷 Encontrou um problema?</b><span>Envie uma foto e uma descrição para a zeladoria.</span></div><button class="btn gold" onclick="show('residentIssue')">Registrar</button></div></div>`;
     return;
   }
 
   const title=role==="Síndico"?"O que precisa de atenção":"Próximas ações";
   const sub=role==="Síndico"?"Veja primeiro o que merece acompanhamento.":"Acesse rapidamente as tarefas mais úteis.";
   const rows=[];
-  if(priority) rows.push(`<div class="focus-item"><div><b>🚨 ${priority} ocorrência${priority===1?"":"s"} prioritária${priority===1?"":"s"}</b><span>Alta ou urgente em aberto</span></div><button class="btn danger" onclick="show('occ')">Acompanhar</button></div>`);
-  if(open) rows.push(`<div class="focus-item"><div><b>🔧 ${open} ocorrência${open===1?"":"s"} em aberto</b><span>Acompanhar problemas registrados</span></div><button class="btn" onclick="show('occ')">Ver</button></div>`);
+  if(priority) rows.push(`<div class="focus-item"><div><b>🚨 ${priority} ocorrência${priority===1?"":"s"} prioritária${priority===1?"":"s"}</b><span>Alta ou urgente em aberto</span></div><button class="btn danger" onclick="openOpenPendencies()">Acompanhar</button></div>`);
+  if(open) rows.push(`<div class="focus-item"><div><b>🔧 ${open} ocorrência${open===1?"":"s"} em aberto</b><span>Acompanhar problemas registrados</span></div><button class="btn" onclick="openOpenPendencies()">Ver</button></div>`);
   if(attention) rows.push(`<div class="focus-item"><div><b>⚠️ ${attention} item${attention===1?"":"s"} de inspeção</b><span>Itens em atenção ou não conformes</span></div><button class="btn" onclick="show('pending')">Ver</button></div>`);
   if(role==="Síndico" && purchasePending) rows.push(`<div class="focus-item"><div><b>🛒 ${purchasePending} compra${purchasePending===1?"":"s"} pendente${purchasePending===1?"":"s"}</b><span>Materiais aguardando compra</span></div><button class="btn" onclick="show('materials')">Ver</button></div>`);
   if(!rows.length) rows.push(`<div class="focus-item"><div><b>✅ Tudo em ordem</b><span>Nenhuma pendência exige atenção imediata.</span></div><button class="btn secondary" onclick="show('check')">Conferir</button></div>`);
@@ -936,7 +941,7 @@ function renderHome(){
 }
 function refresh(){renderHome();renderReports();renderHistory();renderPending()}
 if(user)start();
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=370",{updateViaCache:"none"}).catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=380",{updateViaCache:"none"}).catch(()=>{});
 </script>
 </body>
 </html>
