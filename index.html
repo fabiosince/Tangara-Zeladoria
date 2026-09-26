@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#173b2b">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="logo-tangara.png">
-<title>Tangará Zeladoria V23</title>
+<title>Tangará Zeladoria V24</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
@@ -17,7 +17,7 @@ main{padding:16px 14px 92px}.screen{display:none}.screen.active{display:block}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 3px 14px #173b2b08}
 .hero{background:linear-gradient(135deg,var(--green),#2d654b);color:white;border:0}.hero h2{margin:0 0 4px}.muted{color:var(--muted);font-size:13px}.hero .muted{color:#d8e4dd}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.metric{padding:14px;border-radius:14px;background:#f7f9f7;border:1px solid var(--line)}.metric b{display:block;font-size:25px}.metric span{font-size:12px;color:var(--muted)}
-.btn{border:0;border-radius:12px;padding:12px 14px;font-weight:700;background:var(--green);color:white}.btn.secondary{background:#eef2ef;color:var(--green)}.btn.gold{background:var(--gold);color:#241d0b}.btn.danger{background:#f8e7e5;color:var(--danger)}.btn.full{width:100%}
+.btn{border:0;border-radius:12px;padding:12px 14px;font-weight:700;background:var(--green);color:white}.quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.quick-card{border:1px solid var(--line);background:#fff;border-radius:15px;padding:14px;text-align:left;min-height:86px;color:var(--text);box-shadow:0 2px 8px #173b2b08}.quick-card:active{transform:scale(.99)}.quick-card b{display:block;font-size:15px;color:var(--green)}.quick-card span{display:block;margin-top:4px;font-size:12px;color:var(--muted)}.metric.action{cursor:pointer}.metric.action:active{transform:scale(.99)}.btn.secondary{background:#eef2ef;color:var(--green)}.btn.gold{background:var(--gold);color:#241d0b}.btn.danger{background:#f8e7e5;color:var(--danger)}.btn.full{width:100%}
 .row{display:flex;gap:8px;align-items:center}.between{justify-content:space-between}.wrap{flex-wrap:wrap}
 label{font-size:13px;font-weight:700;display:block;margin:10px 0 6px}input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:11px;background:white}textarea{min-height:90px;resize:vertical}
 .area{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)}.area:last-child{border-bottom:0}.area b{font-size:14px}.pill{font-size:11px;padding:5px 8px;border-radius:99px;font-weight:800}.ok{background:#e2f3e9;color:var(--ok)}.pending{background:#fff1d7;color:var(--warn)}.bad{background:#f8e1df;color:var(--danger)}
@@ -56,17 +56,26 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 <section id="home" class="screen active">
   <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div></div>
   <div class="grid">
-    <div class="metric"><b id="mOk">0</b><span>Áreas conformes</span></div>
-    <div class="metric"><b id="mPending">0</b><span>Itens em atenção</span></div>
-    <div class="metric"><b id="mOcc">0</b><span>Ocorrências abertas</span></div>
-    <div class="metric"><b id="mPct">0%</b><span>Áreas concluídas</span></div>
+    <div class="metric action" onclick="show('check')"><b id="mOk">0</b><span>Áreas conformes · ver checklist</span></div>
+    <div class="metric action" onclick="show('pending')"><b id="mPending">0</b><span>Itens em atenção · ver pendências</span></div>
+    <div class="metric action" onclick="show('occ')"><b id="mOcc">0</b><span>Ocorrências abertas · acompanhar</span></div>
+    <div class="metric action" onclick="show('check')"><b id="mPct">0%</b><span>Áreas concluídas · conferir</span></div>
+  </div>
+  <div class="card">
+    <div class="row between"><div><h3 style="margin:0">Atalhos rápidos</h3><div class="muted">As ações mais usadas ficam aqui.</div></div></div>
+    <div class="quick-grid" style="margin-top:10px">
+      <button class="quick-card" onclick="show('occ')"><b>🔧 Ocorrências</b><span>Registrar ou acompanhar problemas</span></button>
+      <button class="quick-card" onclick="show('check')"><b>✓ Checklist</b><span>Fazer inspeção das áreas</span></button>
+      <button class="quick-card" onclick="show('materials')"><b>🧰 Materiais</b><span>Consultar compras e estoque</span></button>
+      <button class="quick-card" onclick="show('history')"><b>📋 Histórico</b><span>Ver atividades registradas</span></button>
+    </div>
   </div>
   <div class="card" id="dailySummary"><div class="row between"><div><h3 style="margin:0">Resumo operacional</h3><div class="muted">Última atividade registrada no aplicativo.</div></div><button class="btn secondary" onclick="show('history')">Ver histórico</button></div><div id="dailySummaryBody" style="margin-top:10px"></div></div>
   <div class="card"><div class="row between"><div><h3 style="margin:0">Progresso das áreas</h3><div class="muted">Última inspeção registrada por área.</div></div><b id="todayLabel" class="muted"></b></div><div id="areaProgress"></div></div>
   <div id="rolePanel"></div>
   <div class="card"><div class="row between"><h3 style="margin:0">Áreas</h3><button class="btn secondary" onclick="show('check')">Ver checklist</button></div><div id="areaSummary"></div></div>
   <div class="card critical" id="priorityPanel"></div>
-  <div class="card"><h3 style="margin-top:0">Ações rápidas</h3><div class="row wrap">
+  <div class="card"><h3 style="margin-top:0">Mais ações</h3><div class="row wrap">
     <button class="btn" onclick="show('check')">📋 Checklist</button>
     <button class="btn gold" onclick="show('occ')">🔧 Nova ocorrência</button>
     <button class="btn secondary" onclick="show('history')">🕘 Histórico</button>

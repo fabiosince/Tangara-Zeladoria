@@ -1,10 +1,9 @@
-# Tangará Zeladoria V23
+# Tangará Zeladoria V24
 
-Evolução da V22 com foco em uma experiência mais intuitiva e prática.
+Evolução da V23 com foco em usabilidade e acesso rápido.
 
-## Alterações da V23
-- Tela de login com seleção visual de perfil.
-- Perfis disponíveis: Colaborador, Administradora e Síndico.
-- Texto orientativo muda conforme o perfil selecionado.
-- Perfil Síndico passa a poder ser selecionado diretamente no login.
-- Mantidas as funcionalidades validadas da V22, incluindo banco de materiais, consolidação e controle de compras.
+- Login com perfis Colaborador, Administradora e Síndico preservado.
+- Indicadores da tela inicial agora funcionam como atalhos.
+- Nova área de Atalhos rápidos para Ocorrências, Checklist, Materiais e Histórico.
+- Mantidos os fluxos validados de ocorrências, materiais, compras e exportações.
+- Logo atual do Tangará Residencial preservado.
