@@ -1,12 +1,14 @@
-# Tangará Zeladoria V43
+# Tangará Zeladoria V45
 
-Refatoração do fluxo de pendências e edição de ocorrências.
+Correção e reforço do fluxo de pendências para Colaborador e Síndico.
 
 - Pendências separadas por status Aberta/Resolvida e Área.
 - Colaborador entra em Pendências com Aberta selecionada.
-- “Ver / editar” abre a ocorrência específica no formulário de edição.
+- “Ver / editar pendência” abre a ocorrência específica no formulário de edição.
+- O botão usa evento centralizado (`data-edit-occurrence`), sem `onclick` inline.
+- Modo edição mostra identificação visual e botão “Cancelar edição”.
+- Salvar alterações atualiza a pendência existente e não cria duplicata.
 - Edição preserva ID, data, usuário e status; atualiza área, título, prioridade, descrição e foto.
 - Morador permanece somente leitura.
 - Materiais permanecem sob controle do Síndico.
-- Estados do formulário novo/edição centralizados para evitar vazamento de modo.
-- Service Worker/cache V43.
+- Service Worker/cache V45.

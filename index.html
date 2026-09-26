@@ -95,7 +95,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 </section>
 
 <section id="occ" class="screen">
-  <div class="card"><h2 id="occScreenTitle" style="margin-top:0">Nova ocorrência</h2>
+  <div class="card"><h2 id="occScreenTitle" style="margin-top:0">Nova ocorrência</h2><div id="occEditBanner" class="card" style="display:none;margin:0 0 12px;background:#fff8e8;border:1px solid #e7c46a"><b>✏️ Modo edição</b><div class="muted">Você está alterando uma pendência existente. Nenhuma nova pendência será criada.</div></div>
     <label>Área</label><select id="occArea"></select>
     <label>Título</label><input id="occTitle" placeholder="Ex.: Lâmpada queimada" oninput="refreshMaterialSuggestions()">
     <label>Prioridade</label><select id="occPriority"><option>Baixa</option><option selected>Média</option><option>Alta</option><option>Urgente</option></select>
@@ -107,7 +107,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
       <button type="button" class="btn secondary full" style="margin-top:8px" onclick="addMaterialRow()">＋ Adicionar material</button>
     </div>
     <label>Foto</label><input id="occPhoto" type="file" accept="image/*" capture="environment"><div id="occCurrentPhoto" class="photo-view" style="display:none"></div>
-    <button id="saveOccurrenceBtn" type="button" class="btn gold full" style="margin-top:12px" onclick="saveOccurrence()">Registrar ocorrência</button>
+    <button id="saveOccurrenceBtn" type="button" class="btn gold full" style="margin-top:12px" onclick="saveOccurrence()">Registrar ocorrência</button><button id="cancelOccurrenceEditBtn" type="button" class="btn secondary full" style="display:none;margin-top:8px" onclick="cancelOccurrenceEdit()">Cancelar edição</button>
   </div>
 </section>
 
@@ -648,6 +648,10 @@ function setOccurrenceFormMode(mode){
   });
   const card=document.getElementById("occMaterialsCard");
   if(card)card.style.display=user?.role==="Síndico"?"block":"none";
+  const banner=document.getElementById("occEditBanner");
+  const cancel=document.getElementById("cancelOccurrenceEditBtn");
+  if(banner)banner.style.display=editing?"block":"none";
+  if(cancel)cancel.style.display=editing?"block":"none";
 }
 function renderPending(){
   const area=document.getElementById('pendingArea')?.value||'all';
@@ -803,6 +807,19 @@ function openOccurrenceEditor(id){
   refreshMaterialSuggestions();
   show("occ");
   requestAnimationFrame(()=>document.getElementById("occTitle")?.focus());
+}
+function cancelOccurrenceEdit(){
+  editingOccurrenceId=null;
+  occurrenceMaterials=[];
+  setOccurrenceFormMode("new");
+  const photo=document.getElementById("occPhoto"); if(photo)photo.value="";
+  const current=document.getElementById("occCurrentPhoto"); if(current){current.style.display="none";current.innerHTML="";}
+  document.getElementById("occTitle").value="";
+  document.getElementById("occDesc").value="";
+  renderOccurrenceMaterials();
+  refreshMaterialSuggestions();
+  show("pending");
+  toast("Edição cancelada");
 }
 function prepareNewOccurrence(){
   editingOccurrenceId=null;
@@ -1014,7 +1031,7 @@ document.addEventListener("click",e=>{
   const id=btn.getAttribute("data-edit-occurrence");
   openOccurrenceEditor(id);
 });
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=440",{updateViaCache:"none"}).catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=450",{updateViaCache:"none"}).catch(()=>{});
 </script>
 </body>
 </html>
