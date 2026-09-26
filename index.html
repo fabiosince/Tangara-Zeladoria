@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="pt-BR">
-<head>
+<head><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#123f58"><link rel="icon" href="icon.svg">
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#123f58"><link rel="manifest" href="manifest.json">
 <title>Tangará Zeladoria</title>
@@ -90,4 +90,4 @@ function renderOcc(){let d=data(),el=document.getElementById("occList");el.inner
 function logout(){localStorage.removeItem("tz_v2");location.reload()}
 start();
 </script>
-</body></html>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{});}</script></body></html>
