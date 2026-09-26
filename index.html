@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#173b2b">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="logo-tangara.png">
-<title>Tangará Zeladoria V9</title>
+<title>Tangará Zeladoria V9.3</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
@@ -99,7 +99,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 
 <section id="profile" class="screen">
   <div class="card"><h2 style="margin-top:0">Perfil</h2><p><b id="profileName"></b><br><span class="muted" id="profileRole"></span></p><button class="btn danger full" onclick="logout(event)">Sair do aplicativo</button></div>
-  <div class="card"><h3 style="margin-top:0">Sobre a V9</h3><p class="muted">Checklist completo por item, percentual automático, regras específicas das áreas e painel de indicadores. Os registros continuam armazenados no aparelho.</p></div>
+  <div class="card"><h3 style="margin-top:0">Sobre a V9.3</h3><p class="muted">Checklist completo por item, percentual automático, registro de ocorrências com baixa/reabertura e painel de indicadores. Os registros continuam armazenados no aparelho.</p></div>
 </section>
 </main>
 <nav class="bottom">
@@ -256,8 +256,8 @@ function renderHistory(){
     }
     const cls=x.status==="Resolvida"?"ok":x.priority==="Urgente"||x.priority==="Alta"?"bad":"pending";
     const action=x.status==="Resolvida"
-      ? `<button class="btn secondary" style="margin-top:10px" onclick="event.stopPropagation();reopenOccurrence(${x.id})">Reabrir ocorrência</button>`
-      : `<button class="btn gold" style="margin-top:10px" onclick="event.stopPropagation();resolveOccurrence(${x.id})">✓ Marcar como resolvida</button>`;
+      ? `<button type="button" class="btn secondary full" style="margin-top:10px" onclick="reopenOccurrence(${x.id})">↩ Reabrir ocorrência</button>`
+      : `<button type="button" class="btn gold full" style="margin-top:10px" onclick="resolveOccurrence(${x.id})">✓ Dar baixa / marcar como resolvida</button>`;
     return `<div class="event"><div class="row between"><b>🔧 ${x.title}</b><span class="pill ${cls}">${x.status}</span></div><div class="muted">${fmt(x.date)} • ${x.user} • ${x.area}</div><div style="margin-top:6px">Prioridade: <b>${x.priority}</b></div>${x.desc?`<div class="muted" style="margin-top:4px">${x.desc}</div>`:""}${x.resolvedAt?`<div class="muted" style="margin-top:6px">Resolvida em ${fmt(x.resolvedAt)} • ${x.resolvedBy||""}</div>`:""}${action}</div>`;
   }).join('')+'</div>';
 }
