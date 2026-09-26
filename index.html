@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#173b2b">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="logo-tangara.png">
-<title>Tangará Zeladoria V12</title>
+<title>Tangará Zeladoria V13</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
@@ -51,6 +51,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
     <div class="metric"><b id="mOcc">0</b><span>Ocorrências abertas</span></div>
     <div class="metric"><b id="mPct">0%</b><span>Áreas concluídas</span></div>
   </div>
+  <div class="card" id="dailySummary"><div class="row between"><div><h3 style="margin:0">Resumo operacional</h3><div class="muted">Última atividade registrada no aplicativo.</div></div><button class="btn secondary" onclick="show('history')">Ver histórico</button></div><div id="dailySummaryBody" style="margin-top:10px"></div></div>
   <div class="card"><div class="row between"><div><h3 style="margin:0">Progresso das áreas</h3><div class="muted">Última inspeção registrada por área.</div></div><b id="todayLabel" class="muted"></b></div><div id="areaProgress"></div></div>
   <div id="rolePanel"></div>
   <div class="card"><div class="row between"><h3 style="margin:0">Áreas</h3><button class="btn secondary" onclick="show('check')">Ver checklist</button></div><div id="areaSummary"></div></div>
@@ -64,7 +65,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 </section>
 
 <section id="check" class="screen">
-  <div class="card"><div class="row between"><div><h2 style="margin:0">Checklist V12</h2><div class="muted">Avalie cada item após verificar a área.</div></div><select id="areaSelect" style="max-width:180px" onchange="renderChecklist()"></select></div><div id="checkMeta" class="muted" style="margin-top:10px"></div><div id="checkRule" class="card" style="margin:10px 0;background:#f7f9f7"></div><div id="checks"></div><div id="checkScore" class="muted" style="margin:10px 0"></div><label>Observação da área</label><textarea id="checkObs" placeholder="Ex.: piso limpo; lâmpada queimada; material a repor..."></textarea><button class="btn full" onclick="saveChecklist()">Salvar inspeção</button></div>
+  <div class="card"><div class="row between"><div><h2 style="margin:0">Checklist V13</h2><div class="muted">Avalie cada item após verificar a área.</div></div><select id="areaSelect" style="max-width:180px" onchange="renderChecklist()"></select></div><div id="checkMeta" class="muted" style="margin-top:10px"></div><div id="checkRule" class="card" style="margin:10px 0;background:#f7f9f7"></div><div id="checks"></div><div id="checkScore" class="muted" style="margin:10px 0"></div><label>Observação da área</label><textarea id="checkObs" placeholder="Ex.: piso limpo; lâmpada queimada; material a repor..."></textarea><button class="btn full" onclick="saveChecklist()">Salvar inspeção</button></div>
 </section>
 
 <section id="occ" class="screen">
@@ -117,7 +118,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 
 <section id="profile" class="screen">
   <div class="card"><h2 style="margin-top:0">Perfil</h2><p><b id="profileName"></b><br><span class="muted" id="profileRole"></span></p><button class="btn danger full" onclick="logout(event)">Sair do aplicativo</button></div>
-  <div class="card"><h3 style="margin-top:0">Sobre a V12</h3><p class="muted">Gestão de pendências, ligação entre inspeções e ocorrências, filtros por área e status, proteção contra registros duplicados e ocorrências com foto. Os registros continuam armazenados no aparelho.</p></div>
+  <div class="card"><h3 style="margin-top:0">Sobre a V13</h3><p class="muted">Painel operacional aprimorado, resumo da última atividade, gestão de pendências, ligação entre inspeções e ocorrências, filtros por área e status, proteção contra registros duplicados e ocorrências com foto. Os registros continuam armazenados no aparelho.</p></div>
 </section>
 </main>
 <nav class="bottom">
@@ -151,11 +152,12 @@ const ITEMS={
 "Garagem":["Piso e circulação em ordem","Iluminação funcionando","Sinalização preservada","Lixeiras/área organizada","Acessos e portões em condições aparentes","Sem obstáculos nas áreas de circulação"],
 "Áreas externas":["Calçadas e acessos limpos","Jardins e áreas verdes em ordem","Lixeiras higienizadas","Iluminação externa funcionando","Mobiliário externo organizado","Sem obstáculos ou resíduos aparentes"]
 };
+const V13_KEY="tangaraV13";
 const V12_KEY="tangaraV12";
 const V10_KEY="tangaraV10";
 const V9_KEY="tangaraV9";
 function migrateDB(){
-  let raw=localStorage.getItem(V12_KEY)||localStorage.getItem(V10_KEY)||localStorage.getItem(V9_KEY)||localStorage.getItem("tangaraV8")||localStorage.getItem("tangaraV6")||localStorage.getItem("tangaraV5")||localStorage.getItem("tangaraV4");
+  let raw=localStorage.getItem(V13_KEY)||localStorage.getItem(V12_KEY)||localStorage.getItem(V10_KEY)||localStorage.getItem(V9_KEY)||localStorage.getItem("tangaraV8")||localStorage.getItem("tangaraV6")||localStorage.getItem("tangaraV5")||localStorage.getItem("tangaraV4");
   let parsed={inspections:[],occurrences:[]};
   try{parsed=raw?JSON.parse(raw):parsed}catch(e){}
   parsed.inspections=Array.isArray(parsed.inspections)?parsed.inspections:[];
@@ -168,9 +170,9 @@ function migrateDB(){
   return parsed;
 }
 let db=migrateDB();
-localStorage.setItem(V12_KEY,JSON.stringify(db));
+localStorage.setItem(V13_KEY,JSON.stringify(db));
 let user=JSON.parse(localStorage.getItem("tangaraUser")||"null");
-function persist(){localStorage.setItem(V12_KEY,JSON.stringify(db))}
+function persist(){localStorage.setItem(V13_KEY,JSON.stringify(db))}
 function toast(t){let e=document.getElementById("toast");e.textContent=t;e.style.display="block";setTimeout(()=>e.style.display="none",2200)}
 function doLogin(){
   try{
@@ -439,7 +441,23 @@ function compressPhoto(file){
     reader.readAsDataURL(file);
   });
 }
+function renderDailySummary(){
+  const el=document.getElementById("dailySummaryBody");
+  if(!el)return;
+  const latest=[...db.inspections,...db.occurrences].sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
+  if(!latest){el.innerHTML='<div class="empty">Ainda não há atividades registradas.</div>';return;}
+  if(latest.type==="check"){
+    const status=(latest.bad||0)>0?"Não conforme":(latest.attention||0)>0?"Atenção":"Conforme";
+    const cls=status==='Conforme'?'ok':status==='Não conforme'?'bad':'pending';
+    el.innerHTML=`<div class="area"><div><b>📋 ${latest.area}</b><div class="muted">Inspeção • ${fmt(latest.date)} • ${latest.user}</div><div style="margin-top:5px"><b>${Math.round((latest.ok||0)/(latest.total||1)*100)}%</b> de conformidade • ${latest.ok||0}/${latest.total||0} conformes</div></div><span class="pill ${cls}">${status}</span></div>`;
+  }else{
+    const cls=latest.status==='Resolvida'?'ok':['Alta','Urgente'].includes(latest.priority)?'bad':'pending';
+    el.innerHTML=`<div class="area"><div><b>🔧 ${latest.title}</b><div class="muted">Ocorrência • ${latest.area} • ${fmt(latest.date)} • ${latest.user}</div><div style="margin-top:5px">Prioridade: <b>${latest.priority}</b></div></div><span class="pill ${cls}">${latest.status}</span></div>`;
+  }
+}
+
 function renderHome(){
+  renderDailySummary();
   const latestByArea=Object.fromEntries(AREAS.map(a=>[a,db.inspections.find(i=>i.area===a && Number(i.total)===ITEMS[a].length)]));
   const latest=Object.values(latestByArea).filter(Boolean);
   const conformes=latest.filter(x=>x.ok===x.total).length;
@@ -467,7 +485,7 @@ function renderHome(){
 }
 function refresh(){renderHome();renderReports();renderHistory();renderPending()}
 if(user)start();
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=120",{updateViaCache:"none"}).catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=130",{updateViaCache:"none"}).catch(()=>{});
 </script>
 </body>
 </html>
