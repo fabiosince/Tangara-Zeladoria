@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#173b2b">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="logo-tangara.png">
-<title>Tangará Zeladoria V24</title>
+<title>Tangará Zeladoria V25</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
@@ -28,7 +28,7 @@ label{font-size:13px;font-weight:700;display:block;margin:10px 0 6px}input,selec
 table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;padding:9px 6px;border-bottom:1px solid var(--line)}th{color:var(--muted)}
 .material-row{display:grid;grid-template-columns:1.7fr .65fr .75fr auto;gap:7px;align-items:end;margin-bottom:8px}.material-row .btn{padding:9px 10px}.material-list{margin-top:8px}.material-chip{display:inline-flex;gap:5px;align-items:center;padding:6px 9px;border-radius:999px;background:#eef2ef;color:var(--green);font-size:11px;font-weight:700;margin:3px}.suggested{background:#fffaf0;border:1px solid #eedfb8;padding:10px;border-radius:12px;margin-top:10px}.small-btn{padding:8px 10px!important;font-size:12px!important}
 @media(max-width:520px){.material-row{grid-template-columns:1fr 70px 80px auto}.material-row input{min-width:0}.material-row .btn{padding:9px 8px}}
-.modal{position:fixed;inset:0;background:#0008;display:none;align-items:flex-end;justify-content:center;z-index:30;padding:12px}.modal.open{display:flex}.modal-card{width:100%;max-width:760px;max-height:82vh;overflow:auto;background:white;border-radius:20px;padding:18px;box-shadow:0 8px 30px #0004}.detail-row{padding:9px 0;border-bottom:1px solid var(--line)}.detail-row:last-child{border-bottom:0}.login{min-height:100vh;display:flex;align-items:center;padding:22px;background:linear-gradient(145deg,#173b2b,#2c6049)}.loginbox{width:100%;max-width:430px;margin:auto;background:white;border-radius:24px;padding:24px}.loginbox img{width:70px;height:70px;display:block;margin:0 auto 10px}.loginbox h2{text-align:center;margin:0}.loginbox p{text-align:center;color:var(--muted)}.role-hint{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.35}.role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:7px}.role-btn{border:1px solid var(--line);background:#f7f9f7;color:var(--green);border-radius:11px;padding:10px 6px;font-weight:800;font-size:12px}.role-btn.selected{background:#e2f3e9;border-color:#b8dfc6}.login-help{font-size:12px;text-align:center;color:var(--muted);margin:12px 0 0}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:flex-end;justify-content:center;z-index:30;padding:12px}.modal.open{display:flex}.modal-card{width:100%;max-width:760px;max-height:82vh;overflow:auto;background:white;border-radius:20px;padding:18px;box-shadow:0 8px 30px #0004}.detail-row{padding:9px 0;border-bottom:1px solid var(--line)}.detail-row:last-child{border-bottom:0}.login{min-height:100vh;display:flex;align-items:center;padding:22px;background:linear-gradient(145deg,#173b2b,#2c6049)}.loginbox{width:100%;max-width:430px;margin:auto;background:white;border-radius:24px;padding:24px}.loginbox img{width:70px;height:70px;display:block;margin:0 auto 10px}.loginbox h2{text-align:center;margin:0}.loginbox p{text-align:center;color:var(--muted)}.role-hint{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.35}.role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:7px}.role-btn{border:1px solid var(--line);background:#f7f9f7;color:var(--green);border-radius:11px;padding:10px 6px;font-weight:800;font-size:12px}.role-btn.selected{background:#e2f3e9;border-color:#b8dfc6}.login-help{font-size:12px;text-align:center;color:var(--muted);margin:12px 0 0}.focus-grid{display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px}.focus-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#f7f9f7}.focus-item b{font-size:14px}.focus-item span{display:block;color:var(--muted);font-size:12px;margin-top:2px}.focus-item .btn{padding:8px 10px;font-size:12px;white-space:nowrap}.focus-title{font-size:17px;margin:0}.focus-sub{font-size:12px;color:var(--muted);margin-top:3px}
 @media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}main{padding:20px}.bottom{position:sticky;bottom:0;border:1px solid var(--line);border-radius:16px;margin-bottom:12px}}
 </style>
 </head>
@@ -55,6 +55,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 <main>
 <section id="home" class="screen active">
   <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div></div>
+  <div class="card" id="focusPanel"></div>
   <div class="grid">
     <div class="metric action" onclick="show('check')"><b id="mOk">0</b><span>Áreas conformes · ver checklist</span></div>
     <div class="metric action" onclick="show('pending')"><b id="mPending">0</b><span>Itens em atenção · ver pendências</span></div>
@@ -714,7 +715,26 @@ function renderDailySummary(){
   }
 }
 
+function renderFocusPanel(){
+  const el=document.getElementById("focusPanel");
+  if(!el)return;
+  const role=user?.role||"Colaborador";
+  const latestByArea=Object.fromEntries(AREAS.map(a=>[a,db.inspections.find(i=>i.area===a && Number(i.total)===ITEMS[a].length)]));
+  const attention=Object.values(latestByArea).reduce((n,x)=>n+(x?.attention||0)+(x?.bad||0),0);
+  const open=db.occurrences.filter(x=>x.status!=="Resolvida").length;
+  const priority=db.occurrences.filter(x=>x.status!=="Resolvida"&&["Alta","Urgente"].includes(x.priority)).length;
+  const title=(role==="Síndico"||role==="Administradora")?"O que precisa de atenção":"Próximas ações";
+  const sub=(role==="Síndico"||role==="Administradora")?"Veja primeiro o que merece acompanhamento.":"Acesse rapidamente as tarefas mais úteis.";
+  const rows=[];
+  if(open) rows.push(`<div class="focus-item"><div><b>🔧 ${open} ocorrência${open===1?"":"s"} em aberto</b><span>Acompanhar problemas registrados</span></div><button class="btn" onclick="show('occ')">Ver</button></div>`);
+  if(attention) rows.push(`<div class="focus-item"><div><b>⚠️ ${attention} item${attention===1?"":"ns"} de inspeção</b><span>Itens em atenção ou não conformes</span></div><button class="btn" onclick="show('pending')">Ver</button></div>`);
+  if(priority) rows.push(`<div class="focus-item"><div><b>🚨 ${priority} ocorrência${priority===1?"":"s"} prioritária${priority===1?"":"s"}</b><span>Alta ou urgente em aberto</span></div><button class="btn danger" onclick="show('occ')">Acompanhar</button></div>`);
+  if(!rows.length) rows.push(`<div class="focus-item"><div><b>✅ Tudo em ordem</b><span>Nenhuma pendência exige atenção imediata.</span></div><button class="btn secondary" onclick="show('check')">Conferir</button></div>`);
+  el.innerHTML=`<div class="row between"><div><h3 class="focus-title">${title}</h3><div class="focus-sub">${sub}</div></div><span class="pill ok">${role}</span></div><div class="focus-grid">${rows.slice(0,3).join("")}</div>`;
+}
+
 function renderHome(){
+  renderFocusPanel();
   renderDailySummary();
   const latestByArea=Object.fromEntries(AREAS.map(a=>[a,db.inspections.find(i=>i.area===a && Number(i.total)===ITEMS[a].length)]));
   const latest=Object.values(latestByArea).filter(Boolean);
