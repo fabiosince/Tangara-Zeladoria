@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#124a35">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Tangará Zeladoria V31</title>
+<title>Tangará Zeladoria V32</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
 .priority-hero{border:2px solid var(--green2);box-shadow:0 8px 24px rgba(23,59,43,.10)} .priority-hero .critical-item{padding:12px 0;border-top:1px solid var(--line)} .priority-hero .critical-item:first-of-type{border-top:0} .priority-hero .priority-badge{font-size:12px;font-weight:700;letter-spacing:.02em}
@@ -95,7 +95,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 </section>
 
 <section id="occ" class="screen">
-  <div class="card"><h2 style="margin-top:0">Nova ocorrência</h2>
+  <div class="card"><h2 id="occScreenTitle" style="margin-top:0">Nova ocorrência</h2>
     <label>Área</label><select id="occArea"></select>
     <label>Título</label><input id="occTitle" placeholder="Ex.: Lâmpada queimada" oninput="refreshMaterialSuggestions()">
     <label>Prioridade</label><select id="occPriority"><option>Baixa</option><option selected>Média</option><option>Alta</option><option>Urgente</option></select>
@@ -107,7 +107,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
       <button type="button" class="btn secondary full" style="margin-top:8px" onclick="addMaterialRow()">＋ Adicionar material</button>
     </div>
     <label>Foto</label><input id="occPhoto" type="file" accept="image/*" capture="environment">
-    <button class="btn gold full" style="margin-top:12px" onclick="saveOccurrence()">Registrar ocorrência</button>
+    <button id="saveOccurrenceBtn" type="button" class="btn gold full" style="margin-top:12px" onclick="saveOccurrence()">Registrar ocorrência</button>
   </div>
 </section>
 
@@ -171,7 +171,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 
 <section id="profile" class="screen">
   <div class="card"><h2 style="margin-top:0">Perfil</h2><p><b id="profileName"></b><br><span class="muted" id="profileRole"></span></p><button class="btn danger full" onclick="logout(event)">Sair do aplicativo</button></div>
-  <div class="card"><h3 style="margin-top:0">Sobre a V31</h3><p class="muted">Fluxo de ocorrências com apenas os status Aberta e Resolvida, materiais de reposição sugeridos automaticamente, edição por ocorrência, consolidação para compras, acompanhamento Pendente/Comprado com data e observação, exportação detalhada e consolidada em CSV e JSON, detalhes de inspeções, fotos, filtros e indicadores gerenciais. Os registros continuam armazenados no aparelho.</p></div>
+  <div class="card"><h3 style="margin-top:0">Sobre a V32</h3><p class="muted">Fluxo de ocorrências com apenas os status Aberta e Resolvida, materiais de reposição sugeridos automaticamente, edição por ocorrência, consolidação para compras, acompanhamento Pendente/Comprado com data e observação, exportação detalhada e consolidada em CSV e JSON, detalhes de inspeções, fotos, filtros e indicadores gerenciais. Os registros continuam armazenados no aparelho.</p></div>
 </section>
 </main>
 <nav class="bottom">
@@ -333,12 +333,17 @@ function start(){
   if(residentQuick) residentQuick.style.display=isResident?"block":"none";
   const isSyndic=user.role==="Síndico";
   const isColab=user.role==="Colaborador";
+  const occScreenTitle=document.getElementById('occScreenTitle');
+  const saveOccurrenceBtn=document.getElementById('saveOccurrenceBtn');
+  if(occScreenTitle) occScreenTitle.textContent=isColab?'Nova pendência':'Nova ocorrência';
+  if(saveOccurrenceBtn) saveOccurrenceBtn.textContent=isColab?'Registrar pendência':'Registrar ocorrência';
   const ids={
     quickOcc:isColab||isSyndic, quickCheck:isColab, quickMaterials:isSyndic, quickHistory:isSyndic||isColab,
     homeMoreCheck:isColab, homeMoreOcc:isColab||isSyndic, homeMoreHistory:isSyndic||isColab,
     moreHistory:isSyndic||isColab, moreReports:isSyndic, moreMaterials:isSyndic
   };
   Object.entries(ids).forEach(([id,visible])=>{const el=document.getElementById(id);if(el)el.style.display=visible?"block":"none";});
+  const homeMoreOcc=document.getElementById('homeMoreOcc'); if(homeMoreOcc) homeMoreOcc.textContent=isColab?'📝 Nova pendência':'🔧 Nova ocorrência';
   const moreIntro=document.getElementById("moreIntro");
   if(moreIntro) moreIntro.textContent=isResident?"Ações simples: registrar e consultar pendências.":isSyndic?"Visão geral, acompanhamento e exportações.":"Rotina de zeladoria e acompanhamento.";
   const navCheck=document.querySelector('.nav[data-s="check"]');
@@ -595,6 +600,7 @@ function downloadMaterialsJSON(){if(user?.role!=="Síndico"){toast("Somente o S�
 }
 function createOccurrenceFromPending(area,item,status){
   if(user?.role==="Morador"){toast("Morador pode apenas consultar as pendências.");return;}
+  if(user?.role!=="Colaborador" && user?.role!=="Síndico"){toast("Perfil sem permissão para criar pendências.");return;}
   const areaEl=document.getElementById("occArea"),titleEl=document.getElementById("occTitle"),priorityEl=document.getElementById("occPriority"),descEl=document.getElementById("occDesc");
   if(areaEl) areaEl.value=area;
   if(titleEl) titleEl.value=item;
@@ -603,7 +609,10 @@ function createOccurrenceFromPending(area,item,status){
   resetOccurrenceMaterials();
   suggestMaterials(false);
   show('occ');
-  toast('Ocorrência preparada a partir da pendência');
+  document.getElementById('occScreenTitle').textContent=user?.role==='Colaborador'?'Nova pendência':'Nova ocorrência';
+  document.getElementById('saveOccurrenceBtn').textContent=user?.role==='Colaborador'?'Registrar pendência':'Registrar ocorrência';
+  document.getElementById('occTitle')?.focus();
+  toast('Pendência preparada. Confira e toque em Registrar pendência.');
 }
 function renderPending(){
   const area=document.getElementById('pendingArea')?.value||'all', statusFilter=document.getElementById('pendingStatus')?.value||'all';
@@ -615,7 +624,7 @@ function renderPending(){
   document.getElementById('pendingCount').textContent=rows.length;
   const resident=user?.role==="Morador";
   document.getElementById('pendingIntro').textContent=resident?"Painel geral em modo leitura. O morador não pode editar inspeções, ocorrências ou materiais.":"Itens em atenção ou não conformes nas últimas inspeções.";
-  list.innerHTML=rows.length?rows.map(x=>`<div class="critical-item"><div class="row between"><div><b>${x.item}</b><div class="muted">${x.area} • ${fmt(x.date)} • ${x.user}</div></div><span class="pill ${x.status==='Não conforme'?'bad':'pending'}">${x.status}</span></div>${resident?'<div class="muted" style="margin-top:8px">Somente leitura</div>':`<button class="btn gold full" style="margin-top:8px" onclick="createOccurrenceFromPending(${JSON.stringify(x.area)},${JSON.stringify(x.item)},${JSON.stringify(x.status)})">🔧 Criar ocorrência</button>`}</div>`).join(''):'<div class="empty">Nenhuma pendência encontrada nos filtros selecionados.</div>';
+  list.innerHTML=rows.length?rows.map(x=>`<div class="critical-item"><div class="row between"><div><b>${x.item}</b><div class="muted">${x.area} • ${fmt(x.date)} • ${x.user}</div></div><span class="pill ${x.status==='Não conforme'?'bad':'pending'}">${x.status}</span></div>${resident?'<div class="muted" style="margin-top:8px">Somente leitura</div>':`<button class="btn gold full" style="margin-top:8px" onclick="createOccurrenceFromPending(${JSON.stringify(x.area)},${JSON.stringify(x.item)},${JSON.stringify(x.status)})">🔧 Criar pendência</button>`}</div>`).join(''):'<div class="empty">Nenhuma pendência encontrada nos filtros selecionados.</div>';
   const occ=[...db.occurrences].filter(x=>x.status!=='Resolvida'&&(area==='all'||x.area===area)).sort((a,b)=>new Date(b.date)-new Date(a.date));
   document.getElementById('pendingOccurrences').innerHTML=occ.length?occ.map(x=>`<div class="area"><div><b>${x.title}</b><div class="muted">${x.area} • ${x.priority} • ${fmt(x.date)}</div>${x.photo?`<div class="photo-view"><img class="thumb" src="${x.photo}" alt="Foto da pendência"><span class="muted">Foto anexada.</span></div>`:''}</div>${resident?'':`<button class="btn secondary" onclick="show('history')">Ver</button>`}</div>`).join(''):'<div class="empty">Nenhuma ocorrência em aberto.</div>';
 }
@@ -878,7 +887,7 @@ function renderHome(){
 }
 function refresh(){renderHome();renderReports();renderHistory();renderPending()}
 if(user)start();
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=300",{updateViaCache:"none"}).catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=320",{updateViaCache:"none"}).catch(()=>{});
 </script>
 </body>
 </html>
