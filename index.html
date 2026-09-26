@@ -10,16 +10,16 @@
 <meta name="theme-color" content="#124a35">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Tangará Zeladoria V49</title>
+<title>Tangará Zeladoria V50</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
 .priority-hero{border:2px solid var(--green2);box-shadow:0 8px 24px rgba(23,59,43,.10)} .priority-hero .critical-item{padding:12px 0;border-top:1px solid var(--line)} .priority-hero .critical-item:first-of-type{border-top:0} .priority-hero .priority-badge{font-size:12px;font-weight:700;letter-spacing:.02em}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+*{box-sizing:border-box}html{min-height:100%;background:#eef2ee}body{margin:0;min-height:100vh;background:linear-gradient(rgba(244,245,242,.84),rgba(244,245,242,.88)),url("tangara-background.png") center/cover fixed no-repeat;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}body:before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 12%,rgba(255,255,255,.45),transparent 42%);z-index:-1}
 button,input,select,textarea{font:inherit}button{cursor:pointer}
-.app{max-width:760px;margin:auto;min-height:100vh}.top{background:var(--green);color:white;padding:18px 18px 16px;position:sticky;top:0;z-index:5;box-shadow:0 2px 12px #0002}
+.app{max-width:760px;margin:auto;min-height:100vh}.top{background:rgba(23,59,43,.96);backdrop-filter:blur(8px);color:white;padding:18px 18px 16px;position:sticky;top:0;z-index:5;box-shadow:0 2px 12px #0002}
 .brand{display:flex;align-items:center;gap:12px}.logo{width:42px;height:42px;border-radius:12px;background:white;padding:6px}.brand h1{font-size:18px;margin:0}.brand small{opacity:.75}
 main{padding:16px 14px 92px}.screen{display:none}.screen.active{display:block}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 3px 14px #173b2b08}
+.card{background:rgba(255,255,255,.94);backdrop-filter:blur(5px);border:1px solid rgba(223,228,223,.92);border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 6px 20px rgba(23,59,43,.08)}
 .hero{background:linear-gradient(135deg,var(--green),#2d654b);color:white;border:0}.hero h2{margin:0 0 4px}.muted{color:var(--muted);font-size:13px}.hero .muted{color:#d8e4dd}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.metric{padding:14px;border-radius:14px;background:#f7f9f7;border:1px solid var(--line)}.metric b{display:block;font-size:25px}.metric span{font-size:12px;color:var(--muted)}
 .btn{border:0;border-radius:12px;padding:12px 14px;font-weight:700;background:var(--green);color:white}.quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.quick-card{border:1px solid var(--line);background:#fff;border-radius:15px;padding:14px;text-align:left;min-height:86px;color:var(--text);box-shadow:0 2px 8px #173b2b08}.quick-card:active{transform:scale(.99)}.quick-card b{display:block;font-size:15px;color:var(--green)}.quick-card span{display:block;margin-top:4px;font-size:12px;color:var(--muted)}.metric.action{cursor:pointer}.metric.action:active{transform:scale(.99)}.btn.secondary{background:#eef2ef;color:var(--green)}.btn.gold{background:var(--gold);color:#241d0b}.btn.danger{background:#f8e7e5;color:var(--danger)}.btn.full{width:100%}
@@ -33,7 +33,7 @@ label{font-size:13px;font-weight:700;display:block;margin:10px 0 6px}input,selec
 table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;padding:9px 6px;border-bottom:1px solid var(--line)}th{color:var(--muted)}
 .material-row{display:grid;grid-template-columns:1.7fr .65fr .75fr auto;gap:7px;align-items:end;margin-bottom:8px}.material-row .btn{padding:9px 10px}.material-list{margin-top:8px}.material-chip{display:inline-flex;gap:5px;align-items:center;padding:6px 9px;border-radius:999px;background:#eef2ef;color:var(--green);font-size:11px;font-weight:700;margin:3px}.suggested{background:#fffaf0;border:1px solid #eedfb8;padding:10px;border-radius:12px;margin-top:10px}.small-btn{padding:8px 10px!important;font-size:12px!important}
 @media(max-width:520px){.material-row{grid-template-columns:1fr 70px 80px auto}.material-row input{min-width:0}.material-row .btn{padding:9px 8px}}
-.modal{position:fixed;inset:0;background:#0008;display:none;align-items:flex-end;justify-content:center;z-index:30;padding:12px}.modal.open{display:flex}.modal-card{width:100%;max-width:760px;max-height:82vh;overflow:auto;background:white;border-radius:20px;padding:18px;box-shadow:0 8px 30px #0004}.detail-row{padding:9px 0;border-bottom:1px solid var(--line)}.detail-row:last-child{border-bottom:0}.login{min-height:100vh;display:flex;align-items:center;padding:22px;background:linear-gradient(145deg,#173b2b,#2c6049)}.loginbox{width:100%;max-width:430px;margin:auto;background:white;border-radius:24px;padding:24px}.loginbox img{width:70px;height:70px;display:block;margin:0 auto 10px}.loginbox h2{text-align:center;margin:0}.loginbox p{text-align:center;color:var(--muted)}.role-hint{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.35}.role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:7px}.role-btn{border:1px solid var(--line);background:#f7f9f7;color:var(--green);border-radius:11px;padding:10px 6px;font-weight:800;font-size:12px}.role-btn.selected{background:#e2f3e9;border-color:#b8dfc6}.login-help{font-size:12px;text-align:center;color:var(--muted);margin:12px 0 0}.focus-grid{display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px}.focus-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#f7f9f7}.focus-item b{font-size:14px}.focus-item span{display:block;color:var(--muted);font-size:12px;margin-top:2px}.focus-item .btn{padding:8px 10px;font-size:12px;white-space:nowrap}.focus-title{font-size:17px;margin:0}.focus-sub{font-size:12px;color:var(--muted);margin-top:3px}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:flex-end;justify-content:center;z-index:30;padding:12px}.modal.open{display:flex}.modal-card{width:100%;max-width:760px;max-height:82vh;overflow:auto;background:white;border-radius:20px;padding:18px;box-shadow:0 8px 30px #0004}.detail-row{padding:9px 0;border-bottom:1px solid var(--line)}.detail-row:last-child{border-bottom:0}.login{min-height:100vh;display:flex;align-items:center;padding:22px;background:linear-gradient(rgba(23,59,43,.76),rgba(23,59,43,.84)),url("tangara-background.png") center/cover fixed no-repeat}.loginbox{width:100%;max-width:430px;margin:auto;background:white;border-radius:24px;padding:24px}.loginbox img{width:70px;height:70px;display:block;margin:0 auto 10px}.loginbox h2{text-align:center;margin:0}.loginbox p{text-align:center;color:var(--muted)}.role-hint{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.35}.role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:7px}.role-btn{border:1px solid var(--line);background:#f7f9f7;color:var(--green);border-radius:11px;padding:10px 6px;font-weight:800;font-size:12px}.role-btn.selected{background:#e2f3e9;border-color:#b8dfc6}.login-help{font-size:12px;text-align:center;color:var(--muted);margin:12px 0 0}.focus-grid{display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px}.focus-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#f7f9f7}.focus-item b{font-size:14px}.focus-item span{display:block;color:var(--muted);font-size:12px;margin-top:2px}.focus-item .btn{padding:8px 10px;font-size:12px;white-space:nowrap}.focus-title{font-size:17px;margin:0}.focus-sub{font-size:12px;color:var(--muted);margin-top:3px}
 @media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}main{padding:20px}.bottom{position:sticky;bottom:0;border:1px solid var(--line);border-radius:16px;margin-bottom:12px}}
 </style>
 </head>
@@ -53,7 +53,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 <header class="top"><div class="brand"><img class="logo" src="logo-tangara.png"><div><h1>Tangará Zeladoria</h1><small id="userLabel"></small><small style="display:block;font-size:10px;opacity:.65;margin-top:2px">V47</small></div></div></header>
 <main>
 <section id="home" class="screen active">
-  <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div><div class="muted" style="font-size:11px;margin-top:6px;opacity:.7">Painel V49</div></div>
+  <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div><div class="muted" style="font-size:11px;margin-top:6px;opacity:.7">Painel V50</div></div>
   <div class="card" id="focusPanel"></div>
   <div class="card priority-hero" id="priorityPanel"></div>
   <div class="grid" id="dashboardMetrics">
@@ -181,7 +181,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
     <label>Senha inicial</label><input id="newUserPassword" type="password" autocomplete="new-password" placeholder="Mínimo 6 caracteres">
     <button class="btn full" onclick="createUser()">➕ Criar usuário</button>
   </div>
-  <div class="card"><h3 style="margin-top:0">Sobre a V49</h3><p class="muted">A V49 adiciona troca de senha e gestão local de usuários. Os dados de acesso continuam armazenados no aparelho; para segurança de produção, a autenticação deverá ser migrada para um serviço de backend.</p></div>
+  <div class="card"><h3 style="margin-top:0">Sobre a V50</h3><p class="muted">A V50 adiciona troca de senha e gestão local de usuários. Os dados de acesso continuam armazenados no aparelho; para segurança de produção, a autenticação deverá ser migrada para um serviço de backend.</p></div>
 </section>
 </main>
 <nav class="bottom">
@@ -1110,7 +1110,7 @@ document.addEventListener("click",e=>{
   const id=btn.getAttribute("data-edit-occurrence");
   openOccurrenceEditor(id);
 });
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=490",{updateViaCache:"none"}).catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=500",{updateViaCache:"none"}).catch(()=>{});
 </script>
 </body>
 </html>

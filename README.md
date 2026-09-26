@@ -1,16 +1,10 @@
-# Tangará Zeladoria V49
+# Tangará Zeladoria V50
 
-V49 amplia o acesso individual da V48 com gestão local de usuários.
+Atualização visual com o logo Tangará Residencial fornecido como plano de fundo do aplicativo.
 
-## Novidades
-- Login individual por usuário e senha.
-- Troca de senha pelo próprio usuário.
-- Síndico pode criar usuários.
-- Síndico pode ativar/desativar usuários.
-- Síndico pode redefinir senha de usuários.
-- Morador continua com acesso somente às funções permitidas.
-- Colaborador mantém o fluxo operacional.
-- Painel e Service Worker atualizados para V49.
+- Fundo aplicado em todas as telas com camada suave para preservar a leitura.
+- Tela de login também usa a imagem como fundo, com sobreposição escura.
+- Mantidos os fluxos e regras da V49.
+- Cache do PWA atualizado para V50.
 
-## Observação de segurança
-A autenticação desta versão continua local no navegador/localStorage porque o projeto está em GitHub Pages. Ela é adequada para protótipo/uso controlado no dispositivo, mas não deve ser tratada como autenticação de produção. Para produção, a próxima etapa deve migrar contas, sessões e senhas para um backend de autenticação.
+Arquivos principais: `index.html`, `sw.js`, `tangara-background.png` e os arquivos existentes do aplicativo.
