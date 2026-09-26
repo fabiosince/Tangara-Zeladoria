@@ -1,11 +1,11 @@
-# Tangará Zeladoria V36
+# Tangará Zeladoria V37
 
-Versão com filtros simples na tela de Pendências.
+Correção do acesso do Colaborador à tela de Pendências.
 
 ## Novidades
-- Filtro de status de ocorrências: Todos, Aberta e Resolvida.
-- Filtro de área: Todas as áreas ou uma área específica.
-- A contagem da tela acompanha as ocorrências filtradas.
-- Itens de inspeção continuam disponíveis em bloco separado e respeitam o filtro de área.
-- Mantidas as permissões por perfil e os únicos status de ocorrência: Aberta e Resolvida.
-- Cache atualizado para V36.
+- Ao abrir Pendências como Colaborador, o filtro inicia em **Aberta** para mostrar imediatamente as pendências ativas.
+- O Colaborador pode trocar para **Todos** ou **Resolvida** quando quiser consultar outros registros.
+- O texto da tela identifica claramente **Pendências ativas** quando o filtro Aberta está selecionado.
+- Mantidos os filtros por Área e os status oficiais **Aberta** e **Resolvida**.
+- Mantidas as permissões por perfil.
+- Cache atualizado para V37.
