@@ -1,3 +1,10 @@
-# Tangará Zeladoria V41
+# Tangará Zeladoria V42
 
-Correção do botão Ver na lista de Pendências: agora ele abre diretamente a pendência/ocorrência selecionada em modo de edição para Colaborador e Síndico. A foto atual é exibida e pode ser substituída. Morador permanece em modo somente leitura.
+Correção de debug do fluxo Pendências → Ver / editar.
+
+- O botão da ocorrência abre a própria pendência em edição.
+- Campos são explicitamente habilitados.
+- Foto atual é exibida e pode ser substituída.
+- Salvar alterações atualiza o mesmo registro.
+- Cache/service worker atualizado para V42.
+- Morador permanece somente leitura.
