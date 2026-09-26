@@ -67,7 +67,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 </section>
 
 <section id="check" class="screen">
-  <div class="card"><div class="row between"><div><h2 style="margin:0">Checklist V20</h2><div class="muted">Avalie cada item após verificar a área.</div></div><select id="areaSelect" style="max-width:180px" onchange="renderChecklist()"></select></div><div id="checkMeta" class="muted" style="margin-top:10px"></div><div id="checkRule" class="card" style="margin:10px 0;background:#f7f9f7"></div><div id="checks"></div><div id="checkScore" class="muted" style="margin:10px 0"></div><label>Observação da área</label><textarea id="checkObs" placeholder="Ex.: piso limpo; lâmpada queimada; material a repor..."></textarea><button class="btn full" onclick="saveChecklist()">Salvar inspeção</button></div>
+  <div class="card"><div class="row between"><div><h2 style="margin:0">Checklist V21</h2><div class="muted">Avalie cada item após verificar a área.</div></div><select id="areaSelect" style="max-width:180px" onchange="renderChecklist()"></select></div><div id="checkMeta" class="muted" style="margin-top:10px"></div><div id="checkRule" class="card" style="margin:10px 0;background:#f7f9f7"></div><div id="checks"></div><div id="checkScore" class="muted" style="margin:10px 0"></div><label>Observação da área</label><textarea id="checkObs" placeholder="Ex.: piso limpo; lâmpada queimada; material a repor..."></textarea><button class="btn full" onclick="saveChecklist()">Salvar inspeção</button></div>
 </section>
 
 <section id="occ" class="screen">
@@ -126,16 +126,16 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 </section>
 
 <section id="materials" class="screen">
-  <div class="card"><div class="row between"><div><h2 style="margin:0">Banco de materiais</h2><div class="muted">Materiais registrados nas ocorrências, com quantidade e unidade.</div></div><button class="btn secondary" onclick="exportMaterialsCSV()">Exportar CSV</button></div>
+  <div class="card"><div class="row between"><div><h2 style="margin:0">Banco de materiais</h2><div class="muted">Materiais registrados nas ocorrências, com quantidade e unidade.</div></div><div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn secondary" onclick="exportMaterialsCSV()">Exportar detalhado</button><button class="btn secondary" onclick="exportConsolidatedCSV()">Exportar compras</button></div></div>
     <div class="grid" style="margin-top:10px"><div class="metric"><b id="matRecordCount">0</b><span>Itens registrados</span></div><div class="metric"><b id="matOccCount">0</b><span>Ocorrências com materiais</span></div><div class="metric"><b id="matCatalogCount">0</b><span>Materiais no catálogo</span></div><div class="metric"><b id="matQtyCount">0</b><span>Quantidade total</span></div></div>
   </div>
-  <div class="card"><div class="row between"><h3 style="margin:0">Lista consolidada</h3><button class="btn secondary small-btn" onclick="downloadMaterialsJSON()">Exportar banco (.json)</button></div><div id="materialsTable" style="margin-top:8px"></div></div>
+  <div class="card"><div class="row between"><h3 style="margin:0">Lista consolidada</h3><div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn secondary small-btn" onclick="downloadMaterialsJSON()">Exportar banco (.json)</button><button class="btn secondary small-btn" onclick="downloadConsolidatedJSON()">Exportar consolidado</button></div></div><div id="materialsTable" style="margin-top:8px"></div></div>
   <div class="card"><h3 style="margin-top:0">Catálogo de sugestões</h3><div class="muted">O aplicativo usa este catálogo para sugerir materiais quando uma ocorrência é aberta.</div><div id="materialCatalog" style="margin-top:8px"></div></div>
 </section>
 
 <section id="profile" class="screen">
   <div class="card"><h2 style="margin-top:0">Perfil</h2><p><b id="profileName"></b><br><span class="muted" id="profileRole"></span></p><button class="btn danger full" onclick="logout(event)">Sair do aplicativo</button></div>
-  <div class="card"><h3 style="margin-top:0">Sobre a V20</h3><p class="muted">Fluxo de ocorrências com apenas os status Aberta e Resolvida, materiais de reposição sugeridos automaticamente, edição dos materiais por ocorrência, consolidação para compras e exportação do banco em CSV e JSON, detalhes de inspeções, fotos, filtros e indicadores gerenciais. Os registros continuam armazenados no aparelho.</p></div>
+  <div class="card"><h3 style="margin-top:0">Sobre a V21</h3><p class="muted">Fluxo de ocorrências com apenas os status Aberta e Resolvida, materiais de reposição sugeridos automaticamente, edição por ocorrência, consolidação para compras e exportação detalhada e consolidada em CSV e JSON, detalhes de inspeções, fotos, filtros e indicadores gerenciais. Os registros continuam armazenados no aparelho.</p></div>
 </section>
 </main>
 <nav class="bottom">
@@ -449,8 +449,28 @@ function exportMaterialsCSV(){
   const csv=rows.map(r=>r.map(v=>'"'+String(v??'').replaceAll('"','""')+'"').join(';')).join('\n');
   const blob=new Blob(["\ufeff"+csv],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='tangara-banco-materiais.csv';a.click();URL.revokeObjectURL(a.href);toast('Banco de materiais exportado');
 }
+function consolidatedMaterials(){
+  const totals={};
+  materialRecords().forEach(r=>{
+    const k=materialKey(r.material); if(!k)return;
+    if(!totals[k]) totals[k]={material:r.material,quantity:0,unit:r.unit||"un",occurrences:0};
+    totals[k].quantity+=Number(r.quantity)||0;
+    totals[k].occurrences++;
+  });
+  return Object.values(totals).sort((a,b)=>a.material.localeCompare(b.material,"pt-BR"));
+}
+function exportConsolidatedCSV(){
+  const rows=[["Material","Quantidade total","Unidade","Ocorrências"]];
+  consolidatedMaterials().forEach(r=>rows.push([r.material,r.quantity,r.unit,r.occurrences]));
+  const csv=rows.map(r=>r.map(v=>'"'+String(v??'').replaceAll('"','""')+'"').join(';')).join("\n");
+  const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="tangara-lista-de-compras.csv"; a.click(); URL.revokeObjectURL(a.href); toast("Lista consolidada exportada");
+}
+function downloadConsolidatedJSON(){
+  const payload={exportedAt:new Date().toISOString(),version:"V21",summary:consolidatedMaterials()};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json;charset=utf-8"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="tangara-lista-de-compras.json"; a.click(); URL.revokeObjectURL(a.href); toast("Lista consolidada exportada");
+}
 function downloadMaterialsJSON(){
-  const payload={exportedAt:new Date().toISOString(),version:"V20",materials:materialRecords()};
+  const payload={exportedAt:new Date().toISOString(),version:"V21",materials:materialRecords(),consolidated:consolidatedMaterials()};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='tangara-banco-materiais.json';a.click();URL.revokeObjectURL(a.href);toast('Banco de materiais exportado');
 }
 function createOccurrenceFromPending(area,item,status){
