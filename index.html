@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#124a35">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Tangará Zeladoria V38</title>
+<title>Tangará Zeladoria V39</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
 .priority-hero{border:2px solid var(--green2);box-shadow:0 8px 24px rgba(23,59,43,.10)} .priority-hero .critical-item{padding:12px 0;border-top:1px solid var(--line)} .priority-hero .critical-item:first-of-type{border-top:0} .priority-hero .priority-badge{font-size:12px;font-weight:700;letter-spacing:.02em}
@@ -106,7 +106,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
       <div id="occMaterials" class="material-list"></div>
       <button type="button" class="btn secondary full" style="margin-top:8px" onclick="addMaterialRow()">＋ Adicionar material</button>
     </div>
-    <label>Foto</label><input id="occPhoto" type="file" accept="image/*" capture="environment">
+    <label>Foto</label><input id="occPhoto" type="file" accept="image/*" capture="environment"><div id="occCurrentPhoto" class="photo-view" style="display:none"></div>
     <button id="saveOccurrenceBtn" type="button" class="btn gold full" style="margin-top:12px" onclick="saveOccurrence()">Registrar ocorrência</button>
   </div>
 </section>
@@ -171,7 +171,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 
 <section id="profile" class="screen">
   <div class="card"><h2 style="margin-top:0">Perfil</h2><p><b id="profileName"></b><br><span class="muted" id="profileRole"></span></p><button class="btn danger full" onclick="logout(event)">Sair do aplicativo</button></div>
-  <div class="card"><h3 style="margin-top:0">Sobre a V38</h3><p class="muted">Fluxo de ocorrências com apenas os status Aberta e Resolvida, materiais de reposição sugeridos automaticamente, edição por ocorrência, consolidação para compras, acompanhamento Pendente/Comprado com data e observação, exportação detalhada e consolidada em CSV e JSON, detalhes de inspeções, fotos, filtros e indicadores gerenciais. Os registros continuam armazenados no aparelho.</p></div>
+  <div class="card"><h3 style="margin-top:0">Sobre a V39</h3><p class="muted">Fluxo de ocorrências com apenas os status Aberta e Resolvida, materiais de reposição sugeridos automaticamente, edição por ocorrência, consolidação para compras, acompanhamento Pendente/Comprado com data e observação, exportação detalhada e consolidada em CSV e JSON, detalhes de inspeções, fotos, filtros e indicadores gerenciais. Os registros continuam armazenados no aparelho.</p></div>
 </section>
 </main>
 <nav class="bottom">
@@ -184,6 +184,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 <div id="materialsModal" class="modal" onclick="closeMaterialsModal(event)"><div class="modal-card" onclick="event.stopPropagation()"><div class="row between"><h2 style="margin:0">Materiais da ocorrência</h2><button class="btn secondary" onclick="closeMaterialsModal()">Fechar</button></div><div id="materialsModalBody" style="margin-top:10px"></div></div></div><div id="inspectionModal" class="modal" onclick="closeInspection(event)"><div class="modal-card" onclick="event.stopPropagation()"><div class="row between"><h2 style="margin:0">Detalhes da inspeção</h2><button class="btn secondary" onclick="closeInspection()">Fechar</button></div><div id="inspectionDetail" style="margin-top:10px"></div></div></div><div id="toast" class="toast"></div>
 
 <script>
+let editingOccurrenceId=null;
 const AREAS=["Hall e corredores","Salão de festas","Salão gourmet","Academia","Salão de jogos","Brinquedoteca","Garagem","Áreas externas"];
 const AREA_RULES={
 "Hall e corredores":"Manter circulação livre, limpa e bem iluminada.",
@@ -369,12 +370,13 @@ function start(){
     if(navCheck){navCheck.style.display=isColab?"":"";navCheck.dataset.s="check";navCheck.onclick=()=>show("check");navCheck.querySelector('span').textContent="✓";}
     if(navCheckLabel) navCheckLabel.textContent=isSyndic?"Pendências":"Checklist";
     if(isSyndic && navCheck){navCheck.onclick=()=>show("pending");navCheck.dataset.s="pending";}
-    if(navOcc){navOcc.style.display="";navOcc.dataset.s="occ";navOcc.onclick=()=>show("occ");navOcc.querySelector('span').textContent="🔧";}
+    if(navOcc){navOcc.style.display="";navOcc.dataset.s="occ";navOcc.onclick=()=>{prepareNewOccurrence();show("occ")};navOcc.querySelector('span').textContent="🔧";}
     if(navOccLabel) navOccLabel.textContent=isColab?"Registrar":"Ocorrências";
   }
   const exportIds={exportPendingBtn:isSyndic,exportMaterialsBtn:isSyndic,exportPurchasesBtn:isSyndic,exportMaterialsJsonBtn:isSyndic,exportConsolidatedJsonBtn:isSyndic};
   Object.entries(exportIds).forEach(([id,visible])=>{const el=document.getElementById(id);if(el)el.style.display=visible?"block":"none";});
   fillAreas();
+  prepareNewOccurrence();
   resetOccurrenceMaterials();
   refresh();
 }
@@ -613,6 +615,7 @@ function downloadMaterialsJSON(){if(user?.role!=="Síndico"){toast("Somente o S�
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='tangara-banco-materiais.json';a.click();URL.revokeObjectURL(a.href);toast('Banco de materiais exportado');
 }
 function createOccurrenceFromPending(area,item,status){
+  prepareNewOccurrence();
   if(user?.role==="Morador"){toast("Morador pode apenas consultar as pendências.");return;}
   if(user?.role!=="Colaborador" && user?.role!=="Síndico"){toast("Perfil sem permissão para criar pendências.");return;}
   const areaEl=document.getElementById("occArea"),titleEl=document.getElementById("occTitle"),priorityEl=document.getElementById("occPriority"),descEl=document.getElementById("occDesc");
@@ -665,7 +668,7 @@ function renderPending(){
     const heading=statusFilter==='Aberta'?'Pendências ativas':'Ocorrências encontradas';
     document.getElementById('pendingOccurrences').innerHTML=`<div class="muted" style="margin:10px 0 6px;font-weight:800">${heading}</div>`+occ.map(x=>{
       const cls=x.status==='Resolvida'?'ok':x.priority==='Alta'||x.priority==='Urgente'?'bad':'pending';
-      return `<div class="area"><div style="flex:1"><div class="row between"><b>🔧 ${x.title}</b><span class="pill ${cls}">${x.status}</span></div><div class="muted">${x.area} • ${x.priority} • ${fmt(x.date)} • ${x.user}</div>${x.desc?`<div class="muted" style="margin-top:4px">${x.desc}</div>`:''}${x.photo?`<div class="photo-view"><img class="thumb" src="${x.photo}" alt="Foto da pendência"><span class="muted">Foto anexada.</span></div>`:''}</div>${resident?'':`<button class="btn secondary" onclick="openOpenPendencies()">Ver</button>`}</div>`;
+      return `<div class="area"><div style="flex:1"><div class="row between"><b>🔧 ${x.title}</b><span class="pill ${cls}">${x.status}</span></div><div class="muted">${x.area} • ${x.priority} • ${fmt(x.date)} • ${x.user}</div>${x.desc?`<div class="muted" style="margin-top:4px">${x.desc}</div>`:''}${x.photo?`<div class="photo-view"><img class="thumb" src="${x.photo}" alt="Foto da pendência"><span class="muted">Foto anexada.</span></div>`:''}</div>${resident?'':`<button class="btn secondary" onclick="editOccurrence(${JSON.stringify(x.id)})">Ver</button>`}</div>`;
     }).join('');
   }else{
     document.getElementById('pendingOccurrences').innerHTML='<div class="empty">Nenhuma ocorrência encontrada nos filtros selecionados.</div>';
@@ -775,6 +778,40 @@ function exportCSV(){
   const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='tangara-historico.csv'; a.click(); URL.revokeObjectURL(a.href); toast('CSV exportado');
 }
 
+function editOccurrence(id){
+  if(user?.role==="Morador"){toast("Morador não pode editar pendências.");return;}
+  const x=db.occurrences.find(o=>String(o.id)===String(id));
+  if(!x){toast("Pendência não encontrada.");return;}
+  editingOccurrenceId=x.id;
+  document.getElementById("occScreenTitle").textContent=user?.role==="Colaborador"?"Editar pendência":"Editar ocorrência";
+  document.getElementById("saveOccurrenceBtn").textContent=user?.role==="Colaborador"?"Salvar alterações":"Salvar alterações";
+  document.getElementById("occArea").value=x.area||AREAS[0];
+  document.getElementById("occTitle").value=x.title||"";
+  document.getElementById("occPriority").value=x.priority||"Média";
+  document.getElementById("occDesc").value=x.desc||"";
+  document.getElementById("occPhoto").value="";
+  const current=document.getElementById("occCurrentPhoto");
+  if(current){
+    current.style.display=x.photo?"flex":"none";
+    current.innerHTML=x.photo?`<img class="thumb" src="${x.photo}" alt="Foto atual da pendência"><span class="muted">Foto atual. Selecione outra para substituir.</span>`:"";
+  }
+  occurrenceMaterials=Array.isArray(x.materials)?x.materials.map(m=>({...m})):[];
+  renderOccurrenceMaterials();
+  refreshMaterialSuggestions();
+  show("occ");
+  document.getElementById("occTitle")?.focus();
+}
+
+function prepareNewOccurrence(){
+  editingOccurrenceId=null;
+  const title=document.getElementById("occScreenTitle");
+  const save=document.getElementById("saveOccurrenceBtn");
+  if(title)title.textContent=user?.role==="Colaborador"?"Nova pendência":"Nova ocorrência";
+  if(save)save.textContent=user?.role==="Colaborador"?"Registrar pendência":"Registrar ocorrência";
+  const current=document.getElementById("occCurrentPhoto");
+  if(current){current.style.display="none";current.innerHTML="";}
+}
+
 async function saveOccurrence(){
   if(user?.role==="Morador"){show("residentIssue");toast("Use Registrar pendência para enviar um problema.");return;}
   try{
@@ -784,27 +821,54 @@ async function saveOccurrence(){
     const priority=document.getElementById("occPriority").value;
     const desc=document.getElementById("occDesc").value.trim();
     const file=document.getElementById("occPhoto").files[0];
-    let photo="";
+    const editing=editingOccurrenceId!==null;
+    const existing=editing?db.occurrences.find(x=>String(x.id)===String(editingOccurrenceId)):null;
+    if(editing&&!existing){editingOccurrenceId=null;toast("Pendência não encontrada.");return;}
+    let photo=existing?.photo||"";
     if(file) photo=await compressPhoto(file);
-    const duplicate=db.occurrences.find(x=>x.area===area&&x.title===title&&x.desc===desc&&x.status!=="Resolvida"&&Date.now()-new Date(x.date).getTime()<60000);
-    if(duplicate){toast("Esta ocorrência já foi registrada");return;}
-    // V18: se o usuário não adicionou materiais, gerar automaticamente a partir da ocorrência.
-    if(!occurrenceMaterials.length){
+
+    if(!editing){
+      const duplicate=db.occurrences.find(x=>x.area===area&&x.title===title&&x.desc===desc&&x.status!=="Resolvida"&&Date.now()-new Date(x.date).getTime()<60000);
+      if(duplicate){toast("Esta ocorrência já foi registrada");return;}
+    }
+
+    if(!editing && !occurrenceMaterials.length){
       const automatic=getSuggestedMaterials();
       automatic.forEach(m=>occurrenceMaterials.push({name:m.name,qty:1,unit:m.unit}));
     }
     const materials=occurrenceMaterials.filter(m=>String(m.name||"").trim()).map(m=>({name:materialKey(m.name)==="lampada"?"Lâmpada LED":String(m.name).trim(),qty:Math.max(0,Number(m.qty)||0),unit:String(m.unit||"un").trim()||"un"}));
+
+    if(existing){
+      existing.area=area;
+      existing.title=title;
+      existing.priority=priority;
+      existing.desc=desc;
+      existing.photo=photo;
+      if(user?.role==="Síndico") existing.materials=materials;
+      persist();
+      editingOccurrenceId=null;
+      occurrenceMaterials=[];
+      document.getElementById("occTitle").value="";
+      document.getElementById("occDesc").value="";
+      document.getElementById("occPhoto").value="";
+      const current=document.getElementById("occCurrentPhoto"); if(current){current.style.display="none";current.innerHTML="";}
+      renderOccurrenceMaterials(); refreshMaterialSuggestions();
+      renderHome(); renderReports(); renderHistory(); renderPending();
+      toast("Pendência atualizada");
+      show("pending");
+      return;
+    }
+
     db.occurrences.unshift({id:Date.now(),type:"occ",date:new Date().toISOString(),user:user.name,area,title,priority,desc,photo,status:"Aberta",materials});
     persist();
     occurrenceMaterials=[];
     document.getElementById("occTitle").value="";
     document.getElementById("occDesc").value="";
     document.getElementById("occPhoto").value="";
+    const current=document.getElementById("occCurrentPhoto"); if(current){current.style.display="none";current.innerHTML="";}
     renderOccurrenceMaterials(); refreshMaterialSuggestions();
-    renderHome();
-    renderReports();
-    renderHistory();
-    toast(materials.length?`Ocorrência registrada • ${materials.length} material(is) vinculado(s)`:`Ocorrência registrada`);
+    renderHome(); renderReports(); renderHistory();
+    toast(materials.length?`Ocorrência registrada • ${materials.length} material(is) vinculado(s)`:"Ocorrência registrada");
     show("history");
   }catch(e){
     console.error(e);
