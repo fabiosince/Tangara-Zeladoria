@@ -10,12 +10,10 @@
 <meta name="theme-color" content="#124a35">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Tangará Zeladoria V33</title>
+<title>Tangará Zeladoria V34</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
-.priority-hero{border:2px solid var(--green2);box-shadow:0 8px 24px rgba(23,59,43,.10)}
-.role-home-card{background:#eef4ef;border:1px solid #d8e5dc}.role-home-card .role-title{font-size:18px;font-weight:800}.primary-action{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px 16px;border:0;border-radius:14px;background:var(--green);color:#fff;font-weight:800;font-size:16px}.primary-action.gold{background:var(--gold);color:#241d0b}.quick-card{border:1px solid var(--line);background:#fff;border-radius:14px;padding:14px;text-align:left;display:flex;flex-direction:column;gap:5px}.quick-card b{font-size:15px}.quick-card span{font-size:12px;color:var(--muted)}
- .priority-hero .critical-item{padding:12px 0;border-top:1px solid var(--line)} .priority-hero .critical-item:first-of-type{border-top:0} .priority-hero .priority-badge{font-size:12px;font-weight:700;letter-spacing:.02em}
+.priority-hero{border:2px solid var(--green2);box-shadow:0 8px 24px rgba(23,59,43,.10)} .priority-hero .critical-item{padding:12px 0;border-top:1px solid var(--line)} .priority-hero .critical-item:first-of-type{border-top:0} .priority-hero .priority-badge{font-size:12px;font-weight:700;letter-spacing:.02em}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
 button,input,select,textarea{font:inherit}button{cursor:pointer}
 .app{max-width:760px;margin:auto;min-height:100vh}.top{background:var(--green);color:white;padding:18px 18px 16px;position:sticky;top:0;z-index:5;box-shadow:0 2px 12px #0002}
@@ -61,16 +59,16 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 <header class="top"><div class="brand"><img class="logo" src="logo-tangara.png"><div><h1>Tangará Zeladoria</h1><small id="userLabel"></small></div></div></header>
 <main>
 <section id="home" class="screen active">
-  <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div><div class="muted" style="font-size:11px;margin-top:6px;opacity:.7">Painel V33</div></div>
+  <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div><div class="muted" style="font-size:11px;margin-top:6px;opacity:.7">Painel V34</div></div>
   <div class="card" id="focusPanel"></div>
   <div class="card priority-hero" id="priorityPanel"></div>
-  <div id="homeMetrics" class="grid">
+  <div class="grid">
     <div class="metric action" onclick="show(&quot;check&quot;)"><b id="mOk">0</b><span>Áreas conformes · ver checklist</span></div>
     <div class="metric action" onclick="show('pending')"><b id="mPending">0</b><span>Itens em atenção · ver pendências</span></div>
     <div class="metric action" onclick="show('occ')"><b id="mOcc">0</b><span>Ocorrências abertas · acompanhar</span></div>
     <div class="metric action" onclick="show(&quot;check&quot;)"><b id="mPct">0%</b><span>Áreas concluídas · conferir</span></div>
   </div>
-  <div class="card">
+  <div class="card" id="quickActionsCard">
     <div class="row between"><div><h3 style="margin:0">Atalhos rápidos</h3><div class="muted">As ações mais usadas ficam aqui.</div></div></div>
     <div class="quick-grid" style="margin-top:10px">
       <button class="quick-card" id="quickOcc" onclick="show('occ')"><b>🔧 Ocorrências</b><span>Registrar ou acompanhar problemas</span></button>
@@ -81,10 +79,10 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
     </div>
   </div>
   <div class="card" id="dailySummary"><div class="row between"><div><h3 style="margin:0">Resumo operacional</h3><div class="muted">Última atividade registrada no aplicativo.</div></div><button class="btn secondary" onclick="show('history')">Ver histórico</button></div><div id="dailySummaryBody" style="margin-top:10px"></div></div>
-  <div id="areaProgressCard" class="card"><div class="row between"><div><h3 style="margin:0">Progresso das áreas</h3><div class="muted">Última inspeção registrada por área.</div></div><b id="todayLabel" class="muted"></b></div><div id="areaProgress"></div></div>
+  <div class="card"><div class="row between"><div><h3 style="margin:0">Progresso das áreas</h3><div class="muted">Última inspeção registrada por área.</div></div><b id="todayLabel" class="muted"></b></div><div id="areaProgress"></div></div>
   <div id="rolePanel"></div>
-  <div id="areaSummaryCard" class="card"><div class="row between"><h3 style="margin:0">Áreas</h3><button class="btn secondary" onclick="show(&quot;check&quot;)">Ver checklist</button></div><div id="areaSummary"></div></div>
-  <div id="homeActions" class="card"><h3 style="margin-top:0">Mais ações</h3><div class="row wrap">
+  <div class="card"><div class="row between"><h3 style="margin:0">Áreas</h3><button class="btn secondary" onclick="show(&quot;check&quot;)">Ver checklist</button></div><div id="areaSummary"></div></div>
+  <div class="card"><h3 style="margin-top:0">Mais ações</h3><div class="row wrap">
     <button id="homeMoreCheck" class="btn" onclick="show(&quot;check&quot;)">📋 Checklist</button>
     <button id="homeMoreOcc" class="btn gold" onclick="show('occ')">🔧 Nova ocorrência</button>
     <button id="homeMoreHistory" class="btn secondary" onclick="show('history')">🕘 Histórico</button>
@@ -102,7 +100,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
     <label>Título</label><input id="occTitle" placeholder="Ex.: Lâmpada queimada" oninput="refreshMaterialSuggestions()">
     <label>Prioridade</label><select id="occPriority"><option>Baixa</option><option selected>Média</option><option>Alta</option><option>Urgente</option></select>
     <label>Descrição</label><textarea id="occDesc" placeholder="Descreva o problema e a ação necessária" oninput="refreshMaterialSuggestions()"></textarea>
-    <div class="card" style="margin:12px 0;background:#f7f9f7">
+    <div class="card" id="occMaterialsCard" style="margin:12px 0;background:#f7f9f7">
       <div class="row between"><div><h3 style="margin:0">🧰 Materiais necessários</h3><div class="muted">O sistema identifica automaticamente materiais de reposição a partir do título e da descrição. Você pode editar antes de registrar.</div></div><button type="button" class="btn secondary small-btn" onclick="suggestMaterials(true)">✨ Sugerir</button></div>
       <div id="materialSuggestions" class="suggested" style="display:none"></div>
       <div id="occMaterials" class="material-list"></div>
@@ -173,7 +171,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 
 <section id="profile" class="screen">
   <div class="card"><h2 style="margin-top:0">Perfil</h2><p><b id="profileName"></b><br><span class="muted" id="profileRole"></span></p><button class="btn danger full" onclick="logout(event)">Sair do aplicativo</button></div>
-  <div class="card"><h3 style="margin-top:0">Sobre a V33</h3><p class="muted">Interface simplificada por perfil (Morador, Colaborador e Síndico), pendências com foto para Morador, checklist e rotina operacional para Colaborador, exportações restritas ao Síndico, materiais e compras consolidados, histórico e indicadores. Os registros continuam armazenados no aparelho.</p></div>
+  <div class="card"><h3 style="margin-top:0">Sobre a V34</h3><p class="muted">Fluxo de ocorrências com apenas os status Aberta e Resolvida, materiais de reposição sugeridos automaticamente, edição por ocorrência, consolidação para compras, acompanhamento Pendente/Comprado com data e observação, exportação detalhada e consolidada em CSV e JSON, detalhes de inspeções, fotos, filtros e indicadores gerenciais. Os registros continuam armazenados no aparelho.</p></div>
 </section>
 </main>
 <nav class="bottom">
@@ -295,7 +293,7 @@ function selectLoginRole(role,button){
   if(roleEl)roleEl.value=role;
   document.querySelectorAll(".role-btn").forEach(b=>b.classList.toggle("selected",b===button));
   const hints={
-    "Colaborador":"Rotina de zeladoria, checklist e registro de ocorrências.",
+    "Colaborador":"Checklist, registro de pendências e acompanhamento do que precisa de atenção.",
     "Morador":"Verificação das áreas e registro de pendências com foto.",
     "Síndico":"Acompanhamento geral da zeladoria, ocorrências, inspeções e pendências."
   };
@@ -331,29 +329,30 @@ function start(){
   document.getElementById("profileName").textContent=user.name||"";
   document.getElementById("profileRole").textContent=user.role||"";
   const isResident=user.role==="Morador";
-  const isSyndic=user.role==="Síndico";
-  const isColab=user.role==="Colaborador";
   const residentQuick=document.getElementById("residentQuick");
   if(residentQuick) residentQuick.style.display=isResident?"block":"none";
+  const rolePanel=document.getElementById("rolePanel");
+  if(rolePanel) rolePanel.style.display=isResident?"none":"block";
+  const isSyndic=user.role==="Síndico";
+  const isColab=user.role==="Colaborador";
   const occScreenTitle=document.getElementById('occScreenTitle');
   const saveOccurrenceBtn=document.getElementById('saveOccurrenceBtn');
   if(occScreenTitle) occScreenTitle.textContent=isColab?'Nova pendência':'Nova ocorrência';
+  const occMaterialsCard=document.getElementById("occMaterialsCard");
+  if(occMaterialsCard) occMaterialsCard.style.display=isColab?"none":"block";
   if(saveOccurrenceBtn) saveOccurrenceBtn.textContent=isColab?'Registrar pendência':'Registrar ocorrência';
-
-  // V33: cada perfil recebe apenas as ações que usa no dia a dia.
   const ids={
-    quickOcc:isColab||isSyndic, quickCheck:isColab, quickMaterials:isSyndic, quickHistory:isSyndic||isColab,
+    quickOcc:isColab||isSyndic, quickCheck:isColab, quickMaterials:isSyndic, quickHistory:isSyndic,
     homeMoreCheck:isColab, homeMoreOcc:isColab||isSyndic, homeMoreHistory:isSyndic||isColab,
     moreHistory:isSyndic||isColab, moreReports:isSyndic, moreMaterials:isSyndic
   };
   Object.entries(ids).forEach(([id,visible])=>{const el=document.getElementById(id);if(el)el.style.display=visible?"block":"none";});
   const homeMoreOcc=document.getElementById('homeMoreOcc'); if(homeMoreOcc) homeMoreOcc.textContent=isColab?'📝 Nova pendência':'🔧 Nova ocorrência';
   const moreIntro=document.getElementById("moreIntro");
-  if(moreIntro) moreIntro.textContent=isResident?"Ações simples: registrar e consultar pendências.":isSyndic?"Visão geral, acompanhamento e exportações.":"Rotina de zeladoria: checklist, pendências e ocorrências.";
-
-  // V33: navegação inferior orientada pela rotina do perfil.
+  if(moreIntro) moreIntro.textContent=isResident?"Ações simples: registrar e consultar pendências.":isSyndic?"Visão geral, acompanhamento e exportações.":"Rotina de zeladoria e acompanhamento.";
   const navCheck=document.querySelector('.nav[data-s="check"]');
   const navOcc=document.querySelector('.nav[data-s="occ"]');
+  const navMore=document.querySelector('.nav[data-s="more"]');
   const navCheckLabel=document.getElementById("navCheckLabel");
   const navOccLabel=document.getElementById("navOccLabel");
   if(isResident){
@@ -361,27 +360,12 @@ function start(){
     if(navCheckLabel) navCheckLabel.textContent="Pendências";
     if(navOcc){navOcc.style.display="";navOcc.dataset.s="residentIssue";navOcc.onclick=()=>show("residentIssue");navOcc.querySelector('span').textContent="📷";}
     if(navOccLabel) navOccLabel.textContent="Registrar";
-  }else if(isColab){
-    if(navCheck){navCheck.style.display="";navCheck.dataset.s="check";navCheck.onclick=()=>show("check");navCheck.querySelector('span').textContent="✓";}
-    if(navCheckLabel) navCheckLabel.textContent="Checklist";
-    if(navOcc){navOcc.style.display="";navOcc.dataset.s="pending";navOcc.onclick=()=>show("pending");navOcc.querySelector('span').textContent="⚠️";}
-    if(navOccLabel) navOccLabel.textContent="Pendências";
   }else{
-    if(navCheck){navCheck.style.display="";navCheck.dataset.s="pending";navCheck.onclick=()=>show("pending");navCheck.querySelector('span').textContent="⚠️";}
-    if(navCheckLabel) navCheckLabel.textContent="Pendências";
-    if(navOcc){navOcc.style.display="";navOcc.dataset.s="materials";navOcc.onclick=()=>show("materials");navOcc.querySelector('span').textContent="🧰";}
-    if(navOccLabel) navOccLabel.textContent="Compras";
-  }
-
-  // Simplificação da home do Morador: leitura do painel + ação de registro.
-  const homeMetrics=document.getElementById("homeMetrics");
-  const areaProgressCard=document.getElementById("areaProgressCard");
-  const areaSummaryCard=document.getElementById("areaSummaryCard");
-  const homeActions=document.getElementById("homeActions");
-  [homeMetrics,areaProgressCard,areaSummaryCard,homeActions].forEach(el=>{if(el)el.style.display=isResident?"none":"block";});
-  const rolePanel=document.getElementById("rolePanel");
-  if(rolePanel && isResident){
-    rolePanel.innerHTML=`<div class="card role-home-card"><div class="role-title">📷 Encontrou um problema?</div><div class="muted" style="margin:4px 0 12px">Registre luz queimada, vazamento, dano ou outra pendência com uma foto.</div><button class="primary-action gold" onclick="show('residentIssue')">Registrar pendência</button><button class="btn secondary full" style="margin-top:8px" onclick="show('pending')">👁 Ver pendências</button></div>`;
+    if(navCheck){navCheck.style.display=isColab?"":"";navCheck.dataset.s="check";navCheck.onclick=()=>show("check");navCheck.querySelector('span').textContent="✓";}
+    if(navCheckLabel) navCheckLabel.textContent=isSyndic?"Pendências":"Checklist";
+    if(isSyndic && navCheck){navCheck.onclick=()=>show("pending");navCheck.dataset.s="pending";}
+    if(navOcc){navOcc.style.display="";navOcc.dataset.s="occ";navOcc.onclick=()=>show("occ");navOcc.querySelector('span').textContent="🔧";}
+    if(navOccLabel) navOccLabel.textContent=isColab?"Registrar":"Ocorrências";
   }
   const exportIds={exportPendingBtn:isSyndic,exportMaterialsBtn:isSyndic,exportPurchasesBtn:isSyndic,exportMaterialsJsonBtn:isSyndic,exportConsolidatedJsonBtn:isSyndic};
   Object.entries(exportIds).forEach(([id,visible])=>{const el=document.getElementById(id);if(el)el.style.display=visible?"block":"none";});
@@ -826,7 +810,7 @@ async function saveResidentIssue(){
   let photo="";
   if(file) photo=await compressPhoto(file);
   const titles={"Luz queimada":"Luz queimada","Vazamento":"Vazamento","Limpeza":"Pendência de limpeza","Porta/fechadura":"Problema em porta/fechadura","Dano em equipamento":"Dano em equipamento","Outro":"Pendência do morador"};
-  const occurrence={id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),type:"occ",area,title:titles[type]||type,priority:"Média",description:desc||"Pendência registrada com foto.",photo,status:"Aberta",date:new Date().toISOString(),user:user?.name||"Morador",materials:[]};
+  const occurrence={id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),type:"occ",area,title:titles[type]||type,priority:"Média",desc:desc||"Pendência registrada com foto.",photo,status:"Aberta",date:new Date().toISOString(),user:user?.name||"Morador",materials:[]};
   db.occurrences.unshift(occurrence);persist();
   document.getElementById("residentDesc").value="";
   document.getElementById("residentPhoto").value="";
@@ -884,10 +868,15 @@ function renderHome(){
   const rolePanel=document.getElementById("rolePanel");
   if(rolePanel){
     const label=user?.role||"Colaborador";
-    const isResident=label==='Morador'; const isColab=label==='Colaborador'; const title=isResident?'Participação do morador':isColab?'Rotina de zeladoria':'Visão gerencial'; const sub=isResident?'Registre uma pendência com foto e consulte o painel em modo leitura.':isColab?'Faça a inspeção, registre pendências e acompanhe ocorrências.':'Acompanhe pendências, ocorrências, compras e indicadores.'; rolePanel.innerHTML=`<div class="card role-home-card"><div class="row between"><div><b>${title}</b><div class="muted">${sub}</div></div><span class="pill ok">${label}</span></div>${isColab?'<div class="row wrap" style="margin-top:10px"><button class="btn" onclick="show(&quot;check&quot;)">✓ Fazer checklist</button><button class="btn gold" onclick="show(&quot;occ&quot;)">📝 Registrar pendência</button></div>':''}${label==='Síndico'?'<div class="row wrap" style="margin-top:10px"><button class="btn" onclick="show(&quot;pending&quot;)">⚠️ Ver pendências</button><button class="btn secondary" onclick="show(&quot;materials&quot;)">🧰 Ver compras</button></div>':''}</div>`;
+    const isResident=label==='Morador'; const isColab=label==='Colaborador';
+    const title=isResident?'Área do morador':isColab?'Rotina do colaborador':'Visão gerencial';
+    const sub=isResident?'Registre uma pendência com foto e consulte o painel em modo leitura.':isColab?'Faça a inspeção, registre uma pendência e acompanhe o que precisa de atenção.':'Acompanhe pendências, ocorrências, inspeções, materiais e exportações.';
+    const actions=isResident?'<button class="btn secondary" onclick="show(&quot;residentIssue&quot;)">📷 Registrar pendência</button><button class="btn" onclick="show(&quot;pending&quot;)">👁 Ver pendências</button>':isColab?'<button class="btn" onclick="show(&quot;check&quot;)">✓ Checklist</button><button class="btn gold" onclick="show(&quot;occ&quot;)">📝 Registrar pendência</button><button class="btn secondary" onclick="show(&quot;pending&quot;)">👁 Ver pendências</button>':'<button class="btn" onclick="show(&quot;pending&quot;)">⚠️ Pendências</button><button class="btn secondary" onclick="show(&quot;materials&quot;)">🧰 Compras</button><button class="btn secondary" onclick="show(&quot;reports&quot;)">📊 Relatórios</button>';
+    rolePanel.innerHTML=`<div class="card" style="background:#eef4ef"><div class="row between"><div><b>${title}</b><div class="muted">${sub}</div></div><span class="pill ok">${label}</span></div><div class="row wrap" style="margin-top:10px">${actions}</div></div>`;
   }
   const priorityPanel=document.getElementById("priorityPanel");
-  if(user?.role==="Morador" && priorityPanel){ priorityPanel.innerHTML=`<div class="row between"><div><div class="priority-badge">PAINEL DE PENDÊNCIAS</div><h3 style="margin:2px 0 4px">Acompanhe sem editar</h3><div class="muted">Consulte os itens registrados pelo condomínio.</div></div><span class="pill ok">Somente leitura</span></div><div class="row wrap" style="margin-top:10px"><button class="btn" onclick="show('pending')">👁 Ver pendências</button></div>`; }
+  if(user?.role==="Morador" && priorityPanel){ priorityPanel.innerHTML=`<div class="row between"><div><div class="priority-badge">ÁREA DO MORADOR</div><h3 style="margin:2px 0 4px">O que você pode fazer</h3><div class="muted">Registre um problema com foto ou consulte as pendências do condomínio.</div></div><span class="pill ok">Somente leitura</span></div><div class="row wrap" style="margin-top:10px"><button class="btn gold" onclick="show('residentIssue')">📷 Registrar pendência</button><button class="btn" onclick="show('pending')">👁 Ver pendências</button></div>`; }
+  if(user?.role==="Colaborador" && priorityPanel){ priorityPanel.innerHTML=`<div class="row between"><div><div class="priority-badge">ÁREA DO COLABORADOR</div><h3 style="margin:2px 0 4px">O que fazer agora</h3><div class="muted">Inspecione uma área, registre uma pendência e acompanhe os itens em atenção.</div></div><span class="pill ok">Rotina</span></div><div class="row wrap" style="margin-top:10px"><button class="btn" onclick="show('check')">✓ Checklist</button><button class="btn gold" onclick="show('occ')">📝 Registrar pendência</button><button class="btn secondary" onclick="show('pending')">👁 Ver pendências</button></div>`; }
   const priority=[...db.occurrences].filter(x=>x.status!=="Resolvida"&&["Alta","Urgente"].includes(x.priority)).sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,3);
   const inspectionPendencies=[];
   AREAS.forEach(a=>{const ins=latestByArea[a]; (ins?.items||[]).forEach(it=>{if(it.status==='Atenção'||it.status==='Não conforme') inspectionPendencies.push({area:a,item:it.item,status:it.status});});});
@@ -897,7 +886,7 @@ function renderHome(){
   priority.forEach(x=>blocks.push(`<div class="critical-item"><div class="row between"><b>🔧 ${escapeHtml(x.title)}</b><span class="pill bad">${x.priority}</span></div><div class="muted">${escapeHtml(x.area)} • ${fmt(x.date)}</div></div>`));
   inspectionPendencies.slice(0,3).forEach(x=>blocks.push(`<div class="critical-item"><div class="row between"><span>⚠️ ${escapeHtml(x.area)} — ${escapeHtml(x.item)}</span><span class="pill ${x.status==='Não conforme'?'bad':'pending'}">${x.status}</span></div></div>`));
   pendingPurchases.slice(0,3).forEach(x=>blocks.push(`<div class="critical-item"><div class="row between"><span>🛒 ${escapeHtml(x.material)} — ${x.qty} ${escapeHtml(x.unit)}</span><button class="btn secondary" onclick="show('materials')">Comprar</button></div>${x.note?`<div class="muted">${escapeHtml(x.note)}</div>`:''}</div>`));
-  if(priorityPanel){
+  if(priorityPanel && !["Morador","Colaborador"].includes(user?.role)){
     priorityPanel.innerHTML=`<div class="row between"><div><div class="priority-badge">PAINEL DE AÇÃO</div><h3 style="margin:2px 0 4px">Pendências prioritárias</h3><div class="muted">Tudo que precisa de acompanhamento aparece aqui.</div></div><span class="pill ${blocks.length?'pending':'ok'}">${blocks.length?blocks.length+" pendência"+(blocks.length===1?"":"s"):'Tudo em ordem'}</span></div>${blocks.length?blocks.slice(0,6).join(''):`<div class="empty" style="margin-top:10px">✅ Nenhuma pendência prioritária no momento.</div>`}<div class="row wrap" style="margin-top:10px"><button class="btn" onclick="show('pending')">Ver pendências</button><button class="btn secondary" onclick="show('materials')">Ver compras</button></div>`;
   }
 
@@ -907,7 +896,7 @@ function renderHome(){
 }
 function refresh(){renderHome();renderReports();renderHistory();renderPending()}
 if(user)start();
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=330",{updateViaCache:"none"}).catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=340",{updateViaCache:"none"}).catch(()=>{});
 </script>
 </body>
 </html>

@@ -1,11 +1,10 @@
-# Tangará Zeladoria V33
+# Tangará Zeladoria V34
 
-## V33 — experiência simplificada por perfil
-- Home reorganizada para mostrar primeiro a ação mais útil de cada perfil.
-- Morador: registro de pendência com foto e consulta do painel em modo leitura.
-- Colaborador: checklist, registro de pendência e acompanhamento das pendências.
-- Síndico: visão gerencial, pendências, compras/materiais e exportações.
-- Navegação inferior adaptada ao perfil para reduzir caminhos desnecessários.
-- Exportação de materiais e pendências permanece exclusiva do Síndico.
-- Mantidos os status de ocorrência **Aberta** e **Resolvida**.
-- Mantida a identidade visual e o ícone Tangará Residencial.
+V34 simplifica a experiência por perfil:
+- **Morador:** registra pendência com foto e consulta pendências em modo leitura; não acessa compras, histórico ou relatórios.
+- **Colaborador:** tela de ação direta para checklist, registro de pendência e consulta de pendências; o formulário de registro fica mais simples, sem o bloco de materiais.
+- **Síndico:** mantém a visão completa, banco de materiais, compras, relatórios e exportações.
+- Mantidos somente os status **Aberta** e **Resolvida** para ocorrências.
+- Atualizado o cache do Service Worker para V34.
+
+Arquivos: `index.html`, `logo-tangara.png`, `manifest.json`, `sw.js` e ícones.
