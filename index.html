@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#173b2b">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg">
-<title>Tangará Zeladoria V5</title>
+<title>Tangará Zeladoria V5.1</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
@@ -97,8 +97,8 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 </section>
 
 <section id="profile" class="screen">
-  <div class="card"><h2 style="margin-top:0">Perfil</h2><p><b id="profileName"></b><br><span class="muted" id="profileRole"></span></p><button class="btn danger full" onclick="logout()">Sair do aplicativo</button></div>
-  <div class="card"><h3 style="margin-top:0">Sobre a V5</h3><p class="muted">Versão com menu Mais, acesso ao Perfil e botão para sair do aplicativo. Os registros ficam armazenados no aparelho.</p></div>
+  <div class="card"><h2 style="margin-top:0">Perfil</h2><p><b id="profileName"></b><br><span class="muted" id="profileRole"></span></p><button class="btn danger full" onclick="logout(event)">Sair do aplicativo</button></div>
+  <div class="card"><h3 style="margin-top:0">Sobre a V5.1</h3><p class="muted">Saída de sessão corrigida. O botão encerra a sessão e volta diretamente para a tela de acesso. Os registros ficam armazenados no aparelho.</p></div>
 </section>
 </main>
 <nav class="bottom">
@@ -185,19 +185,20 @@ function renderReports(){const rInspectionsEl=document.getElementById("rInspecti
 function fmt(d){return new Date(d).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}
 function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
 function exportCSV(){let rows=[["Tipo","Data","Usuário","Área","Status/Conforme","Detalhes"],...db.inspections.map(x=>["Inspeção",fmt(x.date),x.user,x.area,`${x.ok}/${x.total}`,x.obs||""]),...db.occurrences.map(x=>["Ocorrência",fmt(x.date),x.user,x.area,x.status,`${x.title} - ${x.desc||""}`])];let csv=rows.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(";")).join("\\n");let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));a.download="tangara-zeladoria-relatorio.csv";a.click()}
-function logout(){
-  if(!confirm("Deseja sair do aplicativo?")) return;
+function logout(ev){
+  if(ev){ev.preventDefault();ev.stopPropagation();}
   localStorage.removeItem("tangaraUser");
   user=null;
   document.getElementById("app").style.display="none";
   document.getElementById("loginScreen").style.display="flex";
   document.getElementById("loginName").value="";
   document.getElementById("loginRole").value="Colaborador";
-  toast("Sessão encerrada");
+  document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
+  document.getElementById("home").classList.add("active");
 }
 function refresh(){renderHome();renderReports();renderHistory()}
 if(user)start();
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=5",{updateViaCache:"none"}).catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=51",{updateViaCache:"none"}).catch(()=>{});
 </script>
 </body>
 </html>
