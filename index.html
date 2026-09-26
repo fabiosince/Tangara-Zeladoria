@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#124a35">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Tangará Zeladoria V51</title>
+<title>Tangará Zeladoria V53.1</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
 .priority-hero{border:2px solid var(--green2);box-shadow:0 8px 24px rgba(23,59,43,.10)} .priority-hero .critical-item{padding:12px 0;border-top:1px solid var(--line)} .priority-hero .critical-item:first-of-type{border-top:0} .priority-hero .priority-badge{font-size:12px;font-weight:700;letter-spacing:.02em}
@@ -79,10 +79,10 @@ input,select,textarea{border-radius:13px;border-color:#d7e3da;outline:none}input
 </div>
 
 <div id="app" class="app" style="display:none">
-<header class="top"><div class="brand"><img class="logo" src="logo-tangara.png"><div><h1>Tangará Zeladoria</h1><small id="userLabel"></small><small style="display:block;font-size:10px;opacity:.65;margin-top:2px">V47</small></div></div></header>
+<header class="top"><div class="brand"><img class="logo" src="logo-tangara.png"><div><h1>Tangará Zeladoria</h1><small id="userLabel"></small><small style="display:block;font-size:10px;opacity:.65;margin-top:2px">V53.1</small></div></div></header>
 <main>
 <section id="home" class="screen active">
-  <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div><div class="muted" style="font-size:11px;margin-top:6px;opacity:.7">Painel V51</div></div>
+  <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div><div class="muted" style="font-size:11px;margin-top:6px;opacity:.7">Painel V53.1</div></div>
   <div class="card" id="focusPanel"></div>
   <div class="card priority-hero" id="priorityPanel"></div>
   <div class="grid" id="dashboardMetrics">
@@ -210,7 +210,7 @@ input,select,textarea{border-radius:13px;border-color:#d7e3da;outline:none}input
     <label>Senha inicial</label><input id="newUserPassword" type="password" autocomplete="new-password" placeholder="Mínimo 6 caracteres">
     <button class="btn full" onclick="createUser()">➕ Criar usuário</button>
   </div>
-  <div class="card"><h3 style="margin-top:0">Sobre a V51</h3><p class="muted">A V51 adiciona troca de senha e gestão local de usuários. Os dados de acesso continuam armazenados no aparelho; para segurança de produção, a autenticação deverá ser migrada para um serviço de backend.</p></div>
+  <div class="card"><h3 style="margin-top:0">Sobre a V53.1</h3><p class="muted">A V53.1 prepara o aplicativo para autenticação e dados centralizados. O modo atual continua local até a configuração do backend central.</p></div>
 </section>
 </main>
 <nav class="bottom">
@@ -222,6 +222,7 @@ input,select,textarea{border-radius:13px;border-color:#d7e3da;outline:none}input
 </div>
 <div id="materialsModal" class="modal" onclick="closeMaterialsModal(event)"><div class="modal-card" onclick="event.stopPropagation()"><div class="row between"><h2 style="margin:0">Materiais da ocorrência</h2><button class="btn secondary" onclick="closeMaterialsModal()">Fechar</button></div><div id="materialsModalBody" style="margin-top:10px"></div></div></div><div id="inspectionModal" class="modal" onclick="closeInspection(event)"><div class="modal-card" onclick="event.stopPropagation()"><div class="row between"><h2 style="margin:0">Detalhes da inspeção</h2><button class="btn secondary" onclick="closeInspection()">Fechar</button></div><div id="inspectionDetail" style="margin-top:10px"></div></div></div><div id="toast" class="toast"></div>
 
+<script src="supabase-config.js"></script>
 <script>
 let editingOccurrenceId=null;
 const AREAS=["Hall e corredores","Salão de festas","Salão gourmet","Academia","Salão de jogos","Brinquedoteca","Garagem","Áreas externas"];
@@ -1139,7 +1140,7 @@ document.addEventListener("click",e=>{
   const id=btn.getAttribute("data-edit-occurrence");
   openOccurrenceEditor(id);
 });
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=500",{updateViaCache:"none"}).catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=531",{updateViaCache:"none"}).catch(()=>{});
 </script>
 </body>
 </html>
