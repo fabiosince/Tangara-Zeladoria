@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#173b2b">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg">
-<title>Tangará Zeladoria V4</title>
+<title>Tangará Zeladoria V5</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
@@ -87,16 +87,25 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
   <div class="card"><h3 style="margin-top:0">Ocorrências por área</h3><div id="areaReport"></div></div>
 </section>
 
+<section id="more" class="screen">
+  <div class="card"><h2 style="margin-top:0">Mais</h2><div class="muted">Acesse histórico, relatórios e seu perfil.</div></div>
+  <div class="card">
+    <button class="btn secondary full" onclick="show('history')" style="margin-bottom:10px">🕘 Histórico</button>
+    <button class="btn secondary full" onclick="show('reports')" style="margin-bottom:10px">📊 Relatórios</button>
+    <button class="btn secondary full" onclick="show('profile')">👤 Perfil e acesso</button>
+  </div>
+</section>
+
 <section id="profile" class="screen">
   <div class="card"><h2 style="margin-top:0">Perfil</h2><p><b id="profileName"></b><br><span class="muted" id="profileRole"></span></p><button class="btn danger full" onclick="logout()">Sair do aplicativo</button></div>
-  <div class="card"><h3 style="margin-top:0">Sobre a V4</h3><p class="muted">Versão profissional do Tangará Zeladoria. Os registros desta versão ficam armazenados no aparelho. A próxima etapa pode conectar os dados à nuvem.</p></div>
+  <div class="card"><h3 style="margin-top:0">Sobre a V5</h3><p class="muted">Versão com menu Mais, acesso ao Perfil e botão para sair do aplicativo. Os registros ficam armazenados no aparelho.</p></div>
 </section>
 </main>
 <nav class="bottom">
 <button class="nav active" data-s="home" onclick="show('home')"><span>⌂</span>Início</button>
 <button class="nav" data-s="check" onclick="show('check')"><span>✓</span>Checklist</button>
 <button class="nav" data-s="occ" onclick="show('occ')"><span>🔧</span>Ocorrências</button>
-<button class="nav" data-s="history" onclick="show('history')"><span>☷</span>Mais</button>
+<button class="nav" data-s="more" onclick="show('more')"><span>☷</span>Mais</button>
 </nav>
 </div>
 <div id="toast" class="toast"></div>
@@ -113,9 +122,10 @@ const ITEMS={
 "Garagem":["Piso e circulação em ordem","Iluminação funcionando","Sinalização preservada","Lixeiras/área organizada"],
 "Áreas externas":["Calçadas e acessos limpos","Jardins e áreas verdes em ordem","Lixeiras higienizadas","Iluminação externa funcionando"]
 };
-let db=JSON.parse(localStorage.getItem("tangaraV4")||'{"inspections":[],"occurrences":[]}');
+let db=JSON.parse(localStorage.getItem("tangaraV5")||localStorage.getItem("tangaraV4")||'{"inspections":[],"occurrences":[]}');
+if(!localStorage.getItem("tangaraV5")){localStorage.setItem("tangaraV5",JSON.stringify(db));}
 let user=JSON.parse(localStorage.getItem("tangaraUser")||"null");
-function persist(){localStorage.setItem("tangaraV4",JSON.stringify(db))}
+function persist(){localStorage.setItem("tangaraV5",JSON.stringify(db))}
 function toast(t){let e=document.getElementById("toast");e.textContent=t;e.style.display="block";setTimeout(()=>e.style.display="none",2200)}
 function doLogin(){
   try{
@@ -175,9 +185,19 @@ function renderReports(){const rInspectionsEl=document.getElementById("rInspecti
 function fmt(d){return new Date(d).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}
 function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
 function exportCSV(){let rows=[["Tipo","Data","Usuário","Área","Status/Conforme","Detalhes"],...db.inspections.map(x=>["Inspeção",fmt(x.date),x.user,x.area,`${x.ok}/${x.total}`,x.obs||""]),...db.occurrences.map(x=>["Ocorrência",fmt(x.date),x.user,x.area,x.status,`${x.title} - ${x.desc||""}`])];let csv=rows.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(";")).join("\\n");let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));a.download="tangara-zeladoria-relatorio.csv";a.click()}
+function logout(){
+  if(!confirm("Deseja sair do aplicativo?")) return;
+  localStorage.removeItem("tangaraUser");
+  user=null;
+  document.getElementById("app").style.display="none";
+  document.getElementById("loginScreen").style.display="flex";
+  document.getElementById("loginName").value="";
+  document.getElementById("loginRole").value="Colaborador";
+  toast("Sessão encerrada");
+}
 function refresh(){renderHome();renderReports();renderHistory()}
 if(user)start();
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=42",{updateViaCache:"none"}).catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=5",{updateViaCache:"none"}).catch(()=>{});
 </script>
 </body>
 </html>
