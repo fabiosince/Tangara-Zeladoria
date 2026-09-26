@@ -1,10 +1,11 @@
-# Tangará Zeladoria V32
+# Tangará Zeladoria V33
 
-Correção e simplificação do fluxo de pendências para Colaborador.
-
-- O botão da lista de pendências passa a se chamar **Criar pendência**.
-- Ao tocar, a pendência é preparada na tela de registro, com área, item, prioridade e descrição preenchidos.
-- Para Colaborador, a tela passa a usar **Nova pendência** e **Registrar pendência**.
-- Para Síndico, o fluxo continua usando **Nova ocorrência** / **Registrar ocorrência**.
-- O botão recebe foco e confirmação visual ao ser acionado.
-- Regras de acesso da V31 permanecem: Morador somente registra pendência com foto e consulta; somente Síndico exporta materiais e pendências.
+## V33 — experiência simplificada por perfil
+- Home reorganizada para mostrar primeiro a ação mais útil de cada perfil.
+- Morador: registro de pendência com foto e consulta do painel em modo leitura.
+- Colaborador: checklist, registro de pendência e acompanhamento das pendências.
+- Síndico: visão gerencial, pendências, compras/materiais e exportações.
+- Navegação inferior adaptada ao perfil para reduzir caminhos desnecessários.
+- Exportação de materiais e pendências permanece exclusiva do Síndico.
+- Mantidos os status de ocorrência **Aberta** e **Resolvida**.
+- Mantida a identidade visual e o ícone Tangará Residencial.
