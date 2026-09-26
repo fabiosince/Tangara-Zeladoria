@@ -1,3 +1,3 @@
-# Tangará Zeladoria V39
+# Tangará Zeladoria V40
 
-Correção do botão Ver na lista de Pendências: agora ele abre diretamente a pendência/ocorrência selecionada em modo de edição para Colaborador e Síndico. A foto atual é exibida e pode ser substituída. Morador permanece em modo somente leitura.
+Corrige o botão Ver da tela Pendências para abrir a própria pendência em modo de edição. O Colaborador pode editar área, título, prioridade, descrição e foto; materiais continuam restritos ao Síndico. Morador permanece somente leitura.
