@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#124a35">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Tangará Zeladoria V44</title>
+<title>Tangará Zeladoria V48</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
 .priority-hero{border:2px solid var(--green2);box-shadow:0 8px 24px rgba(23,59,43,.10)} .priority-hero .critical-item{padding:12px 0;border-top:1px solid var(--line)} .priority-hero .critical-item:first-of-type{border-top:0} .priority-hero .priority-badge{font-size:12px;font-weight:700;letter-spacing:.02em}
@@ -41,17 +41,11 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 <div id="loginScreen" class="login">
   <div class="loginbox">
     <img src="logo-tangara.png"><h2>Tangará Zeladoria</h2><p>Controle de limpeza, conservação e manutenção</p>
-    <label>Nome</label><input id="loginName" placeholder="Digite seu nome">
-    <label>Perfil de acesso</label>
-    <select id="loginRole" style="display:none"><option>Colaborador</option><option>Morador</option><option>Síndico</option></select>
-    <div class="role-grid" role="group" aria-label="Escolha o perfil de acesso">
-      <button type="button" class="role-btn selected" data-role="Colaborador" onclick="selectLoginRole('Colaborador',this)">👷<br>Colaborador</button>
-      <button type="button" class="role-btn" data-role="Morador" onclick="selectLoginRole('Morador',this)">🏠<br>Morador</button>
-      <button type="button" class="role-btn" data-role="Síndico" onclick="selectLoginRole('Síndico',this)">🏠<br>Síndico</button>
-    </div>
-    <div id="roleHint" class="role-hint">Rotina de zeladoria, checklist e registro de ocorrências.</div>
+    <label>Usuário</label><input id="loginUsername" autocomplete="username" placeholder="Digite seu usuário">
+    <label>Senha</label><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Digite sua senha" onkeydown="if(event.key==='Enter')doLogin()">
     <button class="btn full" style="margin-top:14px" onclick="doLogin()">Entrar</button>
-    <div class="login-help">Escolha seu perfil para abrir a visão adequada do aplicativo.</div>
+    <div id="loginError" class="role-hint" style="color:var(--danger);display:none"></div>
+    <div class="login-help">Acesso individual por usuário e senha.</div>
   </div>
 </div>
 
@@ -59,7 +53,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 <header class="top"><div class="brand"><img class="logo" src="logo-tangara.png"><div><h1>Tangará Zeladoria</h1><small id="userLabel"></small><small style="display:block;font-size:10px;opacity:.65;margin-top:2px">V47</small></div></div></header>
 <main>
 <section id="home" class="screen active">
-  <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div><div class="muted" style="font-size:11px;margin-top:6px;opacity:.7">Painel V47</div></div>
+  <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div><div class="muted" style="font-size:11px;margin-top:6px;opacity:.7">Painel V48</div></div>
   <div class="card" id="focusPanel"></div>
   <div class="card priority-hero" id="priorityPanel"></div>
   <div class="grid" id="dashboardMetrics">
@@ -170,8 +164,8 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 </section>
 
 <section id="profile" class="screen">
-  <div class="card"><h2 style="margin-top:0">Perfil</h2><p><b id="profileName"></b><br><span class="muted" id="profileRole"></span></p><button class="btn danger full" onclick="logout(event)">Sair do aplicativo</button></div>
-  <div class="card"><h3 style="margin-top:0">Sobre a V41</h3><p class="muted">Fluxo de ocorrências com apenas os status Aberta e Resolvida, materiais de reposição sugeridos automaticamente, edição por ocorrência, consolidação para compras, acompanhamento Pendente/Comprado com data e observação, exportação detalhada e consolidada em CSV e JSON, detalhes de inspeções, fotos, filtros e indicadores gerenciais. Os registros continuam armazenados no aparelho.</p></div>
+  <div class="card"><h2 style="margin-top:0">Perfil</h2><p><b id="profileName"></b><br><span class="muted" id="profileUsername"></span><br><span class="muted" id="profileRole"></span></p><button class="btn danger full" onclick="logout(event)">Sair do aplicativo</button></div>
+  <div class="card"><h3 style="margin-top:0">Sobre a V48</h3><p class="muted">Fluxo de ocorrências com apenas os status Aberta e Resolvida, materiais de reposição sugeridos automaticamente, edição por ocorrência, consolidação para compras, acompanhamento Pendente/Comprado com data e observação, exportação detalhada e consolidada em CSV e JSON, detalhes de inspeções, fotos, filtros e indicadores gerenciais. Os registros continuam armazenados no aparelho. A V48 adiciona acesso individual por usuário e senha; para segurança de produção, a autenticação deverá ser migrada para um serviço de backend.</p></div>
 </section>
 </main>
 <nav class="bottom">
@@ -261,11 +255,54 @@ function migrateDB(){
   return parsed;
 }
 let db=migrateDB();
+const AUTH_KEY="tangaraV48Users";
+const SESSION_KEY="tangaraUser";
+const DEFAULT_USERS=[
+  {username:"sindico",name:"Síndico",role:"Síndico",password:"Tangara@2026"},
+  {username:"colaborador",name:"Colaborador",role:"Colaborador",password:"Tangara@2026"},
+  {username:"morador",name:"Morador",role:"Morador",password:"Tangara@2026"}
+];
+function getAuthUsers(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(AUTH_KEY)||"null");
+    if(Array.isArray(saved)&&saved.length)return saved;
+  }catch(e){}
+  localStorage.setItem(AUTH_KEY,JSON.stringify(DEFAULT_USERS));
+  return DEFAULT_USERS.slice();
+}
+function showLoginError(msg){
+  const e=document.getElementById("loginError");
+  if(e){e.textContent=msg;e.style.display=msg?"block":"none";}
+}
+function doLogin(){
+  try{
+    const username=(document.getElementById("loginUsername")?.value||"").trim().toLowerCase();
+    const password=document.getElementById("loginPassword")?.value||"";
+    showLoginError("");
+    if(!username||!password){showLoginError("Informe usuário e senha.");return}
+    const account=getAuthUsers().find(x=>String(x.username).toLowerCase()===username&&x.password===password);
+    if(!account){showLoginError("Usuário ou senha inválidos.");return}
+    user={username:account.username,name:account.name,role:account.role};
+    localStorage.setItem(SESSION_KEY,JSON.stringify(user));
+    start();
+  }catch(err){
+    console.error(err);
+    showLoginError("Não foi possível entrar. Tente novamente.");
+  }
+}
+function logout(e){
+  if(e)e.preventDefault();
+  localStorage.removeItem(SESSION_KEY);
+  user=null;
+  location.reload();
+}
 // Migração V16: ocorrências possuem somente os status Aberta e Resolvida.
 db.occurrences.forEach(x=>{if(x.status!=="Resolvida")x.status="Aberta"; if(!Array.isArray(x.materials))x.materials=[];});
 db.occurrences.forEach(x=>(x.materials||[]).forEach(m=>{if(materialKey(m.name)==="lampada")m.name="Lâmpada LED";}));
 localStorage.setItem(V20_KEY,JSON.stringify(db));
-let user=JSON.parse(localStorage.getItem("tangaraUser")||"null");
+let user=JSON.parse(localStorage.getItem(SESSION_KEY)||localStorage.getItem("tangaraUser")||"null");
+if(user && !user.username){ localStorage.removeItem(SESSION_KEY); localStorage.removeItem("tangaraUser"); user=null; }
+getAuthUsers();
 function persist(){localStorage.setItem(V20_KEY,JSON.stringify(db))}
 function loadPurchaseData(){
   try{return JSON.parse(localStorage.getItem(V22_PURCHASE_KEY)||"{}")||{}}catch(e){return {}}
@@ -289,38 +326,7 @@ function purchaseStats(){
   return {pending,bought};
 }
 function toast(t){let e=document.getElementById("toast");e.textContent=t;e.style.display="block";setTimeout(()=>e.style.display="none",2200)}
-function selectLoginRole(role,button){
-  const roleEl=document.getElementById("loginRole");
-  if(roleEl)roleEl.value=role;
-  document.querySelectorAll(".role-btn").forEach(b=>b.classList.toggle("selected",b===button));
-  const hints={
-    "Colaborador":"Checklist, registro de pendências e acompanhamento do que precisa de atenção.",
-    "Morador":"Verificação das áreas e registro de pendências com foto.",
-    "Síndico":"Acompanhamento geral da zeladoria, ocorrências, inspeções e pendências."
-  };
-  const hint=document.getElementById("roleHint");
-  if(hint)hint.textContent=hints[role]||"";
-}
-function doLogin(){
-  try{
-    const nameEl=document.getElementById("loginName");
-    const roleEl=document.getElementById("loginRole");
-    const name=(nameEl?.value||"").trim();
-    if(!name){toast("Digite seu nome");return}
-    user={name:name,role:roleEl?.value||"Colaborador"};
-    localStorage.setItem("tangaraUser",JSON.stringify(user));
-    start();
-  }catch(err){
-    console.error(err);
-    alert("Não foi possível entrar. Recarregue a página e tente novamente.");
-  }
-}
-function logout(e){
-  if(e)e.preventDefault();
-  localStorage.removeItem("tangaraUser");
-  user=null;
-  location.reload();
-}
+
 function start(){
   if(!user)return;
   document.getElementById("loginScreen").style.display="none";
@@ -328,6 +334,7 @@ function start(){
   document.getElementById("userLabel").textContent=user.role;
   document.getElementById("hello").textContent=(user.name||"").split(" ")[0];
   document.getElementById("profileName").textContent=user.name||"";
+  document.getElementById("profileUsername").textContent=user.username?`@${user.username}`:"";
   document.getElementById("profileRole").textContent=user.role||"";
   const isResident=user.role==="Morador";
   const residentQuick=document.getElementById("residentQuick");
@@ -1043,7 +1050,7 @@ document.addEventListener("click",e=>{
   const id=btn.getAttribute("data-edit-occurrence");
   openOccurrenceEditor(id);
 });
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=470",{updateViaCache:"none"}).catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=480",{updateViaCache:"none"}).catch(()=>{});
 </script>
 </body>
 </html>
