@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#173b2b">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="logo-tangara.png">
-<title>Tangará Zeladoria V22</title>
+<title>Tangará Zeladoria V23</title>
 <style>
 :root{--green:#173b2b;--green2:#285d46;--gold:#c7a55a;--bg:#f4f5f2;--card:#fff;--text:#17201b;--muted:#68736c;--line:#dfe4df;--danger:#b43b35;--warn:#a96c00;--ok:#23734a}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
@@ -28,7 +28,7 @@ label{font-size:13px;font-weight:700;display:block;margin:10px 0 6px}input,selec
 table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;padding:9px 6px;border-bottom:1px solid var(--line)}th{color:var(--muted)}
 .material-row{display:grid;grid-template-columns:1.7fr .65fr .75fr auto;gap:7px;align-items:end;margin-bottom:8px}.material-row .btn{padding:9px 10px}.material-list{margin-top:8px}.material-chip{display:inline-flex;gap:5px;align-items:center;padding:6px 9px;border-radius:999px;background:#eef2ef;color:var(--green);font-size:11px;font-weight:700;margin:3px}.suggested{background:#fffaf0;border:1px solid #eedfb8;padding:10px;border-radius:12px;margin-top:10px}.small-btn{padding:8px 10px!important;font-size:12px!important}
 @media(max-width:520px){.material-row{grid-template-columns:1fr 70px 80px auto}.material-row input{min-width:0}.material-row .btn{padding:9px 8px}}
-.modal{position:fixed;inset:0;background:#0008;display:none;align-items:flex-end;justify-content:center;z-index:30;padding:12px}.modal.open{display:flex}.modal-card{width:100%;max-width:760px;max-height:82vh;overflow:auto;background:white;border-radius:20px;padding:18px;box-shadow:0 8px 30px #0004}.detail-row{padding:9px 0;border-bottom:1px solid var(--line)}.detail-row:last-child{border-bottom:0}.login{min-height:100vh;display:flex;align-items:center;padding:22px;background:linear-gradient(145deg,#173b2b,#2c6049)}.loginbox{width:100%;max-width:430px;margin:auto;background:white;border-radius:24px;padding:24px}.loginbox img{width:70px;height:70px;display:block;margin:0 auto 10px}.loginbox h2{text-align:center;margin:0}.loginbox p{text-align:center;color:var(--muted)}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:flex-end;justify-content:center;z-index:30;padding:12px}.modal.open{display:flex}.modal-card{width:100%;max-width:760px;max-height:82vh;overflow:auto;background:white;border-radius:20px;padding:18px;box-shadow:0 8px 30px #0004}.detail-row{padding:9px 0;border-bottom:1px solid var(--line)}.detail-row:last-child{border-bottom:0}.login{min-height:100vh;display:flex;align-items:center;padding:22px;background:linear-gradient(145deg,#173b2b,#2c6049)}.loginbox{width:100%;max-width:430px;margin:auto;background:white;border-radius:24px;padding:24px}.loginbox img{width:70px;height:70px;display:block;margin:0 auto 10px}.loginbox h2{text-align:center;margin:0}.loginbox p{text-align:center;color:var(--muted)}.role-hint{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.35}.role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:7px}.role-btn{border:1px solid var(--line);background:#f7f9f7;color:var(--green);border-radius:11px;padding:10px 6px;font-weight:800;font-size:12px}.role-btn.selected{background:#e2f3e9;border-color:#b8dfc6}.login-help{font-size:12px;text-align:center;color:var(--muted);margin:12px 0 0}
 @media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}main{padding:20px}.bottom{position:sticky;bottom:0;border:1px solid var(--line);border-radius:16px;margin-bottom:12px}}
 </style>
 </head>
@@ -37,8 +37,16 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
   <div class="loginbox">
     <img src="logo-tangara.png"><h2>Tangará Zeladoria</h2><p>Controle de limpeza, conservação e manutenção</p>
     <label>Nome</label><input id="loginName" placeholder="Digite seu nome">
-    <label>Perfil</label><select id="loginRole"><option>Colaborador</option><option>Administradora</option></select>
+    <label>Perfil de acesso</label>
+    <select id="loginRole" style="display:none"><option>Colaborador</option><option>Administradora</option><option>Síndico</option></select>
+    <div class="role-grid" role="group" aria-label="Escolha o perfil de acesso">
+      <button type="button" class="role-btn selected" data-role="Colaborador" onclick="selectLoginRole('Colaborador',this)">👷<br>Colaborador</button>
+      <button type="button" class="role-btn" data-role="Administradora" onclick="selectLoginRole('Administradora',this)">🏢<br>Administradora</button>
+      <button type="button" class="role-btn" data-role="Síndico" onclick="selectLoginRole('Síndico',this)">🏠<br>Síndico</button>
+    </div>
+    <div id="roleHint" class="role-hint">Rotina de zeladoria, checklist e registro de ocorrências.</div>
     <button class="btn full" style="margin-top:14px" onclick="doLogin()">Entrar</button>
+    <div class="login-help">Escolha seu perfil para abrir a visão adequada do aplicativo.</div>
   </div>
 </div>
 
@@ -67,7 +75,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 </section>
 
 <section id="check" class="screen">
-  <div class="card"><div class="row between"><div><h2 style="margin:0">Checklist V22</h2><div class="muted">Avalie cada item após verificar a área.</div></div><select id="areaSelect" style="max-width:180px" onchange="renderChecklist()"></select></div><div id="checkMeta" class="muted" style="margin-top:10px"></div><div id="checkRule" class="card" style="margin:10px 0;background:#f7f9f7"></div><div id="checks"></div><div id="checkScore" class="muted" style="margin:10px 0"></div><label>Observação da área</label><textarea id="checkObs" placeholder="Ex.: piso limpo; lâmpada queimada; material a repor..."></textarea><button class="btn full" onclick="saveChecklist()">Salvar inspeção</button></div>
+  <div class="card"><div class="row between"><div><h2 style="margin:0">Checklist V23</h2><div class="muted">Avalie cada item após verificar a área.</div></div><select id="areaSelect" style="max-width:180px" onchange="renderChecklist()"></select></div><div id="checkMeta" class="muted" style="margin-top:10px"></div><div id="checkRule" class="card" style="margin:10px 0;background:#f7f9f7"></div><div id="checks"></div><div id="checkScore" class="muted" style="margin:10px 0"></div><label>Observação da área</label><textarea id="checkObs" placeholder="Ex.: piso limpo; lâmpada queimada; material a repor..."></textarea><button class="btn full" onclick="saveChecklist()">Salvar inspeção</button></div>
 </section>
 
 <section id="occ" class="screen">
@@ -251,6 +259,18 @@ function purchaseStats(){
   return {pending,bought};
 }
 function toast(t){let e=document.getElementById("toast");e.textContent=t;e.style.display="block";setTimeout(()=>e.style.display="none",2200)}
+function selectLoginRole(role,button){
+  const roleEl=document.getElementById("loginRole");
+  if(roleEl)roleEl.value=role;
+  document.querySelectorAll(".role-btn").forEach(b=>b.classList.toggle("selected",b===button));
+  const hints={
+    "Colaborador":"Rotina de zeladoria, checklist e registro de ocorrências.",
+    "Administradora":"Acompanhamento gerencial, pendências e registros do condomínio.",
+    "Síndico":"Acompanhamento geral da zeladoria, ocorrências, inspeções e pendências."
+  };
+  const hint=document.getElementById("roleHint");
+  if(hint)hint.textContent=hints[role]||"";
+}
 function doLogin(){
   try{
     const nameEl=document.getElementById("loginName");
