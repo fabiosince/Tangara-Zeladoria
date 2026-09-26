@@ -43,10 +43,10 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
     <img src="logo-tangara.png"><h2>Tangará Zeladoria</h2><p>Controle de limpeza, conservação e manutenção</p>
     <label>Nome</label><input id="loginName" placeholder="Digite seu nome">
     <label>Perfil de acesso</label>
-    <select id="loginRole" style="display:none"><option>Colaborador</option><option>Administradora</option><option>Síndico</option></select>
+    <select id="loginRole" style="display:none"><option>Colaborador</option><option>Morador</option><option>Síndico</option></select>
     <div class="role-grid" role="group" aria-label="Escolha o perfil de acesso">
       <button type="button" class="role-btn selected" data-role="Colaborador" onclick="selectLoginRole('Colaborador',this)">👷<br>Colaborador</button>
-      <button type="button" class="role-btn" data-role="Administradora" onclick="selectLoginRole('Administradora',this)">🏢<br>Administradora</button>
+      <button type="button" class="role-btn" data-role="Morador" onclick="selectLoginRole('Morador',this)">🏠<br>Morador</button>
       <button type="button" class="role-btn" data-role="Síndico" onclick="selectLoginRole('Síndico',this)">🏠<br>Síndico</button>
     </div>
     <div id="roleHint" class="role-hint">Rotina de zeladoria, checklist e registro de ocorrências.</div>
@@ -59,30 +59,31 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 <header class="top"><div class="brand"><img class="logo" src="logo-tangara.png"><div><h1>Tangará Zeladoria</h1><small id="userLabel"></small></div></div></header>
 <main>
 <section id="home" class="screen active">
-  <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div><div class="muted" style="font-size:11px;margin-top:6px;opacity:.7">Painel V28</div></div>
+  <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div><div class="muted" style="font-size:11px;margin-top:6px;opacity:.7">Painel V29</div></div>
   <div class="card" id="focusPanel"></div>
   <div class="card priority-hero" id="priorityPanel"></div>
   <div class="grid">
-    <div class="metric action" onclick="show('check')"><b id="mOk">0</b><span>Áreas conformes · ver checklist</span></div>
+    <div class="metric action" onclick="show(&quot;check&quot;)"><b id="mOk">0</b><span>Áreas conformes · ver checklist</span></div>
     <div class="metric action" onclick="show('pending')"><b id="mPending">0</b><span>Itens em atenção · ver pendências</span></div>
     <div class="metric action" onclick="show('occ')"><b id="mOcc">0</b><span>Ocorrências abertas · acompanhar</span></div>
-    <div class="metric action" onclick="show('check')"><b id="mPct">0%</b><span>Áreas concluídas · conferir</span></div>
+    <div class="metric action" onclick="show(&quot;check&quot;)"><b id="mPct">0%</b><span>Áreas concluídas · conferir</span></div>
   </div>
   <div class="card">
     <div class="row between"><div><h3 style="margin:0">Atalhos rápidos</h3><div class="muted">As ações mais usadas ficam aqui.</div></div></div>
     <div class="quick-grid" style="margin-top:10px">
       <button class="quick-card" onclick="show('occ')"><b>🔧 Ocorrências</b><span>Registrar ou acompanhar problemas</span></button>
-      <button class="quick-card" onclick="show('check')"><b>✓ Checklist</b><span>Fazer inspeção das áreas</span></button>
+      <button class="quick-card" onclick="show(&quot;check&quot;)"><b>✓ Checklist</b><span>Fazer inspeção das áreas</span></button>
       <button class="quick-card" onclick="show('materials')"><b>🧰 Materiais</b><span>Consultar compras e estoque</span></button>
       <button class="quick-card" onclick="show('history')"><b>📋 Histórico</b><span>Ver atividades registradas</span></button>
+      <button class="quick-card" id="residentQuick" style="display:none" onclick="show(&quot;residentIssue&quot;)"><b>📷 Registrar pendência</b><span>Foto de luz, vazamento ou outro problema</span></button>
     </div>
   </div>
   <div class="card" id="dailySummary"><div class="row between"><div><h3 style="margin:0">Resumo operacional</h3><div class="muted">Última atividade registrada no aplicativo.</div></div><button class="btn secondary" onclick="show('history')">Ver histórico</button></div><div id="dailySummaryBody" style="margin-top:10px"></div></div>
   <div class="card"><div class="row between"><div><h3 style="margin:0">Progresso das áreas</h3><div class="muted">Última inspeção registrada por área.</div></div><b id="todayLabel" class="muted"></b></div><div id="areaProgress"></div></div>
   <div id="rolePanel"></div>
-  <div class="card"><div class="row between"><h3 style="margin:0">Áreas</h3><button class="btn secondary" onclick="show('check')">Ver checklist</button></div><div id="areaSummary"></div></div>
+  <div class="card"><div class="row between"><h3 style="margin:0">Áreas</h3><button class="btn secondary" onclick="show(&quot;check&quot;)">Ver checklist</button></div><div id="areaSummary"></div></div>
   <div class="card"><h3 style="margin-top:0">Mais ações</h3><div class="row wrap">
-    <button class="btn" onclick="show('check')">📋 Checklist</button>
+    <button class="btn" onclick="show(&quot;check&quot;)">📋 Checklist</button>
     <button class="btn gold" onclick="show('occ')">🔧 Nova ocorrência</button>
     <button class="btn secondary" onclick="show('history')">🕘 Histórico</button>
     <button class="btn secondary" onclick="show('pending')">⚠️ Pendências</button>
@@ -108,6 +109,19 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
     <label>Foto</label><input id="occPhoto" type="file" accept="image/*" capture="environment">
     <button class="btn gold full" style="margin-top:12px" onclick="saveOccurrence()">Registrar ocorrência</button>
   </div>
+</section>
+
+<section id="residentIssue" class="screen">
+  <div class="card">
+    <div class="row between"><div><h2 style="margin:0">📷 Registrar pendência</h2><div class="muted">Fotografe e descreva algo que precisa de atenção no condomínio.</div></div><span class="pill ok">Morador</span></div>
+    <label>Área</label><select id="residentArea"></select>
+    <label>Tipo de pendência</label><select id="residentType"><option>Luz queimada</option><option>Vazamento</option><option>Limpeza</option><option>Porta/fechadura</option><option>Dano em equipamento</option><option>Outro</option></select>
+    <label>Descrição</label><textarea id="residentDesc" placeholder="Ex.: lâmpada apagada no corredor do 2º andar..."></textarea>
+    <label>Foto da pendência</label><input id="residentPhoto" type="file" accept="image/*" capture="environment">
+    <div id="residentPhotoPreview" class="muted" style="margin-top:8px"></div>
+    <button class="btn gold full" style="margin-top:12px" onclick="saveResidentIssue()">Enviar pendência</button>
+  </div>
+  <div class="card"><h3 style="margin-top:0">✓ Verificação rápida</h3><div class="muted">Quer conferir uma área? Use o Checklist para registrar itens conformes, em atenção ou não conformes.</div><button class="btn full" style="margin-top:10px" onclick="show(&quot;check&quot;)">Abrir verificação</button></div>
 </section>
 
 <section id="pending" class="screen">
@@ -163,8 +177,8 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 </main>
 <nav class="bottom">
 <button class="nav active" data-s="home" onclick="show('home')"><span>⌂</span>Início</button>
-<button class="nav" data-s="check" onclick="show('check')"><span>✓</span>Checklist</button>
-<button class="nav" data-s="occ" onclick="show('occ')"><span>🔧</span>Ocorrências</button>
+<button class="nav" data-s="check" onclick="show(&quot;check&quot;)"><span>✓</span><em id="navCheckLabel" style="font-style:normal">Checklist</em></button>
+<button class="nav" data-s="occ" onclick="show('occ')"><span>🔧</span><em id="navOccLabel" style="font-style:normal">Ocorrências</em></button>
 <button class="nav" data-s="more" onclick="show('more')"><span>☷</span>Mais</button>
 </nav>
 </div>
@@ -280,7 +294,7 @@ function selectLoginRole(role,button){
   document.querySelectorAll(".role-btn").forEach(b=>b.classList.toggle("selected",b===button));
   const hints={
     "Colaborador":"Rotina de zeladoria, checklist e registro de ocorrências.",
-    "Administradora":"Acompanhamento gerencial, pendências e registros do condomínio.",
+    "Morador":"Verificação das áreas e registro de pendências com foto.",
     "Síndico":"Acompanhamento geral da zeladoria, ocorrências, inspeções e pendências."
   };
   const hint=document.getElementById("roleHint");
@@ -314,6 +328,13 @@ function start(){
   document.getElementById("hello").textContent=(user.name||"").split(" ")[0];
   document.getElementById("profileName").textContent=user.name||"";
   document.getElementById("profileRole").textContent=user.role||"";
+  const isResident=user.role==="Morador";
+  const residentQuick=document.getElementById("residentQuick");
+  if(residentQuick) residentQuick.style.display=isResident?"block":"none";
+  const navCheckLabel=document.getElementById("navCheckLabel");
+  const navOccLabel=document.getElementById("navOccLabel");
+  if(navCheckLabel) navCheckLabel.textContent=isResident?"Verificar":"Checklist";
+  if(navOccLabel) navOccLabel.textContent=isResident?"Pendência":"Ocorrências";
   fillAreas();
   resetOccurrenceMaterials();
   refresh();
@@ -324,6 +345,8 @@ function fillAreas(){
   const opts=AREAS.map(a=>`<option>${a}</option>`).join("");
   areaSelectEl.innerHTML=opts;
   occAreaEl.innerHTML=opts;
+  const residentAreaEl=document.getElementById("residentArea");
+  if(residentAreaEl) residentAreaEl.innerHTML=opts;
   const pendingAreaEl=document.getElementById("pendingArea");
   if(pendingAreaEl) pendingAreaEl.innerHTML=`<option value="all">Todas as áreas</option>`+opts;
   const reportAreaEl=document.getElementById("reportArea");
@@ -705,6 +728,32 @@ function compressPhoto(file){
     reader.readAsDataURL(file);
   });
 }
+function previewResidentPhoto(){
+  const file=document.getElementById("residentPhoto")?.files?.[0];
+  const el=document.getElementById("residentPhotoPreview");
+  if(!el)return;
+  el.textContent=file?`Foto selecionada: ${file.name}`:"";
+}
+document.addEventListener("change",e=>{if(e.target&&e.target.id==="residentPhoto")previewResidentPhoto()});
+async function saveResidentIssue(){
+  const area=document.getElementById("residentArea")?.value||AREAS[0];
+  const type=document.getElementById("residentType")?.value||"Outro";
+  const desc=(document.getElementById("residentDesc")?.value||"").trim();
+  const file=document.getElementById("residentPhoto")?.files?.[0];
+  if(!desc && !file){alert("Descreva a pendência ou adicione uma foto.");return;}
+  let photo="";
+  if(file) photo=await compressImage(file);
+  const titles={"Luz queimada":"Luz queimada","Vazamento":"Vazamento","Limpeza":"Pendência de limpeza","Porta/fechadura":"Problema em porta/fechadura","Dano em equipamento":"Dano em equipamento","Outro":"Pendência do morador"};
+  const occurrence={id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),type:"occ",area,title:titles[type]||type,priority:"Média",description:desc||"Pendência registrada com foto.",photo,status:"Aberta",date:new Date().toISOString(),user:user?.name||"Morador",materials:[]};
+  db.occurrences.unshift(occurrence);persist();
+  document.getElementById("residentDesc").value="";
+  document.getElementById("residentPhoto").value="";
+  document.getElementById("residentPhotoPreview").textContent="";
+  refresh();
+  alert("Pendência enviada para a zeladoria.");
+  show("home");
+}
+
 function renderDailySummary(){
   const el=document.getElementById("dailySummaryBody");
   if(!el)return;
@@ -729,14 +778,14 @@ function renderFocusPanel(){
   const open=db.occurrences.filter(x=>x.status!=="Resolvida").length;
   const priority=db.occurrences.filter(x=>x.status!=="Resolvida"&&["Alta","Urgente"].includes(x.priority)).length;
   const purchasePending=purchaseStats().pending;
-  const title=(role==="Síndico"||role==="Administradora")?"O que precisa de atenção":"Próximas ações";
-  const sub=(role==="Síndico"||role==="Administradora")?"Veja primeiro o que merece acompanhamento.":"Acesse rapidamente as tarefas mais úteis.";
+  const title=(role==="Síndico")?"O que precisa de atenção":role==="Morador"?"Próximas ações":"Próximas ações";
+  const sub=(role==="Síndico")?"Veja primeiro o que merece acompanhamento.":role==="Morador"?"Verifique áreas e registre problemas encontrados.":"Acesse rapidamente as tarefas mais úteis.";
   const rows=[];
   if(priority) rows.push(`<div class="focus-item"><div><b>🚨 ${priority} ocorrência${priority===1?"":"s"} prioritária${priority===1?"":"s"}</b><span>Alta ou urgente em aberto</span></div><button class="btn danger" onclick="show('occ')">Acompanhar</button></div>`);
   if(open) rows.push(`<div class="focus-item"><div><b>🔧 ${open} ocorrência${open===1?"":"s"} em aberto</b><span>Acompanhar problemas registrados</span></div><button class="btn" onclick="show('occ')">Ver</button></div>`);
   if(attention) rows.push(`<div class="focus-item"><div><b>⚠️ ${attention} item${attention===1?"":"s"} de inspeção</b><span>Itens em atenção ou não conformes</span></div><button class="btn" onclick="show('pending')">Ver</button></div>`);
   if(purchasePending) rows.push(`<div class="focus-item"><div><b>🛒 ${purchasePending} compra${purchasePending===1?"":"s"} pendente${purchasePending===1?"":"s"}</b><span>Materiais aguardando compra</span></div><button class="btn" onclick="show('materials')">Ver</button></div>`);
-  if(!rows.length) rows.push(`<div class="focus-item"><div><b>✅ Tudo em ordem</b><span>Nenhuma pendência exige atenção imediata.</span></div><button class="btn secondary" onclick="show('check')">Conferir</button></div>`);
+  if(!rows.length) rows.push(`<div class="focus-item"><div><b>✅ Tudo em ordem</b><span>Nenhuma pendência exige atenção imediata.</span></div><button class="btn secondary" onclick="show(&quot;check&quot;)">Conferir</button></div>`);
   el.innerHTML=`<div class="row between"><div><h3 class="focus-title">${title}</h3><div class="focus-sub">${sub}</div></div><span class="pill ok">${role}</span></div><div class="focus-grid">${rows.slice(0,4).join("")}</div>`;
 }
 
@@ -753,7 +802,7 @@ function renderHome(){
   const rolePanel=document.getElementById("rolePanel");
   if(rolePanel){
     const label=user?.role||"Colaborador";
-    rolePanel.innerHTML=`<div class="card" style="background:#eef4ef"><div class="row between"><div><b>${label==='Colaborador'?'Rotina de zeladoria':'Visão gerencial'}</b><div class="muted">${label==='Colaborador'?'Confira as áreas pendentes e registre o que encontrar.':'Acompanhe pendências, ocorrências e inspeções recentes.'}</div></div><span class="pill ok">${label}</span></div></div>`;
+    const isResident=label==='Morador'; const isColab=label==='Colaborador'; const title=isResident?'Participação do morador':isColab?'Rotina de zeladoria':'Visão gerencial'; const sub=isResident?'Verifique áreas e envie fotos de pendências para a zeladoria.':isColab?'Confira as áreas pendentes e registre o que encontrar.':'Acompanhe pendências, ocorrências e inspeções recentes.'; rolePanel.innerHTML=`<div class="card" style="background:#eef4ef"><div class="row between"><div><b>${title}</b><div class="muted">${sub}</div></div><span class="pill ok">${label}</span></div>${isResident?'<div class="row wrap" style="margin-top:10px"><button class="btn" onclick="show(&quot;check&quot;)">✓ Verificar itens</button><button class="btn secondary" onclick="show(&quot;residentIssue&quot;)">📷 Enviar foto</button></div>':''}</div>`;
   }
   const priorityPanel=document.getElementById("priorityPanel");
   const priority=[...db.occurrences].filter(x=>x.status!=="Resolvida"&&["Alta","Urgente"].includes(x.priority)).sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,3);
@@ -775,7 +824,7 @@ function renderHome(){
 }
 function refresh(){renderHome();renderReports();renderHistory();renderPending()}
 if(user)start();
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=280",{updateViaCache:"none"}).catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=290",{updateViaCache:"none"}).catch(()=>{});
 </script>
 </body>
 </html>
