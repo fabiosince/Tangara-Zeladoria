@@ -56,10 +56,10 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
 </div>
 
 <div id="app" class="app" style="display:none">
-<header class="top"><div class="brand"><img class="logo" src="logo-tangara.png"><div><h1>Tangará Zeladoria</h1><small id="userLabel"></small></div></div></header>
+<header class="top"><div class="brand"><img class="logo" src="logo-tangara.png"><div><h1>Tangará Zeladoria</h1><small id="userLabel"></small><small style="display:block;font-size:10px;opacity:.65;margin-top:2px">V47</small></div></div></header>
 <main>
 <section id="home" class="screen active">
-  <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div><div class="muted" style="font-size:11px;margin-top:6px;opacity:.7">Painel V38</div></div>
+  <div class="card hero"><h2>Olá, <span id="hello"></span> 👋</h2><div class="muted">Acompanhe a zeladoria do condomínio.</div><div class="muted" style="font-size:11px;margin-top:6px;opacity:.7">Painel V47</div></div>
   <div class="card" id="focusPanel"></div>
   <div class="card priority-hero" id="priorityPanel"></div>
   <div class="grid" id="dashboardMetrics">
@@ -1043,7 +1043,7 @@ document.addEventListener("click",e=>{
   const id=btn.getAttribute("data-edit-occurrence");
   openOccurrenceEditor(id);
 });
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=460",{updateViaCache:"none"}).catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=470",{updateViaCache:"none"}).catch(()=>{});
 </script>
 </body>
 </html>
